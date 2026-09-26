@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-primary: #0D0D0C;
+    --bg-surface: #191917;
+    --bg-surface-elevated: #22221F;
+    --bg-surface-subtle: #141412;
+    --border-primary: #2A2926;
+    --border-subtle: #1F1E1B;
+    --copper: #B78A5A;
+    --copper-light: #CBB093;
+    --copper-dark: #8C653C;
+    --stone: #C9C2B7;
+    --stone-dim: #8E887E;
+    --stone-faint: #4E4A43;
+    --text-primary: #F3F0E8;
+    --text-secondary: #C9C2B7;
+    --text-muted: #8E887E;
+    --signal-red: #A66A62;
+    --signal-amber: #B59A63;
+    --signal-green: #5E8B72;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    overflow-x: hidden;
+  }
+}
+
+/* Custom scrollbars for clean editorial interface */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D0D0C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2926;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B78A5A;
+}
+
+/* Grid & dot matrix backgrounds */
+.bg-grid-pattern {
+  background-image: radial-gradient(rgba(183, 138, 90, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-dot-subtle {
+  background-image: radial-gradient(rgba(201, 194, 183, 0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Editorial typography utility */
+.font-editorial {
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.025em;
+}
+
+.font-mono-tabular {
+  font-family: var(--font-geist-mono), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Restrained copper glow effect */
+.copper-glow {
+  box-shadow: 0 0 24px -6px rgba(183, 138, 90, 0.18);
+}
+
+.copper-border-glow {
+  border-color: rgba(183, 138, 90, 0.4);
+  box-shadow: 0 0 16px -4px rgba(183, 138, 90, 0.15);
+}
+
+/* 60fps GPU Hardware-Accelerated Chart Draw Keyframes */
+@keyframes svgPathDraw {
+  0% {
+    stroke-dashoffset: 600;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-path-draw {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: svgPathDraw 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle Institutional Sonar Radar Pulse */
+@keyframes sonarPulse {
+  0% {
+    r: 16;
+    opacity: 0.7;
+    stroke-width: 1.5;
+  }
+  70% {
+    opacity: 0.2;
+    stroke-width: 1;
+  }
+  100% {
+    r: 38;
+    opacity: 0;
+    stroke-width: 0.5;
+  }
+}
+
+.animate-sonar-ring {
+  animation: sonarPulse 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+/* Subtle Pulse Beam */
+@keyframes beamTravel {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-beam-flow {
+  stroke-dasharray: 6 6;
+  animation: beamTravel 1.2s linear infinite;
+}
+
+/* Institutional Audit Stamp */
+@keyframes stampIn {
+  0% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-stamp-in {
+  animation: stampIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* SUTRA Living Logo Continuous Subtle Drift */
+@keyframes subtleDrift {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0.8px, -0.8px);
+  }
+}
+
+.animate-subtle-drift {
+  animation: subtleDrift 5s ease-in-out infinite;
+}
+
+
