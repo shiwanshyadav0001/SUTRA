@@ -1,61 +1,4 @@
-export type SourceType = 'Government Open Data' | 'Union Budget / PFMS' | 'State Administrative Register';
-
-export interface Ministry {
-  id: string;
-  code: string;
-  name: string;
-  shortName: string;
-  departmentCount: number;
-  schemeCount: number;
-  totalAllocationCr: number;
-  totalUtilizedCr: number;
-}
-
-export interface Scheme {
-  id: string;
-  code: string;
-  name: string;
-  officialName: string;
-  ministryId: string;
-  ministryName: string;
-  department: string;
-  sector: string;
-  targetGroup: string;
-  startYear: number;
-  status: 'Active' | 'Review' | 'Accelerated';
-  budgetAllocationCr: number;
-  fundUtilizedCr: number;
-  utilizationRate: number;
-  beneficiariesCount: number;
-  projectsCount: number;
-  coverageRate: number;
-  outcomeIndex: number;
-  summary: string;
-  objectives: string[];
-  keyDistricts: string[];
-}
-
-export interface District {
-  id: string;
-  code: string;
-  name: string;
-  state: string;
-  population: number; // e.g. 1,648,000 for Nandurbar (1.6M)
-  activeSchemesCount: number;
-  projectsCount: number;
-  beneficiariesCount: number;
-  budgetAllocatedCr: number;
-  fundUtilizedCr: number;
-  fundUtilizationRate: number;
-  coverageRate: number;
-  regionalBenchmarkRate: number;
-  gapPercentagePoints: number;
-  isGapFlagged: boolean;
-  flagFactors: string[];
-  coordinates: [number, number]; // [lat, lng]
-  zone: string;
-  eligibleDemandIndex: number; // 0 - 100
-}
+export * from './data-fabric';
 
 export interface OverlapInsight {
   id: string;
@@ -96,32 +39,12 @@ export interface ImplementationSignal {
   metric: string;
 }
 
-export interface EvidenceRecord {
-  id: string;
-  recordNumber: string;
-  datasetId: string;
-  datasetName: string;
-  schemeId: string;
-  schemeName: string;
-  district: string;
-  state: string;
-  allocatedCr: number;
-  utilizedCr: number;
-  beneficiaries: number;
-  completionRate: number;
-  outcomeScore: number;
-  sourceType: SourceType;
-  primarySourceUrl: string;
-  usedIn: string;
-  lastUpdated: string;
-}
-
 export interface DatasetMeta {
   id: string;
   name: string;
   recordsCount: number;
   source: string;
-  sourceType: SourceType;
+  sourceType: import('./data-fabric').SourceType;
   fields: string[];
   status: 'Live Synced' | 'Validated' | 'Cached';
   lastUpdated: string;
