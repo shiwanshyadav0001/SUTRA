@@ -8,26 +8,24 @@ import { GOVERNANCE_GRAPH_DATA } from '@/lib/data/governance-data';
 import { GraphNode, GraphLink, NodeType } from '@/lib/types';
 import {
   Network,
-  Info,
-  Filter,
-  Layers,
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
   Sparkles,
-  Zap,
   Activity,
+  Layers,
+  MapPin,
+  FolderKanban,
 } from 'lucide-react';
 
 export default function GovernanceGraphPage() {
-  const { openEvidence, openExplain, openWhyFlagged, openWorkspace } = useIntelligence();
+  const { openEvidence, openWhyFlagged, openWorkspace } = useIntelligence();
   const [selectedNodeId, setSelectedNodeId] = useState<string>('fnd_conv_gap');
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [hoveredLink, setHoveredLink] = useState<GraphLink | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
   const [filterType, setFilterType] = useState<string>('ALL');
 
-  // Enhanced V2 graph data with Event, Finding, and Evidence nodes
   const graphData = useMemo(() => {
     const baseNodes: GraphNode[] = [
       ...GOVERNANCE_GRAPH_DATA.nodes,
@@ -100,10 +98,8 @@ export default function GovernanceGraphPage() {
 
   const { nodes, links } = graphData;
 
-  // Active focus node is hovered node if present, else selected node
   const activeFocusId = hoveredNodeId || selectedNodeId;
 
-  // Find selected node and connected node IDs
   const selectedNode = useMemo(
     () => nodes.find((n) => n.id === selectedNodeId) || nodes[0],
     [nodes, selectedNodeId]
@@ -135,19 +131,15 @@ export default function GovernanceGraphPage() {
     return set;
   }, [links, activeFocusId]);
 
-  // Node position map layout (organized hierarchically for clean editorial aesthetics)
   const nodePositions: Record<string, { x: number; y: number }> = {
-    // Ministries (Top layer)
     min_agri: { x: 180, y: 60 },
     min_rural: { x: 420, y: 60 },
     min_water: { x: 640, y: 60 },
 
-    // Departments (Second layer)
     dept_agri: { x: 180, y: 130 },
     dept_rural: { x: 420, y: 130 },
     dept_water: { x: 640, y: 130 },
 
-    // Schemes (Center layer)
     sch_pkvy: { x: 120, y: 210 },
     sch_movcd: { x: 250, y: 210 },
     sch_pmkisan: { x: 370, y: 210 },
@@ -155,63 +147,58 @@ export default function GovernanceGraphPage() {
     sch_pmayg: { x: 610, y: 210 },
     sch_jjm: { x: 730, y: 210 },
 
-    // Budgets (Side nodes)
     bud_pkvy: { x: 50, y: 280 },
     bud_movcd: { x: 210, y: 280 },
     bud_pmkisan: { x: 370, y: 280 },
 
-    // Districts (Regional layer)
     dist_ndb: { x: 150, y: 340 },
     dist_gdc: { x: 580, y: 340 },
     dist_wsm: { x: 710, y: 340 },
     dist_pun: { x: 390, y: 340 },
 
-    // V2 Live Event & Forensic Investigation layer
     evt_jjm_ndb: { x: 260, y: 410 },
     fnd_conv_gap: { x: 440, y: 410 },
     evi_imis_7201: { x: 370, y: 480 },
     evi_awaas_4401: { x: 530, y: 480 },
 
-    // Projects (Execution layer)
     proj_ndb_soil: { x: 70, y: 470 },
     proj_ndb_road: { x: 160, y: 470 },
     proj_ndb_water: { x: 250, y: 480 },
 
-    // Beneficiaries
     ben_smallholders: { x: 630, y: 470 },
     ben_tribal: { x: 720, y: 470 },
 
-    // Outcomes
     out_soil_health: { x: 80, y: 390 },
     out_tap_security: { x: 730, y: 390 },
   };
 
+  // Strictly using SUTRA Civic Intelligence palette for nodes
   const getNodeColor = (type: NodeType) => {
     switch (type) {
       case 'ministry':
-        return '#DFB88B'; // Warm Luminous Gold
+        return '#164A3A'; // Primary SUTRA Green
       case 'department':
-        return '#8DB4C7'; // Crisp Steel Blue
+        return '#5B8C78'; // Muted Green
       case 'scheme':
-        return '#FAF8F5'; // Crisp Pure Ivory
+        return '#18201C'; // Deep Forest Charcoal
       case 'budget':
-        return '#E5B869'; // Radiant Amber
+        return '#B58A45'; // Brand Gold
       case 'district':
-        return '#DDD7CD'; // Crisp Silver Stone
+        return '#28704D'; // Verified Green
       case 'event':
-        return '#38BDF8'; // Sky Blue
+        return '#B56B32'; // Muted Saffron (emerging signals)
       case 'finding':
-        return '#F87171'; // Luminous Coral Red
+        return '#A54848'; // Alert Red
       case 'evidence':
-        return '#7DC09C'; // Bright Sage
+        return '#28704D'; // Verified Green
       case 'project':
-        return '#C9C2B7'; // Warm Stone
+        return '#66706A'; // Secondary text
       case 'beneficiary':
-        return '#DFB88B'; // Warm Gold
+        return '#B58A45'; // Brand Gold
       case 'outcome':
-        return '#7DC09C'; // Bright Sage
+        return '#28704D'; // Verified Green
       default:
-        return '#DDD7CD';
+        return '#164A3A';
     }
   };
 
@@ -223,30 +210,30 @@ export default function GovernanceGraphPage() {
   return (
     <AppShell>
       {/* Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2A2926] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8D6CE] pb-6 select-none">
         <div>
-          <div className="flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#B78A5A] uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#B78A5A]" />
+          <div className="flex items-center space-x-2 text-[10px] font-mono tracking-[0.14em] text-[#B58A45] uppercase font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#164A3A]" />
             <span>GRAPH TOPOLOGY INTELLIGENCE</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#F3F0E8] font-editorial">
+          <h1 className="text-3xl font-bold tracking-tight text-[#18201C] font-editorial uppercase">
             GOVERNANCE RELATIONSHIP GRAPH
           </h1>
-          <p className="text-xs text-[#8E887E] mt-0.5">
-            Interactive multi-relational network mapping policy intent to ground outcomes. Hover over any node or relationship link to inspect granular data.
+          <p className="text-xs text-[#66706A] mt-0.5">
+            Interactive multi-relational network mapping policy intent to ground outcomes. Hover over any node or link for details.
           </p>
         </div>
 
         {/* Node Type Filter Bar */}
-        <div className="flex flex-wrap items-center gap-1 bg-[#141412] p-1 border border-[#2A2926] rounded-sm text-xs font-mono">
-          {['ALL', 'MINISTRY', 'SCHEME', 'DISTRICT', 'EVENT', 'FINDING', 'EVIDENCE', 'OUTCOME'].map((type) => (
+        <div className="flex flex-wrap items-center gap-1 bg-[#FFFFFF] p-0.5 border border-[#D8D6CE] rounded text-xs font-mono">
+          {['ALL', 'MINISTRY', 'SCHEME', 'DISTRICT', 'EVENT', 'FINDING', 'EVIDENCE'].map((type) => (
             <button
               key={type}
               onClick={() => setFilterType(type)}
-              className={`px-3 py-1 rounded-sm transition-all ${
+              className={`px-3 py-1 rounded transition-all ${
                 filterType === type
-                  ? 'bg-[#B78A5A] text-[#0D0D0C] font-bold'
-                  : 'text-[#8E887E] hover:text-[#F3F0E8]'
+                  ? 'bg-[#164A3A] text-white font-bold'
+                  : 'text-[#66706A] hover:text-[#18201C]'
               }`}
             >
               {type}
@@ -256,22 +243,22 @@ export default function GovernanceGraphPage() {
       </div>
 
       {/* Main Graph Interactive Canvas + Context Panel */}
-      <div className="grid lg:grid-cols-12 gap-8 items-start">
+      <div className="grid lg:grid-cols-12 gap-6 items-start select-none">
         {/* Left 8 Cols: Interactive Network Visualizer */}
-        <div className="lg:col-span-8 bg-[#181816] border border-[#33312D] rounded-sm p-6 space-y-4 shadow-xl">
-          <div className="flex items-center justify-between text-xs font-mono text-[#A39D92]">
+        <div className="lg:col-span-8 bg-[#FFFFFF] border border-[#D8D6CE] rounded-lg p-5 space-y-4 shadow-xs">
+          <div className="flex items-center justify-between text-xs font-mono text-[#66706A] border-b border-[#EAE8E1] pb-3">
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#6DAA8A] animate-pulse" />
-              <span>Interactive Graph: <strong className="text-white">{hoveredNode ? hoveredNode.label : selectedNode.label}</strong></span>
+              <span className="w-2 h-2 rounded-full bg-[#28704D]" />
+              <span>Inspecting Node: <strong className="text-[#18201C]">{hoveredNode ? hoveredNode.label : selectedNode.label}</strong></span>
             </span>
-            <span className="text-[11px] text-[#DFB88B] font-semibold">
+            <span className="text-[11px] text-[#164A3A] font-semibold">
               {hoveredNode ? 'Hovering Node • Click to Lock' : 'Hover over any node or link for details'}
             </span>
           </div>
 
           {/* SVG Graph View */}
           <div
-            className="w-full h-[560px] bg-[#121210] border border-[#33312D] rounded-sm overflow-hidden relative shadow-inner"
+            className="w-full h-[540px] bg-[#F4F2EC] border border-[#D8D6CE] rounded-md overflow-hidden relative"
             onMouseLeave={() => {
               setHoveredNodeId(null);
               setHoveredLink(null);
@@ -280,10 +267,6 @@ export default function GovernanceGraphPage() {
           >
             <svg className="w-full h-full" viewBox="0 0 820 520">
               <defs>
-                <radialGradient id="graphAmbientGlow" cx="50%" cy="50%" r="60%">
-                  <stop offset="0%" stopColor="#C89B65" stopOpacity="0.08" />
-                  <stop offset="100%" stopColor="#C89B65" stopOpacity="0" />
-                </radialGradient>
                 <marker
                   id="arrowhead"
                   markerWidth="8"
@@ -292,7 +275,7 @@ export default function GovernanceGraphPage() {
                   refY="3"
                   orient="auto"
                 >
-                  <polygon points="0 0, 8 3, 0 6" fill="#A39D92" opacity="0.8" />
+                  <polygon points="0 0, 8 3, 0 6" fill="#898E89" opacity="0.8" />
                 </marker>
                 <marker
                   id="arrowhead-active"
@@ -302,12 +285,9 @@ export default function GovernanceGraphPage() {
                   refY="3"
                   orient="auto"
                 >
-                  <polygon points="0 0, 8 3, 0 6" fill="#DFB88B" />
+                  <polygon points="0 0, 8 3, 0 6" fill="#164A3A" />
                 </marker>
               </defs>
-
-              {/* Ambient Canvas Lighting */}
-              <rect width="100%" height="100%" fill="url(#graphAmbientGlow)" />
 
               {/* Render Links */}
               {links.map((link, idx) => {
@@ -339,7 +319,6 @@ export default function GovernanceGraphPage() {
                     }}
                     onMouseLeave={() => setHoveredLink(null)}
                   >
-                    {/* Invisible fat stroke for easy hover detection */}
                     <line
                       x1={sPos.x}
                       y1={sPos.y}
@@ -349,7 +328,6 @@ export default function GovernanceGraphPage() {
                       strokeWidth="14"
                     />
 
-                    {/* Visible line */}
                     <line
                       x1={sPos.x}
                       y1={sPos.y}
@@ -357,31 +335,28 @@ export default function GovernanceGraphPage() {
                       y2={tPos.y}
                       stroke={
                         isLinkHovered
-                          ? '#FFFFFF'
+                          ? '#164A3A'
                           : isOverlap
-                          ? '#DFB88B'
+                          ? '#B58A45'
                           : isHighlighted
-                          ? '#DFB88B'
-                          : '#38352F'
+                          ? '#164A3A'
+                          : '#C9C6BC'
                       }
                       strokeWidth={isLinkHovered ? 3 : isHighlighted || isOverlap ? 2.5 : 1.2}
-                      strokeDasharray={isOverlap ? '4 4' : isHighlighted ? '6 6' : undefined}
-                      className={isHighlighted || isOverlap ? 'animate-beam-flow' : undefined}
-                      strokeOpacity={isLinkHovered ? 1 : isHighlighted || isOverlap ? 0.95 : 0.55}
+                      strokeDasharray={isOverlap ? '4 4' : undefined}
                       markerEnd={isHighlighted ? 'url(#arrowhead-active)' : 'url(#arrowhead)'}
                     />
 
-                    {/* Link label for overlap */}
                     {isOverlap && (
                       <text
                         x={(sPos.x + tPos.x) / 2}
                         y={(sPos.y + tPos.y) / 2 - 8}
-                        fill="#DFB88B"
+                        fill="#B58A45"
                         fontSize="9.5"
                         textAnchor="middle"
                         fontFamily="monospace"
                         fontWeight="bold"
-                        className="pointer-events-none drop-shadow-md"
+                        className="pointer-events-none"
                       >
                         {link.label || '82% Overlap'}
                       </text>
@@ -390,7 +365,7 @@ export default function GovernanceGraphPage() {
                 );
               })}
 
-              {/* Render Nodes */}
+              {/* Render Nodes (Crisp, High Visibility) */}
               {filteredNodes.map((node) => {
                 const pos = nodePositions[node.id];
                 if (!pos) return null;
@@ -403,70 +378,65 @@ export default function GovernanceGraphPage() {
                 return (
                   <g
                     key={node.id}
-                    className="cursor-pointer transition-all duration-200"
+                    className="cursor-pointer transition-all duration-150"
                     onClick={() => setSelectedNodeId(node.id)}
                     onMouseEnter={() => {
                       setHoveredNodeId(node.id);
                       setTooltipPos(pos);
                     }}
                     onMouseLeave={() => setHoveredNodeId(null)}
-                    opacity={isSelected || isHovered ? 1 : isConnected ? 0.95 : 0.78}
                   >
-                    {/* Interactive glowing halo ring on hover or selection */}
+                    {/* Focus ring */}
                     {(isSelected || isHovered) && (
                       <circle
                         cx={pos.x}
                         cy={pos.y}
-                        r={node.val + 8}
+                        r={node.val + 7}
                         fill="none"
-                        stroke={isHovered ? '#FFFFFF' : '#DFB88B'}
-                        strokeWidth="1.8"
+                        stroke="#164A3A"
+                        strokeWidth="1.5"
                         strokeDasharray="3 3"
-                        className="animate-spin pointer-events-none"
-                        style={{ transformOrigin: `${pos.x}px ${pos.y}px`, animationDuration: '8s' }}
                       />
                     )}
 
-                    {/* Outer circle with vibrant category accent */}
+                    {/* Outer node circle */}
                     <circle
                       cx={pos.x}
                       cy={pos.y}
                       r={node.val}
-                      fill="#1E1D1A"
-                      stroke={isHovered ? '#FFFFFF' : isSelected ? '#DFB88B' : isConnected ? color : `${color}B0`}
-                      strokeWidth={isSelected || isHovered ? 2.5 : isConnected ? 2 : 1.5}
-                      className="transition-colors duration-200"
+                      fill="#FFFFFF"
+                      stroke={color}
+                      strokeWidth={isSelected || isHovered ? 3 : 2}
+                      className="transition-colors duration-150"
                     />
 
-                    {/* Inner tint circle for rich depth */}
+                    {/* Inner core circle */}
                     <circle
                       cx={pos.x}
                       cy={pos.y}
-                      r={node.val - 2}
+                      r={node.val - 5}
                       fill={color}
-                      fillOpacity={isHovered || isSelected ? 0.25 : 0.12}
-                      className="pointer-events-none"
+                      fillOpacity={0.15}
                     />
 
-                    {/* Inner indicator dot */}
+                    {/* Center dot */}
                     <circle
                       cx={pos.x}
                       cy={pos.y}
-                      r={isHovered || isSelected ? 5 : 4}
+                      r="4"
                       fill={color}
-                      className="pointer-events-none shadow-sm"
                     />
 
-                    {/* Label */}
+                    {/* Legible Dark Label */}
                     <text
                       x={pos.x}
                       y={pos.y + node.val + 13}
                       textAnchor="middle"
-                      fill={isHovered ? '#FFFFFF' : isSelected ? '#DFB88B' : isConnected ? '#FAF8F5' : '#DDD7CD'}
-                      fontSize={isHovered || isSelected ? '10' : '9.5'}
+                      fill="#18201C"
+                      fontSize="9.5"
                       fontFamily="monospace"
                       fontWeight={isSelected || isHovered || isConnected ? 'bold' : '600'}
-                      className="select-none pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                      className="select-none pointer-events-none"
                     >
                       {node.label}
                     </text>
@@ -475,124 +445,82 @@ export default function GovernanceGraphPage() {
               })}
             </svg>
 
-            {/* Rich Floating Glassmorphic Tooltip on Node Hover (Anchored to node with smart boundary flipping) */}
+            {/* Tooltip on Node Hover */}
             {hoveredNode && tooltipPos && (() => {
               const isNearTop = tooltipPos.y < 160;
               const safeX = Math.max(150, Math.min(tooltipPos.x, 670));
-              const safeXPercent = (safeX / 820) * 100;
-              const safeYPercent = (tooltipPos.y / 520) * 100;
 
               return (
                 <div
                   className={`absolute z-30 pointer-events-none transform -translate-x-1/2 ${
                     isNearTop ? 'mt-8' : '-translate-y-full mb-3'
-                  } px-3.5 py-2.5 rounded bg-[#181816]/98 border border-[#DFB88B] text-white font-mono text-xs shadow-2xl backdrop-blur-md max-w-xs transition-all duration-150`}
-                  style={{
-                    left: `${safeXPercent}%`,
-                    top: `${safeYPercent}%`,
-                  }}
-                >
-                  <div className="flex items-center justify-between gap-3 border-b border-[#33312D] pb-1.5 mb-1.5">
-                    <span
-                      className="text-[9px] uppercase px-2 py-0.5 rounded font-bold"
-                      style={{
-                        backgroundColor: `${getNodeColor(hoveredNode.type)}25`,
-                        color: getNodeColor(hoveredNode.type),
-                        border: `1px solid ${getNodeColor(hoveredNode.type)}50`,
-                      }}
-                    >
-                      {hoveredNode.type}
-                    </span>
-                    <span className="text-[10px] text-[#A39D92]">
-                      {activeConnectedNodeIds.size - 1} Links Connected
-                    </span>
-                  </div>
-                  <div className="font-bold text-sm text-white">{hoveredNode.label}</div>
-                  {hoveredNode.subtext && (
-                    <div className="text-[11px] text-[#DDD7CD] mt-1 leading-snug">{hoveredNode.subtext}</div>
-                  )}
-                  <div className="mt-2 pt-1.5 border-t border-[#33312D] flex items-center justify-between text-[9px] text-[#DFB88B] font-semibold">
-                    <span>Click to lock & view dossier</span>
-                    <span>ID: {hoveredNode.id}</span>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Floating Tooltip on Link Hover (with smart boundary flipping) */}
-            {hoveredLink && tooltipPos && !hoveredNode && (() => {
-              const isNearTop = tooltipPos.y < 140;
-              const safeX = Math.max(130, Math.min(tooltipPos.x, 690));
-
-              return (
-                <div
-                  className={`absolute z-30 pointer-events-none transform -translate-x-1/2 ${
-                    isNearTop ? 'mt-6' : '-translate-y-full mb-2'
-                  } px-3.5 py-2 rounded bg-[#181816]/98 border border-[#7DC09C] text-white font-mono text-xs shadow-xl backdrop-blur-md transition-opacity duration-150`}
+                  } px-3.5 py-2.5 rounded bg-[#FFFFFF] border border-[#164A3A] text-[#18201C] font-mono text-xs shadow-md max-w-xs`}
                   style={{
                     left: `${(safeX / 820) * 100}%`,
                     top: `${(tooltipPos.y / 520) * 100}%`,
                   }}
                 >
-                  <div className="text-[9px] text-[#7DC09C] uppercase font-bold tracking-wider">
-                    RELATIONSHIP EDGE
+                  <div className="flex items-center justify-between gap-3 border-b border-[#EAE8E1] pb-1.5 mb-1.5">
+                    <span
+                      className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold"
+                      style={{
+                        backgroundColor: `${getNodeColor(hoveredNode.type)}15`,
+                        color: getNodeColor(hoveredNode.type),
+                      }}
+                    >
+                      {hoveredNode.type}
+                    </span>
+                    <span className="text-[10px] text-[#66706A]">
+                      {activeConnectedNodeIds.size - 1} Links
+                    </span>
                   </div>
-                  <div className="text-[11px] font-bold text-white mt-0.5">
-                    {nodes.find((n) => n.id === hoveredLink.source)?.label} ──[{hoveredLink.type}]──▶{' '}
-                    {nodes.find((n) => n.id === hoveredLink.target)?.label}
-                  </div>
-                  {hoveredLink.label && (
-                    <div className="text-[10px] text-[#DFB88B] mt-1 font-bold">
-                      {hoveredLink.label}
-                    </div>
+                  <div className="font-bold text-xs text-[#18201C]">{hoveredNode.label}</div>
+                  {hoveredNode.subtext && (
+                    <div className="text-[11px] text-[#66706A] mt-1">{hoveredNode.subtext}</div>
                   )}
                 </div>
               );
             })()}
 
             {/* Edge Type Legend */}
-            <div className="absolute bottom-3 left-3 text-[10px] font-mono text-[#DDD7CD] flex flex-wrap gap-3 bg-[#181816]/90 px-3.5 py-1.5 border border-[#33312D] rounded backdrop-blur-sm shadow-md font-medium">
-              <span className="hover:text-white transition-colors">OWNS</span>
-              <span className="text-[#605B53]">•</span>
-              <span className="hover:text-white transition-colors">FUNDS</span>
-              <span className="text-[#605B53]">•</span>
-              <span className="hover:text-white transition-colors">IMPLEMENTED_IN</span>
-              <span className="text-[#605B53]">•</span>
-              <span className="hover:text-white transition-colors">SERVES</span>
-              <span className="text-[#605B53]">•</span>
-              <span className="hover:text-white transition-colors">PRODUCES</span>
-              <span className="text-[#605B53]">•</span>
-              <span className="text-[#DFB88B] font-bold">OVERLAPS_WITH</span>
+            <div className="absolute bottom-3 left-3 text-[10px] font-mono text-[#66706A] flex flex-wrap gap-2.5 bg-[#FFFFFF] px-3 py-1.5 border border-[#D8D6CE] rounded shadow-xs font-semibold">
+              <span>OWNS</span>
+              <span>•</span>
+              <span>FUNDS</span>
+              <span>•</span>
+              <span>IMPLEMENTED_IN</span>
+              <span>•</span>
+              <span className="text-[#B58A45] font-bold">OVERLAPS_WITH</span>
             </div>
           </div>
         </div>
 
         {/* Right 4 Cols: Selected Node Contextual Panel */}
-        <div className="lg:col-span-4 p-6 bg-[#181816] border border-[#33312D] rounded-sm space-y-6 shadow-xl">
-          <div>
+        <div className="lg:col-span-4 p-5 bg-[#FFFFFF] border border-[#D8D6CE] rounded-lg space-y-5 shadow-xs">
+          <div className="border-b border-[#EAE8E1] pb-3">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#DFB88B] font-semibold">
+              <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-[#66706A] font-semibold">
                 NODE METADATA
               </span>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#22211D] border border-[#38352F] text-[#FAF8F5] font-semibold">
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#F4F2EC] border border-[#D8D6CE] text-[#18201C] font-bold">
                 {selectedNode.type}
               </span>
             </div>
-            <h3 className="text-xl font-bold text-white font-editorial mt-2">
+            <h3 className="text-lg font-bold text-[#18201C] font-editorial mt-1">
               {selectedNode.label}
             </h3>
             {selectedNode.subtext && (
-              <p className="text-xs text-[#DDD7CD] mt-1 leading-relaxed">{selectedNode.subtext}</p>
+              <p className="text-xs text-[#66706A] mt-1 leading-relaxed">{selectedNode.subtext}</p>
             )}
           </div>
 
           {/* Connected Edges */}
-          <div className="space-y-3 font-mono text-xs border-t border-[#302E2A] pt-4">
-            <span className="text-[10px] text-[#8E887E] uppercase block">
+          <div className="space-y-2.5 font-mono text-xs">
+            <span className="text-[10px] text-[#66706A] uppercase block font-semibold">
               Direct Relationships ({connectedNodeIds.size - 1})
             </span>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {links
                 .filter(
                   (l) => l.source === selectedNode.id || l.target === selectedNode.id
@@ -607,17 +535,17 @@ export default function GovernanceGraphPage() {
                     <div
                       key={i}
                       onClick={() => setSelectedNodeId(otherNodeId)}
-                      className="p-2.5 rounded bg-[#191917] border border-[#2A2926] hover:border-[#B78A5A]/50 transition-colors cursor-pointer flex items-center justify-between"
+                      className="p-2.5 rounded bg-[#F4F2EC] border border-[#D8D6CE] hover:border-[#164A3A] transition-colors cursor-pointer flex items-center justify-between"
                     >
                       <div>
-                        <span className="text-[9px] text-[#B78A5A] block">
+                        <span className="text-[9px] text-[#164A3A] font-bold block">
                           {isOut ? `──[${link.type}]──▶` : `◀──[${link.type}]──`}
                         </span>
-                        <span className="font-semibold text-xs text-[#F3F0E8]">
+                        <span className="font-semibold text-xs text-[#18201C]">
                           {otherNode?.label}
                         </span>
                       </div>
-                      <span className="text-[9px] text-[#8E887E] uppercase">
+                      <span className="text-[9px] text-[#66706A] uppercase">
                         {otherNode?.type}
                       </span>
                     </div>
@@ -626,57 +554,30 @@ export default function GovernanceGraphPage() {
             </div>
           </div>
 
-          {/* Quick Action Link */}
-          <div className="pt-2 border-t border-[#2A2926] space-y-2">
+          {/* Quick Action Links */}
+          <div className="pt-2 border-t border-[#EAE8E1] space-y-2">
             {selectedNode.type === 'finding' && (
-              <div className="space-y-2">
-                <button
-                  onClick={() => openWhyFlagged('SUTRA-FND-0001')}
-                  className="w-full py-2.5 px-3 rounded-sm bg-zinc-800 text-zinc-100 font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-zinc-700 border border-zinc-700 transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>WHY WAS THIS FLAGGED?</span>
-                </button>
-                <button
-                  onClick={() => openWorkspace('SUTRA-INV-2026-0001')}
-                  className="w-full py-2.5 px-3 rounded-sm bg-[#A66A62] text-white font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-[#8F554E] transition-colors"
-                >
-                  <span>OPEN INVESTIGATION WORKSPACE</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
-            {selectedNode.type === 'event' && (
               <button
                 onClick={() => openWorkspace('SUTRA-INV-2026-0001')}
-                className="w-full py-2.5 px-3 rounded-sm bg-sky-600 text-white font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-sky-500 transition-colors"
+                className="w-full py-2 px-3 rounded bg-[#164A3A] hover:bg-[#0D3026] text-white font-semibold text-xs flex items-center justify-center space-x-1.5 transition-colors"
               >
-                <Activity className="w-3.5 h-3.5" />
-                <span>INSPECT CORRELATED INVESTIGATION</span>
+                <span>OPEN INVESTIGATION WORKSPACE</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
             {selectedNode.type === 'evidence' && (
               <button
                 onClick={() => openEvidence('#7201')}
-                className="w-full py-2.5 px-3 rounded-sm bg-[#B78A5A] text-[#0D0D0C] font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-[#C99A6A] transition-colors"
+                className="w-full py-2 px-3 rounded bg-[#164A3A] hover:bg-[#0D3026] text-white font-semibold text-xs flex items-center justify-center space-x-1.5 transition-colors"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>VERIFY CRYPTOGRAPHIC PROVENANCE</span>
+                <span>INSPECT EVIDENCE AUDIT</span>
               </button>
-            )}
-            {selectedNode.type === 'scheme' && (
-              <Link
-                href="/scheme/AGR-004"
-                className="w-full py-2.5 px-3 rounded-sm bg-[#B78A5A] text-[#0D0D0C] font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-[#CBB093] transition-colors"
-              >
-                <span>OPEN SCHEME DOSSIER</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
             )}
             {selectedNode.type === 'district' && (
               <Link
                 href="/map"
-                className="w-full py-2.5 px-3 rounded-sm bg-[#B78A5A] text-[#0D0D0C] font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-[#CBB093] transition-colors"
+                className="w-full py-2 px-3 rounded bg-[#164A3A] hover:bg-[#0D3026] text-white font-semibold text-xs flex items-center justify-center space-x-1.5 transition-colors"
               >
                 <span>FOCUS ON GEOGRAPHIC MAP</span>
                 <ArrowRight className="w-3.5 h-3.5" />
