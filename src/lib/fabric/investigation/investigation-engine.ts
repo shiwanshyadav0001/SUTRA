@@ -502,8 +502,8 @@ export class InvestigationEngine {
         displayValue: `₹${totalAlloc} Cr`,
         classification: 'DERIVED_METRIC',
         unit: '₹ Crore',
-        formula: 'JJM_Alloc (48.2) + PMAYG_Alloc (64.5) + PKVY_Alloc (14.2)',
-        derivationStep: 'Arithmetic summation across 3 central scheme allocations for LGD: 512',
+        formula: `JJM_Alloc (${jjmAlloc}) + PMAYG_Alloc (${pmaygAlloc}) + PKVY_Alloc (${pkvyAlloc})`,
+        derivationStep: `Arithmetic summation across 3 central scheme allocations for ${targetDistrictName} (LGD: ${targetLgd})`,
       },
       {
         metricId: 'M-DERIVED-TOT-DRAW',
@@ -511,8 +511,8 @@ export class InvestigationEngine {
         displayValue: `₹${totalUtil} Cr`,
         classification: 'DERIVED_METRIC',
         unit: '₹ Crore',
-        formula: 'JJM_Draw (20.1) + PMAYG_DBT (32.8) + PKVY_Draw (5.9)',
-        derivationStep: 'Arithmetic summation across scheme expenditure drawdowns for LGD: 512',
+        formula: `JJM_Draw (${jjmUtil}) + PMAYG_DBT (${pmaygUtil}) + PKVY_Draw (${pkvyUtil})`,
+        derivationStep: `Arithmetic summation across scheme expenditure drawdowns for ${targetDistrictName} (LGD: ${targetLgd})`,
       },
       {
         metricId: 'M-DERIVED-UNRELEASED',
@@ -520,8 +520,8 @@ export class InvestigationEngine {
         displayValue: `₹${unreleasedOutlay} Cr`,
         classification: 'DERIVED_METRIC',
         unit: '₹ Crore',
-        formula: 'Total_Approved_Alloc (126.90) - Total_Disbursed_Drawdown (58.80)',
-        derivationStep: 'Difference between sanctioned limits and verified ground drawdowns',
+        formula: `Total_Approved_Alloc (${totalAlloc}) - Total_Disbursed_Drawdown (${totalUtil})`,
+        derivationStep: `Difference between sanctioned limits and verified ground drawdowns in ${targetDistrictName}`,
       },
       {
         metricId: 'M-DERIVED-COMPOSITE-DRAW',
@@ -529,7 +529,7 @@ export class InvestigationEngine {
         displayValue: `${compositeDrawdownRate}%`,
         classification: 'DERIVED_METRIC',
         unit: '%',
-        formula: '(Total_Drawdown / Total_Allocation) * 100 = (58.80 / 126.90) * 100',
+        formula: `(Total_Drawdown / Total_Allocation) * 100 = (${totalUtil} / ${totalAlloc}) * 100`,
         derivationStep: 'Ratio of cumulative releases to cumulative sanctions across schemes',
       },
       {
@@ -538,7 +538,7 @@ export class InvestigationEngine {
         displayValue: `-${drawdownDivergencePp} pp`,
         classification: 'DERIVED_METRIC',
         unit: 'percentage points',
-        formula: 'State_Benchmark (74.0%) - Composite_Drawdown (46.3%)',
+        formula: `State_Benchmark (${stateBenchmarkDrawdown}%) - Composite_Drawdown (${compositeDrawdownRate}%)`,
         derivationStep: 'Deficit against median Maharashtra district financial drawdown benchmark',
       },
       {
@@ -681,40 +681,40 @@ export class InvestigationEngine {
         },
         outputValue: `-${drawdownDivergencePp} pp Drawdown Deficit / ₹${unreleasedOutlay} Cr Unreleased Approved Outlay`,
         outputUnit: 'percentage points / ₹ Crore',
-        interpretation: `Across 3 major Central schemes in Nandurbar, ₹${unreleasedOutlay} Crore of approved allocation remains unreleased or undrawn (46.3% composite drawdown vs 74.0% state benchmark).`,
+        interpretation: `Across 3 major Central schemes in ${targetDistrictName}, ₹${unreleasedOutlay} Crore of approved allocation remains unreleased or undrawn (${compositeDrawdownRate}% composite drawdown vs ${stateBenchmarkDrawdown}% state benchmark).`,
         lineageItems: metricLineage,
       },
       summary:
-        `Verified data from Jal Jeevan Mission, PMAY-G Rural Housing, and PKVY Agriculture indicates a -${drawdownDivergencePp} percentage point financial drawdown deficit in Nandurbar with ₹${unreleasedOutlay} Cr in unreleased approved capital allocations across shared geographic jurisdictions.`,
+        `Verified data from Jal Jeevan Mission, PMAY-G Rural Housing, and PKVY Agriculture indicates a -${drawdownDivergencePp} percentage point financial drawdown deficit in ${targetDistrictName} with ₹${unreleasedOutlay} Cr in unreleased approved capital allocations across shared geographic jurisdictions.`,
       detailedAnalysis:
-        `Deterministic cross-dataset LGD join reveals an 18.4 percentage point physical delivery pace divergence between PMAY-G housing completion (46.8%) and JJM tap water connectivity (28.4%). While ₹${totalAlloc} Cr has been approved across potable water, housing, and organic soil health for Nandurbar (LGD: ${targetLgd}), ₹${totalUtil} Cr has been disbursed in verified ground drawdowns. This represents an unreleased approved allocation backlog of ₹${unreleasedOutlay} Cr requiring accelerated DBT tranche releases.`,
+        `Deterministic cross-dataset LGD join reveals a ${deliveryPaceDivergencePp} percentage point physical delivery pace divergence between PMAY-G housing completion (${pmaygCoverage}%) and JJM tap water connectivity (${jjmCoverage}%). While ₹${totalAlloc} Cr has been approved across potable water, housing, and organic soil health for ${targetDistrictName} (LGD: ${targetLgd}), ₹${totalUtil} Cr has been disbursed in verified ground drawdowns. This represents an unreleased approved allocation backlog of ₹${unreleasedOutlay} Cr requiring accelerated DBT tranche releases.`,
       factBreakdown: {
         sourceFacts: [
-          `Approved scheme allocations total ₹126.90 Cr (JJM: ₹48.2 Cr, PMAY-G: ₹64.5 Cr, PKVY: ₹14.2 Cr).`,
-          `Verified disbursements/drawdowns total ₹58.80 Cr (JJM: ₹20.1 Cr, PMAY-G: ₹32.8 Cr, PKVY: ₹5.9 Cr).`,
-          `Target district LGD code is 512 with 284,000 rural households (JJM) and 46,800 sanctioned pucca units (PMAY-G).`,
+          `Approved scheme allocations total ₹${totalAlloc} Cr (JJM: ₹${jjmAlloc} Cr, PMAY-G: ₹${pmaygAlloc} Cr, PKVY: ₹${pkvyAlloc} Cr).`,
+          `Verified disbursements/drawdowns total ₹${totalUtil} Cr (JJM: ₹${jjmUtil} Cr, PMAY-G: ₹${pmaygUtil} Cr, PKVY: ₹${pkvyUtil} Cr).`,
+          `Target district LGD code is ${targetLgd} with ${districtEntity.population.toLocaleString()} census population and ${districtEntity.beneficiariesCount.toLocaleString()} tracked scheme beneficiaries.`,
         ],
         derivedMetrics: [
-          `Composite financial drawdown rate is 46.3% (₹58.80 Cr disbursed / ₹126.90 Cr approved allocation).`,
-          `Financial drawdown deficit vs Maharashtra state benchmark (74.0%) is -27.7 percentage points.`,
-          `Unreleased / undrawn approved allocation total is ₹68.10 Cr across the 3 programmes in Nandurbar.`,
-          `Physical delivery pace divergence between PMAY-G completion (46.8%) and JJM tap water coverage (28.4%) is 18.4 percentage points.`,
+          `Composite financial drawdown rate is ${compositeDrawdownRate}% (₹${totalUtil} Cr disbursed / ₹${totalAlloc} Cr approved allocation).`,
+          `Financial drawdown deficit vs Maharashtra state benchmark (${stateBenchmarkDrawdown}%) is -${drawdownDivergencePp} percentage points.`,
+          `Unreleased / undrawn approved allocation total is ₹${unreleasedOutlay} Cr across the 3 programmes in ${targetDistrictName}.`,
+          `Physical delivery pace divergence between PMAY-G completion (${pmaygCoverage}%) and JJM tap water coverage (${jjmCoverage}%) is ${deliveryPaceDivergencePp} percentage points.`,
         ],
         interpretations: [
-          `Administrative absorption gap: Fund drawdown velocity in Nandurbar is lagging regional peer districts by 27.7 pp.`,
+          `Administrative absorption gap: Fund drawdown velocity in ${targetDistrictName} is lagging regional peer districts by ${drawdownDivergencePp} pp.`,
           `Candidate for convergence review: Co-locating water pipeline sanctions with housing disbursals can mitigate physical delivery lag.`,
         ],
       },
       whyFlaggedChain,
       policyRecommendations: [
-        'Establish single-window DBT validation at the Nandurbar District Collectorate to clear the ₹68.10 Cr unreleased capital backlog in remote tribal talukas.',
+        `Establish single-window DBT validation at the ${targetDistrictName} District Collectorate to clear the ₹${unreleasedOutlay} Cr unreleased capital backlog in remote clusters.`,
         'Harmonize milestone verification cadences across Ministry of Rural Development and Ministry of Jal Shakti.',
       ],
       confidenceAssessment,
       confidence: confidenceAssessment.overallScore,
       limitations: [
-        'Administrative district aggregates (LGD: 512) reflect geographic co-occurrence; individual beneficiary overlap cannot be determined without person-level identity registers.',
-        'Denominators are scheme-specific: JJM denominator is total rural census households (284,000), while PMAY-G denominator is sanctioned target units (46,800).',
+        `Administrative district aggregates (LGD: ${targetLgd}) reflect geographic co-occurrence; individual beneficiary overlap cannot be determined without person-level identity registers.`,
+        `Denominators are scheme-specific across central reporting portals for ${targetDistrictName}.`,
         'Asynchronous reporting frequencies: JJM reports monthly telemetry, PMAY-G reports quarterly inspection milestones, and PKVY reports annual financial statements.',
       ],
       generatedTimestamp: timestamp,
@@ -780,35 +780,35 @@ export class InvestigationEngine {
         },
         outputValue: `${deliveryPaceDivergencePp} pp Physical Pace Spread`,
         outputUnit: 'percentage points',
-        interpretation: `In Nandurbar, PMAY-G housing construction physical completion rate (46.8%) outpaces rural tap connectivity rate (28.4%) by 18.4 percentage points across separate administrative denominators.`,
+        interpretation: `In ${targetDistrictName}, PMAY-G housing construction physical completion rate (${pmaygCoverage}%) outpaces rural tap connectivity rate (${jjmCoverage}%) by ${deliveryPaceDivergencePp} percentage points across separate administrative denominators.`,
       },
       summary:
-        `PMAY-G housing completion in Nandurbar (46.8%) outpaces JJM rural household tap connectivity (28.4%) by 18.4 percentage points, highlighting potential inter-departmental synchronization gains.`,
+        `PMAY-G housing completion in ${targetDistrictName} (${pmaygCoverage}%) outpaces JJM rural household tap connectivity (${jjmCoverage}%) by ${deliveryPaceDivergencePp} percentage points, highlighting potential inter-departmental synchronization gains.`,
       detailedAnalysis:
-        `Analysis of physical progress indicates that 21,902 pucca houses have been constructed under PMAY-G (46.8% completion rate among 46,800 sanctioned units), while 80,656 rural households have received functional tap connections under JJM (28.4% coverage rate across 284,000 rural households). This 18.4 percentage point physical pace divergence highlights potential synchronization gains through joint departmental review between Ministry of Rural Development and Ministry of Jal Shakti.`,
+        `Analysis of physical progress in ${targetDistrictName} (LGD: ${targetLgd}) indicates that pucca house completion under PMAY-G stands at ${pmaygCoverage}%, while functional tap connections under JJM reflect ${jjmCoverage}% coverage. This ${deliveryPaceDivergencePp} percentage point physical pace divergence highlights potential synchronization gains through joint departmental review between Ministry of Rural Development and Ministry of Jal Shakti.`,
       factBreakdown: {
         sourceFacts: [
-          `PMAY-G Housing physical completion is 46.8% (21,902 completed of 46,800 sanctioned units).`,
-          `JJM FHTC rural household coverage is 28.4% (80,656 connections provided of 284,000 rural households).`,
+          `PMAY-G Housing physical completion is ${pmaygCoverage}% for ${targetDistrictName}.`,
+          `JJM FHTC rural household coverage is ${jjmCoverage}% for ${targetDistrictName}.`,
         ],
         derivedMetrics: [
-          `Physical delivery pace spread is 18.4 percentage points (|46.8% - 28.4%|).`,
+          `Physical delivery pace spread is ${deliveryPaceDivergencePp} percentage points (|${pmaygCoverage}% - ${jjmCoverage}%|).`,
         ],
         interpretations: [
-          `Delivery divergence signal: Housing construction pace is progressing faster than rural tap water connectivity rate by 18.4 percentage points.`,
-          `Non-inferability: Denominators differ (46,800 sanctioned houses vs 284,000 rural households); this indicates administrative delivery pace divergence, not a verified 1:1 person-level infrastructure omission.`,
+          `Delivery divergence signal: Housing construction pace is progressing differently than rural tap water connectivity rate by ${deliveryPaceDivergencePp} percentage points in ${targetDistrictName}.`,
+          `Non-inferability: Denominators differ across ministerial registers; this indicates administrative delivery pace divergence, not an unverified 1:1 person-level infrastructure omission.`,
         ],
       },
       whyFlaggedChain,
       policyRecommendations: [
-        'Institute joint geo-tagged verification between PMAY-G housing inspectors and JJM engineers at gram panchayat clusters before final housing tranche sign-off.',
+        `Institute joint geo-tagged verification between PMAY-G housing inspectors and JJM engineers at gram panchayat clusters in ${targetDistrictName} before final housing tranche sign-off.`,
       ],
       confidenceAssessment,
       confidence: confidenceAssessment.overallScore,
       limitations: [
-        'Administrative district aggregates (LGD: 512) reflect geographic co-occurrence; individual beneficiary overlap cannot be determined without person-level identity registers.',
-        'Denominators are scheme-specific: PMAY-G measures percentage of sanctioned houses (46,800 units), while JJM measures percentage of total rural census households (284,000 households).',
-        'Topographical friction in Nandurbar (Satpuda hilly terrain) affects pipe-laying construction timelines independently of housing masonry progress.',
+        `Administrative district aggregates (LGD: ${targetLgd}) reflect geographic co-occurrence; individual beneficiary overlap cannot be determined without person-level identity registers.`,
+        'Denominators are scheme-specific across central reporting portals.',
+        `Topographical and administrative friction in ${targetDistrictName} affects project-laying construction timelines independently of housing masonry progress.`,
       ],
       generatedTimestamp: timestamp,
       dataClassification: 'VERIFIED_SOURCE_DATA',
@@ -851,43 +851,42 @@ export class InvestigationEngine {
       },
       calculation: {
         formulaName: 'Intervention Co-Occurrence & Habitation Density Formulation',
-        formulaLatex: '\\text{Density}_{\\text{Schemes}} = \\frac{N_{\\text{Schemes}}}{\\text{Pop}_{\\text{Rural}}} = \\frac{3}{284,000\\text{ HH}}',
-        formulaText: `3 major Central statutory schemes actively operate within LGD: 512, covering a shared target base of 284,000 rural households and 24 accredited organic farming clusters.`,
+        formulaLatex: `\\text{Density}_{\\text{Schemes}} = \\frac{N_{\\text{Schemes}}}{\\text{District}} = \\frac{3}{\\text{LGD: } ${targetLgd}}`,
+        formulaText: `3 major Central statutory schemes actively operate within ${targetDistrictName} (LGD: ${targetLgd}), covering a shared target base across ${districtEntity.zone}.`,
         inputs: {
           'Active_Central_Schemes': 3,
-          'Total_Rural_Households': 284000,
-          'Accredited_Organic_Clusters': 24,
-          'Registered_Organic_Farmers': 38400,
+          'Total_Census_Population': districtEntity.population,
+          'Tracked_Beneficiaries': districtEntity.beneficiariesCount,
         },
         outputValue: '3 Co-Occurring Central Statutory Programmes',
-        outputUnit: 'schemes across LGD: 512',
-        interpretation: `High geographic co-occurrence provides structural opportunity for administrative convergence and unified DBT verification across water, housing, and agricultural livelihood programs.`,
+        outputUnit: `schemes across LGD: ${targetLgd} (${targetDistrictName})`,
+        interpretation: `High geographic co-occurrence in ${targetDistrictName} provides structural opportunity for administrative convergence and unified DBT verification across water, housing, and agricultural livelihood programs.`,
       },
       summary:
-        `Nandurbar (LGD: 512) hosts simultaneous large-scale implementation of JJM Water, PMAY-G Housing, and PKVY Agriculture, establishing an ideal candidate jurisdiction for joint administrative review.`,
+        `${targetDistrictName} (LGD: ${targetLgd}) hosts simultaneous large-scale implementation of JJM Water, PMAY-G Housing, and PKVY Agriculture, establishing an ideal candidate jurisdiction for joint administrative review.`,
       detailedAnalysis:
-        `Cross-dataset analysis confirms that 3 Central Ministries (Jal Shakti, Rural Development, Agriculture) maintain active funding and project pipelines across Nandurbar's 284,000 rural households. This geographic co-occurrence provides an actionable foundation for joint administrative coordination at the Zilla Parishad level.`,
+        `Cross-dataset analysis confirms that 3 Central Ministries (Jal Shakti, Rural Development, Agriculture) maintain active funding and project pipelines across ${targetDistrictName}. This geographic co-occurrence provides an actionable foundation for joint administrative coordination at the Zilla Parishad level.`,
       factBreakdown: {
         sourceFacts: [
-          `JJM operates in 284,000 rural households in Nandurbar.`,
-          `PMAY-G operates across 46,800 sanctioned dwelling units.`,
-          `PKVY operates across 24 accredited organic clusters (38,400 farmers).`,
+          `JJM operates across rural habitations in ${targetDistrictName}.`,
+          `PMAY-G operates across sanctioned dwelling units in ${targetDistrictName}.`,
+          `PKVY operates across accredited organic clusters in ${targetDistrictName}.`,
         ],
         derivedMetrics: [
-          `100% spatial overlap at District LGD 512 level across all 3 statutory programs.`,
+          `100% spatial overlap at District LGD ${targetLgd} level across all 3 statutory programs.`,
         ],
         interpretations: [
-          `Geographic co-occurrence: Shared jurisdictional priority for central developmental schemes in tribal Maharashtra.`,
+          `Geographic co-occurrence: Shared jurisdictional priority for central developmental schemes in ${targetDistrictName}.`,
         ],
       },
       whyFlaggedChain,
       policyRecommendations: [
-        'Align PKVY organic cluster input allocations directly with PMAY-G homestead land plots for integrated rural livelihood support.',
+        `Align PKVY organic cluster input allocations directly with PMAY-G homestead land plots in ${targetDistrictName} for integrated rural livelihood support.`,
       ],
       confidenceAssessment,
       confidence: confidenceAssessment.overallScore,
       limitations: [
-        'Administrative district aggregates (LGD: 512) reflect geographic co-occurrence; individual beneficiary overlap cannot be determined without person-level identity registers.',
+        `Administrative district aggregates (LGD: ${targetLgd}) reflect geographic co-occurrence; individual beneficiary overlap cannot be determined without person-level identity registers.`,
         'Geographic co-occurrence at district level does not guarantee village-level or household-level co-location.',
       ],
       generatedTimestamp: timestamp,
@@ -1023,24 +1022,24 @@ export class InvestigationEngine {
           findingId: 'SUTRA-FND-0001',
           findingType: 'FINANCIAL_DRAWDOWN_DIVERGENCE',
           title: `${targetDistrictName} Cross-Programme Financial Drawdown Deficit`,
-          contribution: 'Identifies ₹68.10 Cr unreleased capital backlog and -27.7 pp drawdown deficit',
+          contribution: `Identifies ₹${unreleasedOutlay} Cr unreleased capital backlog and -${drawdownDivergencePp} pp drawdown deficit`,
         },
         {
           findingId: 'SUTRA-FND-0002',
           findingType: 'PHYSICAL_DELIVERY_PACE_DIVERGENCE',
           title: `${targetDistrictName} Physical Delivery Pace Divergence`,
-          contribution: 'Highlights 18.4 pp pace spread between housing and tap water connections',
+          contribution: `Highlights ${deliveryPaceDivergencePp} pp pace spread between housing and tap water connections`,
         },
         {
           findingId: 'SUTRA-FND-0003',
           findingType: 'GEOGRAPHIC_CO_OCCURRENCE',
           title: `${targetDistrictName} Multi-Sector Geographic Co-Occurrence`,
-          contribution: 'Establishes 100% spatial jurisdiction overlap across 284k households',
+          contribution: `Establishes 100% spatial jurisdiction overlap across ${targetDistrictName} (LGD: ${targetLgd})`,
         },
       ],
       evidence: targetRecords,
       rationale:
-        'Candidate for inter-departmental convergence review between Ministry of Rural Development, Ministry of Jal Shakti, and Ministry of Agriculture to synchronize ₹68.10 Cr in unreleased approved allocations and align potable water connections with completed rural dwelling units across Nandurbar.',
+        `Candidate for inter-departmental convergence review between Ministry of Rural Development, Ministry of Jal Shakti, and Ministry of Agriculture to synchronize ₹${unreleasedOutlay} Cr in unreleased approved allocations and align potable water connections with completed rural dwelling units across ${targetDistrictName}.`,
       confidenceScore: confidenceAssessment.overallScore,
       confidence: confidenceAssessment.overallScore,
       confidenceAssessment,
@@ -1049,9 +1048,9 @@ export class InvestigationEngine {
         'Denominators and execution agencies remain constitutionally separate across state and central departments.',
       ],
       actionableRecommendations: [
-        'Institute bi-monthly joint convergence reviews between PMAY-G district coordinators and JJM executive engineers at the Nandurbar Zilla Parishad.',
-        'Accelerate DBT milestone clearance tranches to mobilize the ₹68.10 Cr in unreleased approved allocations for tribal blocks.',
-        'Align PKVY organic cluster input allocations with PMAY-G homestead land plots for integrated rural livelihood support.',
+        `Institute bi-monthly joint convergence reviews between PMAY-G district coordinators and JJM executive engineers at the ${targetDistrictName} Zilla Parishad.`,
+        `Accelerate DBT milestone clearance tranches to mobilize the ₹${unreleasedOutlay} Cr in unreleased approved allocations for ${targetDistrictName}.`,
+        `Align PKVY organic cluster input allocations with PMAY-G homestead land plots for integrated rural livelihood support in ${targetDistrictName}.`,
       ],
       status: 'CANDIDATE_FOR_REVIEW',
     };
@@ -1189,6 +1188,14 @@ export class InvestigationEngine {
     const targetLgd = inv.interpretation.targetDistrictLgd;
     const targetName = inv.interpretation.targetDistrict;
 
+    const fnd1 = inv.findings[0] || inv.finding;
+    const jjmAllocMetric = fnd1.metricLineage.find((m) => m.metricId === 'M-JJM-ALLOC')?.displayValue || '₹48.2 Cr';
+    const pmaygAllocMetric = fnd1.metricLineage.find((m) => m.metricId === 'M-PMAYG-ALLOC')?.displayValue || '₹64.5 Cr';
+    const pkvyAllocMetric = fnd1.metricLineage.find((m) => m.metricId === 'M-PKVY-ALLOC')?.displayValue || '₹14.2 Cr';
+    const deficitMetric = fnd1.metricLineage.find((m) => m.metricId === 'M-DERIVED-DRAW-DEFICIT')?.displayValue || '-27.7 pp';
+    const unreleasedMetric = fnd1.metricLineage.find((m) => m.metricId === 'M-DERIVED-UNRELEASED')?.displayValue || '₹68.1 Cr';
+    const paceMetric = fnd1.metricLineage.find((m) => m.metricId === 'M-DERIVED-PACE-DIV')?.displayValue || '18.4 pp';
+
     const nodes: GraphNode[] = [
       // Ministries
       { id: 'min_water', label: 'Ministry of Jal Shakti', type: 'ministry', val: 24, ministry: 'Jal Shakti' },
@@ -1196,9 +1203,9 @@ export class InvestigationEngine {
       { id: 'min_agri', label: 'Ministry of Agriculture', type: 'ministry', val: 24, ministry: 'Agriculture' },
 
       // Schemes
-      { id: 'sch_jjm', label: 'Jal Jeevan Mission (JJM)', type: 'scheme', val: 20, ministry: 'Jal Shakti', subtext: '₹48.2 Cr Sanctioned' },
-      { id: 'sch_pmayg', label: 'PMAY-G Rural Housing', type: 'scheme', val: 20, ministry: 'Rural Development', subtext: '₹64.5 Cr Sanctioned' },
-      { id: 'sch_pkvy', label: 'PKVY Organic Soil', type: 'scheme', val: 18, ministry: 'Agriculture', subtext: '₹14.2 Cr Sanctioned' },
+      { id: 'sch_jjm', label: 'Jal Jeevan Mission (JJM)', type: 'scheme', val: 20, ministry: 'Jal Shakti', subtext: `${jjmAllocMetric} Sanctioned` },
+      { id: 'sch_pmayg', label: 'PMAY-G Rural Housing', type: 'scheme', val: 20, ministry: 'Rural Development', subtext: `${pmaygAllocMetric} Sanctioned` },
+      { id: 'sch_pkvy', label: 'PKVY Organic Soil', type: 'scheme', val: 18, ministry: 'Agriculture', subtext: `${pkvyAllocMetric} Sanctioned` },
 
       // District
       { id: `dist_${targetLgd}`, label: `${targetName} (LGD: ${targetLgd})`, type: 'district', val: 28, subtext: 'Target District' },
@@ -1209,14 +1216,14 @@ export class InvestigationEngine {
       { id: 'ds_pkvy', label: 'DS-PKVY-MH (Open Data)', type: 'dataset', val: 14, subtext: 'Annual Outlays' },
 
       // Findings
-      { id: 'fnd_0001', label: 'SUTRA-FND-0001', type: 'finding', val: 22, subtext: '-27.7 pp Drawdown Deficit (₹68.1 Cr)' },
-      { id: 'fnd_0002', label: 'SUTRA-FND-0002', type: 'finding', val: 20, subtext: '18.4 pp Delivery Pace Spread' },
-      { id: 'fnd_0003', label: 'SUTRA-FND-0003', type: 'finding', val: 18, subtext: 'Geographic Co-Occurrence' },
+      { id: 'fnd_0001', label: 'SUTRA-FND-0001', type: 'finding', val: 22, subtext: `${deficitMetric} Drawdown Deficit (${unreleasedMetric})` },
+      { id: 'fnd_0002', label: 'SUTRA-FND-0002', type: 'finding', val: 20, subtext: `${paceMetric} Delivery Pace Spread` },
+      { id: 'fnd_0003', label: 'SUTRA-FND-0003', type: 'finding', val: 18, subtext: `Geographic Co-Occurrence (${targetName})` },
 
       // Evidence Records
-      { id: 'ev_jjm', label: 'Evidence #7201', type: 'evidence', val: 12, subtext: 'JJM Telemetry Record' },
-      { id: 'ev_pmayg', label: 'Evidence #4401', type: 'evidence', val: 12, subtext: 'PMAY-G Milestone Record' },
-      { id: 'ev_pkvy', label: 'Evidence #5501', type: 'evidence', val: 12, subtext: 'PKVY Cluster Record' },
+      { id: 'ev_jjm', label: `Evidence ${inv.evidenceRecords[0]?.recordNumber || '#7201'}`, type: 'evidence', val: 12, subtext: 'JJM Telemetry Record' },
+      { id: 'ev_pmayg', label: `Evidence ${inv.evidenceRecords[1]?.recordNumber || '#4401'}`, type: 'evidence', val: 12, subtext: 'PMAY-G Milestone Record' },
+      { id: 'ev_pkvy', label: `Evidence ${inv.evidenceRecords[2]?.recordNumber || '#5501'}`, type: 'evidence', val: 12, subtext: 'PKVY Cluster Record' },
     ];
 
     const links: GraphLink[] = [

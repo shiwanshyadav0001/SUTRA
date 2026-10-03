@@ -38,9 +38,9 @@ function QueryContent() {
 
   const sampleQueries = [
     'Why was Nandurbar flagged for cross-programme convergence gap?',
-    'Which districts recently experienced a convergence gap?',
-    'Which schemes changed significantly today in Maharashtra?',
-    'Find programme convergence opportunities in Nandurbar',
+    'Analyze capital drawdown lag and housing gap in Gadchiroli',
+    'Assess housing vs tap water delivery pace in Washim',
+    'Evaluate tap water coverage and infrastructure outlays in Pune',
     'Show all active high-severity signals across Jal Jeevan Mission and PMAY-G',
     'What verified evidence records support finding SUTRA-FND-0001?',
   ];
@@ -98,10 +98,10 @@ function QueryContent() {
   const stepsList = [
     '1. Intent & Geographic Entity Normalization (LGD-First Registry)',
     '2. Multi-Dataset Open Source Ingestion (JJM, PMAY-G, PKVY)',
-    '3. Deterministic LGD Join Matrix Execution (Key: LGD:512)',
+    '3. Deterministic LGD Join Matrix Execution (Canonical District Keying)',
     '4. Mathematical Formulation & Anomaly Computation (ΔD & Deficit)',
     '5. Cryptographic Provenance Envelope Generation (SHA-256 Chain)',
-    '6. Policy Finding & Statutory Audit Assembly (SUTRA-FND-0001)',
+    '6. Policy Finding & Statutory Audit Assembly (Tamper-Sealed Proof)',
   ];
 
   return (
