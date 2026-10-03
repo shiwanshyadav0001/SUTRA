@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
+import { OVERLAPS_DATA } from '@/lib/data/governance-data';
+import { OverlapInsight } from '@/lib/types';
 import { computeTfIdfCosine } from '@/lib/engines/math-algorithms';
 import {
   Layers,
@@ -12,9 +14,11 @@ import {
   CheckCircle2,
   AlertTriangle,
   ChevronRight,
+  GitCompare,
+  Sliders,
+  Sparkles,
   Calculator,
   Code,
-  Sparkles,
 } from 'lucide-react';
 
 const OVERLAP_PRESETS = [
@@ -22,8 +26,8 @@ const OVERLAP_PRESETS = [
     id: 'OVL-01',
     label: 'Agriculture: PKVY vs MOVCDNER (81.3% Overlap)',
     shortName: 'PKVY ⇄ MOVCDNER',
-    schemeAName: 'PKVY (Paramparagat Krishi Vikas Yojana)',
-    schemeBName: 'MOVCDNER (Organic Mission for NER)',
+    schemeAName: 'PM Scheme A (Paramparagat Krishi Vikas Yojana)',
+    schemeBName: 'PM Scheme B (Organic Value Chain Initiative)',
     textA: 'Subsidies for smallholder organic cluster certification, biological pest control, vermicompost soil inputs, and local farmer producer organizations.',
     textB: 'Direct financial assistance for certified organic production hubs, biological farm inputs, eco-packaging facilities, and tribal FPO aggregation.',
     breakdown: { targetGroup: 91, geography: 74, intervention: 86, implementationPeriod: 68 },
@@ -142,32 +146,32 @@ export default function OverlapsPage() {
   return (
     <AppShell>
       {/* Title */}
-      <div className="space-y-1.5 border-b border-[#D8D6CE] pb-6 select-none">
-        <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-[0.14em] text-[#B58A45] uppercase font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#164A3A]" />
+      <div className="space-y-2 border-b border-[#33312D] pb-6">
+        <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#DFB88B] uppercase font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#DFB88B]" />
           <span>MULTI-VECTOR PROGRAMMATIC ALIGNMENT ENGINE</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#18201C] font-editorial uppercase">
+        <h1 className="text-3xl font-bold tracking-tight text-white font-editorial">
           PROGRAMME OVERLAP & VECTOR MATHEMATICS
         </h1>
-        <p className="text-xs text-[#66706A] max-w-2xl leading-relaxed">
-          Detecting concurrent central and state schemes with duplicative beneficiary cohorts, geographic targets, or capital interventions using vector cosine similarity.
+        <p className="text-xs text-[#DDD7CD] max-w-2xl">
+          Multi-vector programmatic alignment engine detecting concurrent schemes with duplicative beneficiary segments, geographic targets, or capital interventions using vector cosine similarity.
         </p>
 
         {/* Interactive Scheme Pair Switcher Tabs */}
-        <div className="pt-3 flex flex-wrap gap-2">
+        <div className="pt-4 flex flex-wrap gap-2">
           {OVERLAP_PRESETS.map((preset, idx) => (
             <button
               key={preset.id}
               onClick={() => handleSelectPreset(idx)}
-              className={`px-3 py-1.5 rounded text-xs font-mono font-medium transition-all flex items-center gap-2 border cursor-pointer ${
+              className={`px-3.5 py-2 rounded-sm text-xs font-mono font-medium transition-all flex items-center gap-2 border cursor-pointer ${
                 activePresetIndex === idx
-                  ? 'bg-[#FFFFFF] text-[#18201C] border-[#164A3A] font-bold shadow-xs'
-                  : 'bg-[#F4F2EC] text-[#66706A] border-[#D8D6CE] hover:text-[#18201C]'
+                  ? 'bg-[#C89B65]/20 text-[#DFB88B] border-[#DFB88B] shadow-md shadow-[#C89B65]/10 font-bold'
+                  : 'bg-[#181816] text-[#A39D92] border-[#33312D] hover:border-[#4A4740] hover:text-[#FAF8F5]'
               }`}
             >
               <span>{preset.shortName}</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${activePresetIndex === idx ? 'bg-[#E3EDE7] text-[#164A3A]' : 'bg-[#FFFFFF] text-[#66706A]'}`}>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded ${activePresetIndex === idx ? 'bg-[#DFB88B]/20 text-[#DFB88B]' : 'bg-[#22211D] text-[#8E887E]'}`}>
                 {OVERLAP_PRESETS[idx].breakdown.targetGroup > 80 ? 'Critical' : 'Moderate'}
               </span>
             </button>
@@ -175,31 +179,51 @@ export default function OverlapsPage() {
         </div>
       </div>
 
-      {/* Main Overlap Spotlight */}
-      <div className="p-6 md:p-8 rounded-lg bg-[#FFFFFF] border border-[#D8D6CE] space-y-6 shadow-xs select-none">
+      {/* Main Overlap Spotlight: Scheme A vs Scheme B */}
+      <div className="p-6 md:p-8 rounded-sm bg-[#181816] border border-[#38352F] space-y-8 shadow-2xl">
         {/* Top Header & Score */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE8E1] pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#302E2A] pb-6">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.14em] px-2.5 py-0.5 rounded bg-[#F9F4EB] text-[#B58A45] border border-[#B58A45]/30 font-bold">
+            <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded bg-[#C89B65]/15 text-[#DFB88B] border border-[#C89B65]/35 font-bold">
               CROSS-PROGRAMME OVERLAP ALERT • {currentPreset.id}
             </span>
-            <div className="flex flex-col md:flex-row md:items-center gap-3 mt-2">
-              <h2 className="text-lg sm:text-xl font-bold text-[#18201C] font-editorial">
+            <div className="flex flex-col md:flex-row md:items-center gap-3 mt-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-white font-editorial">
                 {currentPreset.schemeAName}
               </h2>
-              <span className="text-lg font-mono text-[#B58A45] hidden md:inline">⇄</span>
-              <h2 className="text-lg sm:text-xl font-bold text-[#18201C] font-editorial">
+              <span className="text-xl font-mono text-[#DFB88B] hidden md:inline">⇄</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-white font-editorial">
                 {currentPreset.schemeBName}
               </h2>
+            </div>
+
+            {/* Animated Bidirectional Energy Alignment Conduit */}
+            <div className="pt-3 hidden sm:block max-w-lg">
+              <div className="flex items-center space-x-2 text-[9px] font-mono text-[#A39D92] mb-1 font-semibold">
+                <span>CONCURRENT PROGRAMME CONDUIT</span>
+                <span className="text-[#DFB88B]">• {dynamicallyCalculatedScore}% RECALCULATED FLUX</span>
+              </div>
+              <svg className="w-full h-2">
+                <line x1="0" y1="4" x2="100%" y2="4" stroke="#33312D" strokeWidth="1.5" />
+                <line
+                  x1="0"
+                  y1="4"
+                  x2="100%"
+                  y2="4"
+                  stroke="#DFB88B"
+                  strokeWidth="2"
+                  className="animate-beam-flow"
+                />
+              </svg>
             </div>
           </div>
 
           <div className="text-left sm:text-right font-mono">
-            <span className="text-[10px] text-[#66706A] uppercase block font-semibold">COMPUTED SIMILARITY</span>
-            <div className="text-3xl font-bold text-[#B58A45]">
+            <span className="text-[10px] text-[#A39D92] uppercase block font-semibold">COMPUTED SIMILARITY</span>
+            <div className="text-4xl font-bold text-[#DFB88B]">
               {dynamicallyCalculatedScore}%
             </div>
-            <span className="text-xs font-bold block mt-0.5" style={{ color: dynamicallyCalculatedScore > 75 ? '#A54848' : '#28704D' }}>
+            <span className="text-xs font-semibold block mt-0.5" style={{ color: dynamicallyCalculatedScore > 75 ? '#F87171' : '#7DC09C' }}>
               {dynamicallyCalculatedScore > 75 ? 'Critical Duplication (>75%)' : 'Moderate Convergence'}
             </span>
           </div>
@@ -207,87 +231,115 @@ export default function OverlapsPage() {
 
         {/* 4 Factor Breakdown Visualizers */}
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-[#66706A] block mb-3 font-semibold">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#A39D92] block mb-4 font-semibold">
             MULTI-VECTOR SIMILARITY DECOMPOSITION
           </span>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
-            <div className="p-3.5 rounded bg-[#F4F2EC] border border-[#D8D6CE]">
-              <span className="text-[#66706A] text-[10px] block font-semibold">TARGET GROUP</span>
-              <span className="text-xl font-bold text-[#18201C] mt-0.5 block">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs">
+            <div className="p-4 rounded bg-[#1E1E1B] border border-[#33312D]">
+              <span className="text-[#A39D92] text-[10px] block font-semibold">TARGET GROUP</span>
+              <span className="text-2xl font-bold text-white mt-1 block">
                 {currentPreset.breakdown.targetGroup}%
               </span>
-              <div className="w-full bg-[#EAE8E1] h-1.5 rounded mt-2 overflow-hidden">
+              <div className="w-full bg-[#121210] h-1.5 rounded mt-2 overflow-hidden">
                 <div
-                  className="bg-[#164A3A] h-full rounded transition-all duration-300"
+                  className="bg-[#DFB88B] h-full rounded transition-all duration-300"
                   style={{ width: `${currentPreset.breakdown.targetGroup}%` }}
                 />
               </div>
-              <span className="text-[9px] text-[#66706A] block mt-1">Shared SECC Segment</span>
+              <span className="text-[9px] text-[#DDD7CD] block mt-1.5">Shared SECC Segment</span>
             </div>
 
-            <div className="p-3.5 rounded bg-[#F4F2EC] border border-[#D8D6CE]">
-              <span className="text-[#66706A] text-[10px] block font-semibold">GEOGRAPHY</span>
-              <span className="text-xl font-bold text-[#18201C] mt-0.5 block">
+            <div className="p-4 rounded bg-[#1E1E1B] border border-[#33312D]">
+              <span className="text-[#A39D92] text-[10px] block font-semibold">GEOGRAPHY</span>
+              <span className="text-2xl font-bold text-white mt-1 block">
                 {currentPreset.breakdown.geography}%
               </span>
-              <div className="w-full bg-[#EAE8E1] h-1.5 rounded mt-2 overflow-hidden">
+              <div className="w-full bg-[#121210] h-1.5 rounded mt-2 overflow-hidden">
                 <div
-                  className="bg-[#164A3A] h-full rounded transition-all duration-300"
+                  className="bg-[#DFB88B] h-full rounded transition-all duration-300"
                   style={{ width: `${currentPreset.breakdown.geography}%` }}
                 />
               </div>
-              <span className="text-[9px] text-[#66706A] block mt-1">Targeted District Clusters</span>
+              <span className="text-[9px] text-[#DDD7CD] block mt-1.5">Targeted District Clusters</span>
             </div>
 
-            <div className="p-3.5 rounded bg-[#F4F2EC] border border-[#D8D6CE]">
-              <span className="text-[#66706A] text-[10px] block font-semibold">INTERVENTION</span>
-              <span className="text-xl font-bold text-[#18201C] mt-0.5 block">
+            <div className="p-4 rounded bg-[#1E1E1B] border border-[#33312D]">
+              <span className="text-[#A39D92] text-[10px] block font-semibold">INTERVENTION</span>
+              <span className="text-2xl font-bold text-white mt-1 block">
                 {currentPreset.breakdown.intervention}%
               </span>
-              <div className="w-full bg-[#EAE8E1] h-1.5 rounded mt-2 overflow-hidden">
+              <div className="w-full bg-[#121210] h-1.5 rounded mt-2 overflow-hidden">
                 <div
-                  className="bg-[#164A3A] h-full rounded transition-all duration-300"
+                  className="bg-[#DFB88B] h-full rounded transition-all duration-300"
                   style={{ width: `${currentPreset.breakdown.intervention}%` }}
                 />
               </div>
-              <span className="text-[9px] text-[#66706A] block mt-1">Direct Subsidy Formats</span>
+              <span className="text-[9px] text-[#DDD7CD] block mt-1.5">Direct Subsidy & Asset Formats</span>
             </div>
 
-            <div className="p-3.5 rounded bg-[#F4F2EC] border border-[#D8D6CE]">
-              <span className="text-[#66706A] text-[10px] block font-semibold">PERIOD CONCURRENCY</span>
-              <span className="text-xl font-bold text-[#18201C] mt-0.5 block">
+            <div className="p-4 rounded bg-[#1E1E1B] border border-[#33312D]">
+              <span className="text-[#A39D92] text-[10px] block font-semibold">IMPLEMENTATION PERIOD</span>
+              <span className="text-2xl font-bold text-white mt-1 block">
                 {currentPreset.breakdown.implementationPeriod}%
               </span>
-              <div className="w-full bg-[#EAE8E1] h-1.5 rounded mt-2 overflow-hidden">
+              <div className="w-full bg-[#121210] h-1.5 rounded mt-2 overflow-hidden">
                 <div
-                  className="bg-[#164A3A] h-full rounded transition-all duration-300"
+                  className="bg-[#DFB88B] h-full rounded transition-all duration-300"
                   style={{ width: `${currentPreset.breakdown.implementationPeriod}%` }}
                 />
               </div>
-              <span className="text-[9px] text-[#66706A] block mt-1">FY 2024–2027 Tranches</span>
+              <span className="text-[9px] text-[#DDD7CD] block mt-1.5">FY 2024–2027 Tranches</span>
             </div>
           </div>
         </div>
 
-        {/* Sensitivity Sandbox */}
-        <div className="p-5 rounded bg-[#F4F2EC] border border-[#D8D6CE] space-y-3 font-mono text-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D8D6CE] pb-2">
+        {/* 1. MATHEMATICAL WEIGHT SENSITIVITY SANDBOX (FOR JUDGES) */}
+        <div className="p-5 md:p-6 rounded bg-[#1E1E1B] border border-[#33312D] space-y-4 font-mono text-xs shadow-inner">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center space-x-2">
-              <Calculator className="w-4 h-4 text-[#164A3A]" />
-              <span className="text-[#18201C] font-bold uppercase text-[11px] tracking-wider">
-                Vector Weight Sensitivity Sandbox
+              <Calculator className="w-4 h-4 text-[#DFB88B]" />
+              <span className="text-white font-bold uppercase text-[11px] tracking-wider">
+                Interactive Vector Weight Sensitivity Sandbox
               </span>
             </div>
-            <span className="text-[10px] text-[#66706A] font-semibold">
+            <span className="text-[10px] text-[#A39D92] font-semibold">
               Formula: S = Σ(w_i · v_i) / Σ(w_i)
             </span>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-[11px] text-[#DDD7CD]">
+              Drag sliders to adjust policy priorities — composite overlap score updates in real-time:
+            </p>
+            {/* Quick Weight Calibration Presets */}
+            <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
+              <span className="text-[#A39D92] mr-1">Quick Presets:</span>
+              <button
+                onClick={() => handleApplyWeightPreset(25, 25, 25, 25)}
+                className="px-2 py-0.5 rounded bg-[#2A2925] border border-[#38352F] text-[#DDD7CD] hover:text-white hover:border-[#DFB88B]"
+              >
+                Equal (25% each)
+              </button>
+              <button
+                onClick={() => handleApplyWeightPreset(50, 20, 20, 10)}
+                className="px-2 py-0.5 rounded bg-[#2A2925] border border-[#38352F] text-[#DDD7CD] hover:text-white hover:border-[#DFB88B]"
+              >
+                Target-Heavy (50%)
+              </button>
+              <button
+                onClick={() => handleApplyWeightPreset(15, 50, 25, 10)}
+                className="px-2 py-0.5 rounded bg-[#2A2925] border border-[#38352F] text-[#DDD7CD] hover:text-white hover:border-[#DFB88B]"
+              >
+                Geography-Heavy (50%)
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-1">
             <div className="space-y-1">
               <div className="flex justify-between text-[10px]">
-                <span className="text-[#66706A]">w₁ Target Group:</span>
-                <span className="text-[#18201C] font-bold">{weightTarget}%</span>
+                <span className="text-[#DDD7CD]">w₁ Target Group:</span>
+                <span className="text-[#DFB88B] font-bold">{weightTarget}%</span>
               </div>
               <input
                 type="range"
@@ -295,14 +347,14 @@ export default function OverlapsPage() {
                 max="100"
                 value={weightTarget}
                 onChange={(e) => setWeightTarget(Number(e.target.value))}
-                className="w-full accent-[#164A3A] cursor-pointer"
+                className="w-full accent-[#DFB88B] cursor-pointer"
               />
             </div>
 
             <div className="space-y-1">
               <div className="flex justify-between text-[10px]">
-                <span className="text-[#66706A]">w₂ Geography:</span>
-                <span className="text-[#18201C] font-bold">{weightGeo}%</span>
+                <span className="text-[#DDD7CD]">w₂ Geography:</span>
+                <span className="text-[#DFB88B] font-bold">{weightGeo}%</span>
               </div>
               <input
                 type="range"
@@ -310,14 +362,14 @@ export default function OverlapsPage() {
                 max="100"
                 value={weightGeo}
                 onChange={(e) => setWeightGeo(Number(e.target.value))}
-                className="w-full accent-[#164A3A] cursor-pointer"
+                className="w-full accent-[#DFB88B] cursor-pointer"
               />
             </div>
 
             <div className="space-y-1">
               <div className="flex justify-between text-[10px]">
-                <span className="text-[#66706A]">w₃ Intervention:</span>
-                <span className="text-[#18201C] font-bold">{weightIntervention}%</span>
+                <span className="text-[#DDD7CD]">w₃ Intervention:</span>
+                <span className="text-[#DFB88B] font-bold">{weightIntervention}%</span>
               </div>
               <input
                 type="range"
@@ -325,14 +377,14 @@ export default function OverlapsPage() {
                 max="100"
                 value={weightIntervention}
                 onChange={(e) => setWeightIntervention(Number(e.target.value))}
-                className="w-full accent-[#164A3A] cursor-pointer"
+                className="w-full accent-[#DFB88B] cursor-pointer"
               />
             </div>
 
             <div className="space-y-1">
               <div className="flex justify-between text-[10px]">
-                <span className="text-[#66706A]">w₄ Period:</span>
-                <span className="text-[#18201C] font-bold">{weightPeriod}%</span>
+                <span className="text-[#DDD7CD]">w₄ Period:</span>
+                <span className="text-[#DFB88B] font-bold">{weightPeriod}%</span>
               </div>
               <input
                 type="range"
@@ -340,40 +392,40 @@ export default function OverlapsPage() {
                 max="100"
                 value={weightPeriod}
                 onChange={(e) => setWeightPeriod(Number(e.target.value))}
-                className="w-full accent-[#164A3A] cursor-pointer"
+                className="w-full accent-[#DFB88B] cursor-pointer"
               />
             </div>
           </div>
         </div>
 
         {/* Why Flagged & Policy Recommendations */}
-        <div className="grid md:grid-cols-2 gap-6 items-start pt-2 border-t border-[#EAE8E1]">
-          <div className="space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-[#B58A45] block font-semibold">
+        <div className="grid md:grid-cols-2 gap-8 items-start pt-2 border-t border-[#302E2A]">
+          <div className="space-y-3">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#DFB88B] block font-semibold">
               WHY FLAGGED?
             </span>
-            <div className="space-y-1.5 text-xs">
+            <div className="space-y-2 text-xs">
               {currentPreset.whyFlagged.map((reason, idx) => (
-                <div key={idx} className="flex items-start space-x-2 text-[#18201C]">
-                  <span className="text-[#28704D] font-bold mt-0.5">✓</span>
+                <div key={idx} className="flex items-start space-x-2 text-[#FAF8F5]">
+                  <span className="text-[#7DC09C] font-bold mt-0.5">✓</span>
                   <span className="leading-relaxed">{reason}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-[#28704D] block font-semibold">
+          <div className="space-y-3">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#7DC09C] block font-semibold">
               ACTIONABLE HARMONIZATION RECOMMENDATION
             </span>
-            <p className="text-xs text-[#18201C] leading-relaxed p-3.5 rounded bg-[#F4F2EC] border border-[#D8D6CE]">
+            <p className="text-xs text-[#DDD7CD] leading-relaxed p-4 rounded bg-[#1E1E1B] border border-[#33312D]">
               {currentPreset.recommendation}
             </p>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-end pt-3 border-t border-[#EAE8E1]">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-[#302E2A]">
           <button
             onClick={() =>
               openExplain({
@@ -389,17 +441,80 @@ export default function OverlapsPage() {
                 evidenceRecordNumber: currentPreset.evidenceNumber,
               })
             }
-            className="px-4 py-2 rounded bg-[#FFFFFF] border border-[#D8D6CE] text-xs font-semibold text-[#18201C] hover:bg-[#F4F2EC] transition-colors"
+            className="px-5 py-3 rounded-sm bg-[#1E1E1B] border border-[#33312D] text-xs text-[#FAF8F5] hover:border-[#DFB88B] transition-colors cursor-pointer font-medium"
           >
             WHY THIS INSIGHT?
           </button>
 
           <button
             onClick={() => openEvidence(currentPreset.evidenceNumber)}
-            className="px-4 py-2 rounded bg-[#164A3A] hover:bg-[#0D3026] text-white font-semibold text-xs transition-colors flex items-center justify-center space-x-1.5 shadow-xs"
+            className="px-6 py-3 rounded-sm bg-gradient-to-r from-[#DFB88B] via-[#C89B65] to-[#B78A5A] text-[#0E0E0D] font-bold text-xs hover:brightness-110 shadow-lg shadow-[#C89B65]/20 transition-all flex items-center justify-center space-x-2 cursor-pointer"
           >
             <span>VIEW SUPPORTING DATA ({currentPreset.evidenceNumber})</span>
             <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* 2. LIVE TF-IDF POLICY TEXT VECTORIZER SANDBOX */}
+      <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-[#2A2926] pb-3">
+          <div className="flex items-center space-x-2">
+            <Code className="w-4 h-4 text-[#B78A5A]" />
+            <h3 className="text-sm font-bold font-editorial text-[#F3F0E8]">
+              Live Policy Text Cosine Similarity Vectorizer
+            </h3>
+          </div>
+          <span className="text-[10px] font-mono text-[#5E8B72]">
+            Cosine Score: {vectorResult.cosineScore}%
+          </span>
+        </div>
+
+        <p className="text-xs text-[#8E887E]">
+          Paste ANY two scheme guidelines or project intervention scopes to calculate token frequency vectors and high-dimensional cosine angle:
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-4 font-mono text-xs">
+          <div className="space-y-1">
+            <span className="text-[10px] text-[#8E887E] block">SCHEME A GUIDELINE TEXT:</span>
+            <textarea
+              rows={3}
+              value={policyTextA}
+              onChange={(e) => setPolicyTextA(e.target.value)}
+              className="w-full p-2.5 bg-[#191917] border border-[#2A2926] rounded text-[#F3F0E8] focus:border-[#B78A5A]"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <span className="text-[10px] text-[#8E887E] block">SCHEME B GUIDELINE TEXT:</span>
+            <textarea
+              rows={3}
+              value={policyTextB}
+              onChange={(e) => setPolicyTextB(e.target.value)}
+              className="w-full p-2.5 bg-[#191917] border border-[#2A2926] rounded text-[#F3F0E8] focus:border-[#B78A5A]"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono text-[#8E887E]">
+            <span>Shared Vector Tokens:</span>
+            {vectorResult.sharedTokens.slice(0, 6).map((token) => (
+              <span
+                key={token}
+                className="px-2 py-0.5 rounded bg-[#191917] border border-[#B78A5A]/40 text-[#B78A5A]"
+              >
+                {token}
+              </span>
+            ))}
+          </div>
+
+          <button
+            onClick={handleComputeVector}
+            className="px-4 py-2 bg-[#B78A5A] text-[#0D0D0C] font-semibold text-xs rounded hover:bg-[#CBB093] font-mono flex items-center space-x-1.5"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Recalculate Cosine Angle</span>
           </button>
         </div>
       </div>

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { SutraLogo } from '@/components/brand/SutraLogo';
 
 interface LoadingTransitionProps {
   onComplete?: () => void;
@@ -15,8 +14,9 @@ export function LoadingTransition({
 }: LoadingTransitionProps) {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [statusMessage, setStatusMessage] = useState('RESOLVING ENTITIES...');
-  const [isReady, setIsReady] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const hasFinishedRef = useRef(false);
 
   const finishTransition = () => {
@@ -30,34 +30,24 @@ export function LoadingTransition({
   };
 
   useEffect(() => {
-    // Stage 1: Ministries & Schemes initialization
-    const t1 = setTimeout(() => {
-      setStep(1);
-      setStatusMessage('RESOLVING ENTITIES...');
-    }, 400);
-
-    // Stage 2: Geography & Finance
-    const t2 = setTimeout(() => {
-      setStep(2);
-      setStatusMessage('BUILDING RELATIONSHIPS...');
-    }, 1000);
-
-    // Stage 3: Outcomes & Source Verification
-    const t3 = setTimeout(() => {
-      setStep(3);
-      setStatusMessage('VERIFYING SOURCES...');
-    }, 1600);
-
-    // Stage 4: SUTRA READY
-    const t4 = setTimeout(() => {
-      setStep(5);
-      setIsReady(true);
-    }, 2300);
-
-    // Stage 5: Enter destination
+    // Stage 1: Ministries thread synchronization
+    const t1 = setTimeout(() => setStep(1), 500);
+    // Stage 2: Schemes and cross-ministerial overlap detection
+    const t2 = setTimeout(() => setStep(2), 1200);
+    // Stage 3: Geographic project telemetry
+    const t3 = setTimeout(() => setStep(3), 2000);
+    // Stage 4: District outcome convergence
+    const t4 = setTimeout(() => setStep(4), 2800);
+    // Stage 5: Ready flag
     const t5 = setTimeout(() => {
+      setReady(true);
+      setStep(5);
+    }, 3400);
+
+    // Fallback safety timeout if onEnded doesn't trigger
+    const tFallback = setTimeout(() => {
       finishTransition();
-    }, 3000);
+    }, 4500);
 
     return () => {
       clearTimeout(t1);
@@ -65,115 +55,116 @@ export function LoadingTransition({
       clearTimeout(t3);
       clearTimeout(t4);
       clearTimeout(t5);
+      clearTimeout(tFallback);
     };
   }, [router, destinationRoute, onComplete]);
 
-  return (
-    <div className="fixed inset-0 z-50 bg-[#0D3026] flex flex-col items-center justify-center p-6 text-[#F4F2EC] select-none overflow-hidden">
-      {/* Subtle procedural grid overlay */}
-      <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(#B58A45 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-        }}
-      />
+  // Ensure video autoplays smoothly
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 1.0;
+      videoRef.current.play().catch(() => {
+        // Autoplay policy fallback: still proceed with timer
+      });
+    }
+  }, []);
 
-      <div className="w-full max-w-md flex flex-col items-center relative z-10 space-y-6">
-        {/* SUTRA Logo */}
-        <div className="flex flex-col items-center space-y-3">
-          <SutraLogo size="lg" theme="dark" />
-          <h2 className="text-2xl font-bold tracking-widest text-[#FAF8F5] font-editorial uppercase">
-            SUTRA
-          </h2>
-          <p className="text-[10px] font-mono tracking-[0.2em] text-[#B58A45] uppercase font-semibold">
-            INITIALIZING GOVERNANCE INTELLIGENCE
-          </p>
+  return (
+    <div className="fixed inset-0 z-50 bg-[#000000] flex flex-col items-center justify-center p-6 text-[#F3F0E8] select-none overflow-hidden">
+      <div className="w-full max-w-lg flex flex-col items-center relative z-10">
+        {/* Seamless Authentic SUTRA Video Element - Pure black blend, zero box/rectangle outline */}
+        <div className="relative w-full max-w-[480px] aspect-video flex items-center justify-center overflow-hidden bg-[#000000]">
+          <video
+            ref={videoRef}
+            src="/sutra.mp4"
+            autoPlay
+            muted
+            playsInline
+            controls={false}
+            disablePictureInPicture
+            disableRemotePlayback
+            onLoadedData={() => setIsVideoLoaded(true)}
+            onEnded={() => {
+              setReady(true);
+              setTimeout(finishTransition, 250);
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            className={`w-full h-full object-contain pointer-events-none select-none transition-opacity duration-300 ${
+              isVideoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{
+              outline: 'none',
+              border: 'none',
+              boxShadow: 'none',
+              backgroundColor: '#000000',
+            }}
+          />
         </div>
 
-        {/* 5 Technical Checkpoints: MINISTRIES ✓, SCHEMES ✓, GEOGRAPHY ✓, FINANCE ✓, OUTCOMES ✓ */}
-        <div className="w-full bg-[#081F19] border border-[#164A3A] rounded p-4 font-mono text-xs space-y-2.5">
-          <div className="grid grid-cols-5 gap-2 text-center text-[10px]">
-            <div
-              className={`p-2 rounded border transition-all ${
-                step >= 1
-                  ? 'border-[#28704D] bg-[#164A3A]/40 text-[#FAF8F5]'
-                  : 'border-[#164A3A]/40 text-[#898E89]'
-              }`}
-            >
-              <div>MINISTRIES</div>
-              <div className="mt-1 font-bold">{step >= 1 ? '✓' : '...'}</div>
-            </div>
-
-            <div
-              className={`p-2 rounded border transition-all ${
-                step >= 1
-                  ? 'border-[#28704D] bg-[#164A3A]/40 text-[#FAF8F5]'
-                  : 'border-[#164A3A]/40 text-[#898E89]'
-              }`}
-            >
-              <div>SCHEMES</div>
-              <div className="mt-1 font-bold">{step >= 1 ? '✓' : '...'}</div>
-            </div>
-
-            <div
-              className={`p-2 rounded border transition-all ${
-                step >= 2
-                  ? 'border-[#28704D] bg-[#164A3A]/40 text-[#FAF8F5]'
-                  : 'border-[#164A3A]/40 text-[#898E89]'
-              }`}
-            >
-              <div>GEOGRAPHY</div>
-              <div className="mt-1 font-bold">{step >= 2 ? '✓' : '...'}</div>
-            </div>
-
-            <div
-              className={`p-2 rounded border transition-all ${
-                step >= 2
-                  ? 'border-[#28704D] bg-[#164A3A]/40 text-[#FAF8F5]'
-                  : 'border-[#164A3A]/40 text-[#898E89]'
-              }`}
-            >
-              <div>FINANCE</div>
-              <div className="mt-1 font-bold">{step >= 2 ? '✓' : '...'}</div>
-            </div>
-
-            <div
-              className={`p-2 rounded border transition-all ${
-                step >= 3
-                  ? 'border-[#28704D] bg-[#164A3A]/40 text-[#FAF8F5]'
-                  : 'border-[#164A3A]/40 text-[#898E89]'
-              }`}
-            >
-              <div>OUTCOMES</div>
-              <div className="mt-1 font-bold">{step >= 3 ? '✓' : '...'}</div>
-            </div>
-          </div>
-
-          {/* Procedural Process Line: RESOLVING ENTITIES... BUILDING RELATIONSHIPS... VERIFYING SOURCES... */}
-          <div className="pt-2 border-t border-[#164A3A] flex items-center justify-between text-[11px]">
-            <span className="text-[#898E89]">STATUS:</span>
-            <span className="font-semibold text-[#B58A45] tracking-wider font-mono">
-              {isReady ? 'ALL ENCLAVES CONNECTED' : statusMessage}
+        {/* Dynamic Governance Node Weaving Status */}
+        <div className="w-full max-w-sm space-y-3 font-mono text-xs mt-4">
+          <div className="flex items-center justify-between text-[11px] border-b border-[#2A2926] pb-2">
+            <span className="text-[#8E887E] tracking-wider">GOVERNANCE KNOWLEDGE GRAPH</span>
+            <span className={ready ? 'text-[#5E8B72] font-bold' : 'text-[#B78A5A]'}>
+              {ready ? 'SYNCHRONIZED (100%)' : 'SYNCHRONIZING...'}
             </span>
           </div>
-        </div>
 
-        {/* SUTRA READY Final Status Indicator */}
-        <div className="text-center pt-2">
-          {isReady ? (
-            <div className="inline-flex items-center space-x-2 text-xs font-bold text-[#28704D] bg-[#081F19] px-4 py-1.5 rounded border border-[#28704D] tracking-widest uppercase">
-              <span className="w-2 h-2 rounded-full bg-[#28704D]" />
-              <span>SUTRA READY</span>
+          <div className="grid grid-cols-4 gap-2 text-center text-[10px]">
+            <div
+              className={`p-2 rounded border transition-colors duration-300 ${
+                step >= 1
+                  ? 'border-[#B78A5A] text-[#F3F0E8] bg-[#141412]'
+                  : 'border-[#2A2926] text-[#7E7A72] bg-[#0A0A0A]'
+              }`}
+            >
+              <span>MINISTRIES</span>
             </div>
-          ) : (
-            <div className="inline-flex items-center space-x-2 text-[10px] font-mono text-[#B58A45] tracking-widest uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#B58A45] animate-pulse" />
-              <span>COMPUTING CONVERGENCE VECTORS</span>
+            <div
+              className={`p-2 rounded border transition-colors duration-300 ${
+                step >= 2
+                  ? 'border-[#B78A5A] text-[#F3F0E8] bg-[#141412]'
+                  : 'border-[#2A2926] text-[#7E7A72] bg-[#0A0A0A]'
+              }`}
+            >
+              <span>SCHEMES</span>
             </div>
-          )}
+            <div
+              className={`p-2 rounded border transition-colors duration-300 ${
+                step >= 3
+                  ? 'border-[#B78A5A] text-[#F3F0E8] bg-[#141412]'
+                  : 'border-[#2A2926] text-[#7E7A72] bg-[#0A0A0A]'
+              }`}
+            >
+              <span>PROJECTS</span>
+            </div>
+            <div
+              className={`p-2 rounded border transition-colors duration-300 ${
+                step >= 4
+                  ? 'border-[#5E8B72] text-[#5E8B72] bg-[#141412]'
+                  : 'border-[#2A2926] text-[#7E7A72] bg-[#0A0A0A]'
+              }`}
+            >
+              <span>DISTRICTS</span>
+            </div>
+          </div>
+
+          {/* SUTRA READY APEX INDICATOR */}
+          <div className="pt-2 text-center">
+            {ready ? (
+              <span className="inline-flex items-center space-x-2 text-[11px] text-[#5E8B72] font-bold tracking-widest uppercase animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-[#5E8B72]" />
+                <span>SUTRA READY — ENTERING COMMAND CONSOLE</span>
+              </span>
+            ) : (
+              <span className="text-[10px] text-[#7E7A72] tracking-wider uppercase">
+                Weaving cross-ministerial intelligence threads...
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

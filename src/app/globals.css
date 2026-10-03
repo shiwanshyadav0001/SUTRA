@@ -2,76 +2,68 @@
 
 @layer base {
   :root {
-    /* Civic Intelligence Design System Palette */
-    --bg-primary: #F4F2EC;
-    --bg-sidebar: #EAE8E1;
-    --bg-card: #FFFFFF;
-    --bg-subtle: #EDEAE2;
-    --bg-hover: #E2DFD7;
-
-    --border-primary: #D8D6CE;
-    --border-subtle: #E4E2DA;
-
-    --text-primary: #18201C;
-    --text-secondary: #66706A;
-    --text-muted: #898E89;
-
-    --sutra-green: #164A3A;
-    --sutra-deep-green: #0D3026;
-    --brand-gold: #B58A45;
-    --muted-saffron: #B56B32;
-    --verified-green: #28704D;
-    --alert-red: #A54848;
-
-    /* Subtle active indicator */
-    --active-green-bg: #E3EDE7;
-    --active-gold-border: #B58A45;
+    --bg-primary: #0E0E0D;
+    --bg-surface: #1B1B19;
+    --bg-surface-elevated: #262622;
+    --bg-surface-subtle: #161614;
+    --border-primary: #33312D;
+    --border-subtle: #262522;
+    --copper: #C89B65;
+    --copper-light: #DFB88B;
+    --copper-dark: #9A7246;
+    --stone: #DDD7CD;
+    --stone-dim: #A8A196;
+    --stone-faint: #605B53;
+    --text-primary: #FAF8F5;
+    --text-secondary: #D8D2C7;
+    --text-muted: #A39D92;
+    --signal-red: #D9776E;
+    --signal-amber: #C9A86A;
+    --signal-green: #6DAA8A;
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     overflow-x: hidden;
   }
 }
 
-/* Institutional custom scrollbars */
+/* Custom scrollbars for clean editorial interface */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #EAE8E1;
+  background: #0D0D0C;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C4C1B7;
+  background: #2A2926;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #164A3A;
+  background: #B78A5A;
 }
 
-/* Precision Civic Cards (6-10px border radius, thin 1px border, crisp white) */
-.civic-card {
-  background-color: #FFFFFF;
-  border: 1px solid #D8D6CE;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(24, 32, 28, 0.03);
+/* Grid & dot matrix backgrounds */
+.bg-grid-pattern {
+  background-image: radial-gradient(rgba(183, 138, 90, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-.civic-card-header {
-  border-bottom: 1px solid #EAE8E1;
-  padding-bottom: 0.75rem;
+.bg-dot-subtle {
+  background-image: radial-gradient(rgba(201, 194, 183, 0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 
-/* Institutional Editorial Typography */
+/* Editorial typography utility */
 .font-editorial {
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
-  letter-spacing: -0.015em;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.025em;
 }
 
 .font-mono-tabular {
@@ -79,28 +71,17 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Institutional Metadata Tag */
-.civic-meta {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 600;
-  color: #66706A;
+/* Restrained copper glow effect */
+.copper-glow {
+  box-shadow: 0 0 24px -6px rgba(183, 138, 90, 0.18);
 }
 
-/* Minimal Analytical Map Styling */
-.map-state-neutral {
-  fill: #E3E1D7;
-  stroke: #C9C6BC;
-  transition: all 0.2s ease;
+.copper-border-glow {
+  border-color: rgba(183, 138, 90, 0.4);
+  box-shadow: 0 0 16px -4px rgba(183, 138, 90, 0.15);
 }
 
-.map-state-hover {
-  fill: #D3DCD6;
-  stroke: #164A3A;
-}
-
-/* 60fps GPU Hardware-Accelerated Path Animation */
+/* 60fps GPU Hardware-Accelerated Chart Draw Keyframes */
 @keyframes svgPathDraw {
   0% {
     stroke-dashoffset: 600;
@@ -113,21 +94,74 @@
 .animate-path-draw {
   stroke-dasharray: 600;
   stroke-dashoffset: 600;
-  animation: svgPathDraw 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: svgPathDraw 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Subtle, deliberate signal pulse (Never neon) */
-@keyframes signalPulse {
-  0%, 100% {
-    opacity: 1;
+/* Subtle Institutional Sonar Radar Pulse */
+@keyframes sonarPulse {
+  0% {
+    r: 16;
+    opacity: 0.7;
+    stroke-width: 1.5;
+  }
+  70% {
+    opacity: 0.2;
+    stroke-width: 1;
+  }
+  100% {
+    r: 38;
+    opacity: 0;
+    stroke-width: 0.5;
+  }
+}
+
+.animate-sonar-ring {
+  animation: sonarPulse 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+/* Subtle Pulse Beam */
+@keyframes beamTravel {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-beam-flow {
+  stroke-dasharray: 6 6;
+  animation: beamTravel 1.2s linear infinite;
+}
+
+/* Institutional Audit Stamp */
+@keyframes stampIn {
+  0% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  100% {
     transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-stamp-in {
+  animation: stampIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* SUTRA Living Logo Continuous Subtle Drift */
+@keyframes subtleDrift {
+  0%, 100% {
+    transform: translate(0, 0);
   }
   50% {
-    opacity: 0.6;
-    transform: scale(1.08);
+    transform: translate(0.8px, -0.8px);
   }
 }
 
-.civic-signal-pulse {
-  animation: signalPulse 2.4s ease-in-out infinite;
+.animate-subtle-drift {
+  animation: subtleDrift 5s ease-in-out infinite;
 }
+
+
