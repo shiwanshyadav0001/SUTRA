@@ -164,4 +164,170 @@
   animation: subtleDrift 5s ease-in-out infinite;
 }
 
+/* ======================================================== */
+/* STATUTORY ADMINISTRATIVE LIGHT THEME (GOVTECH / PMO STANDARD) */
+/* ======================================================== */
+
+html.theme-light {
+  --bg-primary: #F8F9FA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F1F5F9;
+  --bg-surface-subtle: #F8FAFC;
+  --border-primary: #E2E8F0;
+  --border-subtle: #CBD5E1;
+  --copper: #002147;
+  --copper-light: #1E3A8A;
+  --copper-dark: #0A192F;
+  --stone: #334155;
+  --stone-dim: #475569;
+  --stone-faint: #94A3B8;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --signal-red: #DC2626;
+  --signal-amber: #D97706;
+  --signal-green: #059669;
+}
+
+html.theme-light body {
+  background-color: #F8F9FA !important;
+  color: #0F172A !important;
+}
+
+/* Scrollbars in Light Mode */
+html.theme-light ::-webkit-scrollbar-track {
+  background: #F1F5F9 !important;
+}
+
+html.theme-light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1 !important;
+}
+
+html.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8 !important;
+}
+
+/* Background mappings */
+html.theme-light .bg-\[\#0E0E0D\],
+html.theme-light .bg-\[\#121210\],
+html.theme-light .bg-\[\#141412\],
+html.theme-light .bg-\[\#10100F\],
+html.theme-light .bg-\[\#0D0D0C\] {
+  background-color: #F8F9FA !important;
+}
+
+html.theme-light .bg-\[\#161614\],
+html.theme-light .bg-\[\#181816\],
+html.theme-light .bg-\[\#191917\],
+html.theme-light .bg-\[\#1A1A18\],
+html.theme-light .bg-\[\#1B1B19\],
+html.theme-light .bg-\[\#1C1B18\],
+html.theme-light .bg-\[\#1A1916\] {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.theme-light .bg-\[\#1E1E1B\],
+html.theme-light .bg-\[\#22211D\],
+html.theme-light .bg-\[\#22221F\],
+html.theme-light .bg-\[\#262622\],
+html.theme-light .bg-\[\#2A2925\],
+html.theme-light .bg-\[\#2C2A25\] {
+  background-color: #F1F5F9 !important;
+}
+
+html.theme-light .bg-\[\#111110\] {
+  background-color: #FFFFFF !important;
+}
+
+/* Structural Shell Elements */
+html.theme-light header {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.theme-light aside {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Border mappings */
+html.theme-light .border-\[\#262522\],
+html.theme-light .border-\[\#2A2926\],
+html.theme-light .border-\[\#2C2A26\],
+html.theme-light .border-\[\#2E2C28\],
+html.theme-light .border-\[\#302E2A\],
+html.theme-light .border-\[\#33312D\],
+html.theme-light .border-\[\#38352F\],
+html.theme-light .border-\[\#383632\],
+html.theme-light .border-\[\#42403A\] {
+  border-color: #E2E8F0 !important;
+}
+
+/* Typography mappings */
+html.theme-light .text-\[\#FAF8F5\],
+html.theme-light .text-\[\#F3F0E8\],
+html.theme-light .text-white {
+  color: #0F172A !important;
+}
+
+html.theme-light .text-\[\#DDD7CD\],
+html.theme-light .text-\[\#D8D2C7\],
+html.theme-light .text-\[\#C9C2B7\] {
+  color: #334155 !important;
+}
+
+html.theme-light .text-\[\#A39D92\],
+html.theme-light .text-\[\#8E887E\],
+html.theme-light .text-\[\#7E7A72\],
+html.theme-light .text-\[\#7A756D\],
+html.theme-light .text-\[\#8A857A\] {
+  color: #64748B !important;
+}
+
+/* Government Imperial Navy & Warm Ochre Accents */
+html.theme-light .text-\[\#DFB88B\],
+html.theme-light .text-\[\#C89B65\],
+html.theme-light .text-\[\#B78A5A\] {
+  color: #002147 !important;
+}
+
+/* Input Fields & Dropdowns */
+html.theme-light input,
+html.theme-light select,
+html.theme-light textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.theme-light input::placeholder,
+html.theme-light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* High Legibility Badges */
+html.theme-light .bg-\[\#6DAA8A\]\/15,
+html.theme-light .bg-\[\#5E8B72\]\/15,
+html.theme-light .bg-\[\#5E8B72\]\/10 {
+  background-color: #ECFDF5 !important;
+  color: #047857 !important;
+  border-color: #A7F3D0 !important;
+}
+
+html.theme-light .bg-\[\#C89B65\]\/15,
+html.theme-light .bg-\[\#B78A5A\]\/20,
+html.theme-light .bg-\[\#C89B65\]\/20 {
+  background-color: #EFF6FF !important;
+  color: #002147 !important;
+  border-color: #BFDBFE !important;
+}
+
+html.theme-light .bg-rose-500\/15,
+html.theme-light .bg-red-500\/15 {
+  background-color: #FEE2E2 !important;
+  color: #B91C1C !important;
+  border-color: #FCA5A5 !important;
+}
+
 
