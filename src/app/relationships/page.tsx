@@ -189,29 +189,29 @@ export default function GovernanceGraphPage() {
   const getNodeColor = (type: NodeType) => {
     switch (type) {
       case 'ministry':
-        return '#B78A5A'; // Copper
+        return '#DFB88B'; // Warm Luminous Gold
       case 'department':
-        return '#8E887E';
+        return '#8DB4C7'; // Crisp Steel Blue
       case 'scheme':
-        return '#F3F0E8'; // White/Ivory
+        return '#FAF8F5'; // Crisp Pure Ivory
       case 'budget':
-        return '#B59A63'; // Amber
+        return '#E5B869'; // Radiant Amber
       case 'district':
-        return '#C9C2B7'; // Stone
+        return '#DDD7CD'; // Crisp Silver Stone
       case 'event':
-        return '#38BDF8'; // Sky blue for live events
+        return '#38BDF8'; // Sky Blue
       case 'finding':
-        return '#F87171'; // Rose/Red for findings
+        return '#F87171'; // Luminous Coral Red
       case 'evidence':
-        return '#5E8B72'; // Sage green for verified evidence
+        return '#7DC09C'; // Bright Sage
       case 'project':
-        return '#7E7A72';
+        return '#C9C2B7'; // Warm Stone
       case 'beneficiary':
-        return '#B78A5A';
+        return '#DFB88B'; // Warm Gold
       case 'outcome':
-        return '#5E8B72'; // Sage green
+        return '#7DC09C'; // Bright Sage
       default:
-        return '#C9C2B7';
+        return '#DDD7CD';
     }
   };
 
@@ -258,20 +258,20 @@ export default function GovernanceGraphPage() {
       {/* Main Graph Interactive Canvas + Context Panel */}
       <div className="grid lg:grid-cols-12 gap-8 items-start">
         {/* Left 8 Cols: Interactive Network Visualizer */}
-        <div className="lg:col-span-8 bg-[#141412] border border-[#2A2926] rounded-sm p-6 space-y-4">
-          <div className="flex items-center justify-between text-xs font-mono text-[#8E887E]">
+        <div className="lg:col-span-8 bg-[#181816] border border-[#33312D] rounded-sm p-6 space-y-4 shadow-xl">
+          <div className="flex items-center justify-between text-xs font-mono text-[#A39D92]">
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#5E8B72] animate-pulse" />
-              <span>Interactive Graph: <strong className="text-[#F3F0E8]">{hoveredNode ? hoveredNode.label : selectedNode.label}</strong></span>
+              <span className="w-2 h-2 rounded-full bg-[#6DAA8A] animate-pulse" />
+              <span>Interactive Graph: <strong className="text-white">{hoveredNode ? hoveredNode.label : selectedNode.label}</strong></span>
             </span>
-            <span className="text-[11px] text-[#B78A5A]">
+            <span className="text-[11px] text-[#DFB88B] font-semibold">
               {hoveredNode ? 'Hovering Node • Click to Lock' : 'Hover over any node or link for details'}
             </span>
           </div>
 
           {/* SVG Graph View */}
           <div
-            className="w-full h-[560px] bg-[#0D0D0C] border border-[#2A2926] rounded-sm overflow-hidden relative"
+            className="w-full h-[560px] bg-[#121210] border border-[#33312D] rounded-sm overflow-hidden relative shadow-inner"
             onMouseLeave={() => {
               setHoveredNodeId(null);
               setHoveredLink(null);
@@ -280,6 +280,10 @@ export default function GovernanceGraphPage() {
           >
             <svg className="w-full h-full" viewBox="0 0 820 520">
               <defs>
+                <radialGradient id="graphAmbientGlow" cx="50%" cy="50%" r="60%">
+                  <stop offset="0%" stopColor="#C89B65" stopOpacity="0.08" />
+                  <stop offset="100%" stopColor="#C89B65" stopOpacity="0" />
+                </radialGradient>
                 <marker
                   id="arrowhead"
                   markerWidth="8"
@@ -288,7 +292,7 @@ export default function GovernanceGraphPage() {
                   refY="3"
                   orient="auto"
                 >
-                  <polygon points="0 0, 8 3, 0 6" fill="#8E887E" opacity="0.6" />
+                  <polygon points="0 0, 8 3, 0 6" fill="#A39D92" opacity="0.8" />
                 </marker>
                 <marker
                   id="arrowhead-active"
@@ -298,9 +302,12 @@ export default function GovernanceGraphPage() {
                   refY="3"
                   orient="auto"
                 >
-                  <polygon points="0 0, 8 3, 0 6" fill="#B78A5A" />
+                  <polygon points="0 0, 8 3, 0 6" fill="#DFB88B" />
                 </marker>
               </defs>
+
+              {/* Ambient Canvas Lighting */}
+              <rect width="100%" height="100%" fill="url(#graphAmbientGlow)" />
 
               {/* Render Links */}
               {links.map((link, idx) => {
@@ -339,7 +346,7 @@ export default function GovernanceGraphPage() {
                       x2={tPos.x}
                       y2={tPos.y}
                       stroke="transparent"
-                      strokeWidth="12"
+                      strokeWidth="14"
                     />
 
                     {/* Visible line */}
@@ -350,17 +357,17 @@ export default function GovernanceGraphPage() {
                       y2={tPos.y}
                       stroke={
                         isLinkHovered
-                          ? '#F3F0E8'
+                          ? '#FFFFFF'
                           : isOverlap
-                          ? '#B78A5A'
+                          ? '#DFB88B'
                           : isHighlighted
-                          ? '#B78A5A'
-                          : '#2A2926'
+                          ? '#DFB88B'
+                          : '#38352F'
                       }
-                      strokeWidth={isLinkHovered ? 3 : isHighlighted || isOverlap ? 2 : 1}
+                      strokeWidth={isLinkHovered ? 3 : isHighlighted || isOverlap ? 2.5 : 1.2}
                       strokeDasharray={isOverlap ? '4 4' : isHighlighted ? '6 6' : undefined}
                       className={isHighlighted || isOverlap ? 'animate-beam-flow' : undefined}
-                      strokeOpacity={isLinkHovered ? 1 : isHighlighted || isOverlap ? 0.95 : 0.25}
+                      strokeOpacity={isLinkHovered ? 1 : isHighlighted || isOverlap ? 0.95 : 0.55}
                       markerEnd={isHighlighted ? 'url(#arrowhead-active)' : 'url(#arrowhead)'}
                     />
 
@@ -369,12 +376,12 @@ export default function GovernanceGraphPage() {
                       <text
                         x={(sPos.x + tPos.x) / 2}
                         y={(sPos.y + tPos.y) / 2 - 8}
-                        fill="#B78A5A"
-                        fontSize="9"
+                        fill="#DFB88B"
+                        fontSize="9.5"
                         textAnchor="middle"
                         fontFamily="monospace"
                         fontWeight="bold"
-                        className="pointer-events-none"
+                        className="pointer-events-none drop-shadow-md"
                       >
                         {link.label || '82% Overlap'}
                       </text>
@@ -403,7 +410,7 @@ export default function GovernanceGraphPage() {
                       setTooltipPos(pos);
                     }}
                     onMouseLeave={() => setHoveredNodeId(null)}
-                    opacity={isSelected || isHovered ? 1 : isConnected ? 0.85 : 0.2}
+                    opacity={isSelected || isHovered ? 1 : isConnected ? 0.95 : 0.78}
                   >
                     {/* Interactive glowing halo ring on hover or selection */}
                     {(isSelected || isHovered) && (
@@ -412,38 +419,54 @@ export default function GovernanceGraphPage() {
                         cy={pos.y}
                         r={node.val + 8}
                         fill="none"
-                        stroke={isHovered ? '#F3F0E8' : '#B78A5A'}
-                        strokeWidth="1.5"
+                        stroke={isHovered ? '#FFFFFF' : '#DFB88B'}
+                        strokeWidth="1.8"
                         strokeDasharray="3 3"
                         className="animate-spin pointer-events-none"
                         style={{ transformOrigin: `${pos.x}px ${pos.y}px`, animationDuration: '8s' }}
                       />
                     )}
 
-                    {/* Outer circle */}
+                    {/* Outer circle with vibrant category accent */}
                     <circle
                       cx={pos.x}
                       cy={pos.y}
                       r={node.val}
-                      fill="#191917"
-                      stroke={isHovered ? '#F3F0E8' : isSelected ? '#B78A5A' : isConnected ? '#7E7A72' : '#2A2926'}
-                      strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
+                      fill="#1E1D1A"
+                      stroke={isHovered ? '#FFFFFF' : isSelected ? '#DFB88B' : isConnected ? color : `${color}B0`}
+                      strokeWidth={isSelected || isHovered ? 2.5 : isConnected ? 2 : 1.5}
                       className="transition-colors duration-200"
                     />
 
-                    {/* Small inner indicator dot */}
-                    <circle cx={pos.x} cy={pos.y} r="3.5" fill={color} className="pointer-events-none" />
+                    {/* Inner tint circle for rich depth */}
+                    <circle
+                      cx={pos.x}
+                      cy={pos.y}
+                      r={node.val - 2}
+                      fill={color}
+                      fillOpacity={isHovered || isSelected ? 0.25 : 0.12}
+                      className="pointer-events-none"
+                    />
+
+                    {/* Inner indicator dot */}
+                    <circle
+                      cx={pos.x}
+                      cy={pos.y}
+                      r={isHovered || isSelected ? 5 : 4}
+                      fill={color}
+                      className="pointer-events-none shadow-sm"
+                    />
 
                     {/* Label */}
                     <text
                       x={pos.x}
                       y={pos.y + node.val + 13}
                       textAnchor="middle"
-                      fill={isHovered ? '#F3F0E8' : isSelected ? '#F3F0E8' : '#C9C2B7'}
-                      fontSize={isHovered || isSelected ? '10' : '9'}
+                      fill={isHovered ? '#FFFFFF' : isSelected ? '#DFB88B' : isConnected ? '#FAF8F5' : '#DDD7CD'}
+                      fontSize={isHovered || isSelected ? '10' : '9.5'}
                       fontFamily="monospace"
-                      fontWeight={isSelected || isHovered ? 'bold' : 'normal'}
-                      className="select-none pointer-events-none"
+                      fontWeight={isSelected || isHovered || isConnected ? 'bold' : '600'}
+                      className="select-none pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
                     >
                       {node.label}
                     </text>
@@ -512,43 +535,43 @@ export default function GovernanceGraphPage() {
             )}
 
             {/* Edge Type Legend */}
-            <div className="absolute bottom-3 left-3 text-[10px] font-mono text-[#8E887E] flex flex-wrap gap-3 bg-[#0D0D0C]/85 px-3 py-1.5 border border-[#2A2926] rounded backdrop-blur-sm">
-              <span>OWNS</span>
-              <span>•</span>
-              <span>FUNDS</span>
-              <span>•</span>
-              <span>IMPLEMENTED_IN</span>
-              <span>•</span>
-              <span>SERVES</span>
-              <span>•</span>
-              <span>PRODUCES</span>
-              <span>•</span>
-              <span className="text-[#B78A5A]">OVERLAPS_WITH</span>
+            <div className="absolute bottom-3 left-3 text-[10px] font-mono text-[#DDD7CD] flex flex-wrap gap-3 bg-[#181816]/90 px-3.5 py-1.5 border border-[#33312D] rounded backdrop-blur-sm shadow-md font-medium">
+              <span className="hover:text-white transition-colors">OWNS</span>
+              <span className="text-[#605B53]">•</span>
+              <span className="hover:text-white transition-colors">FUNDS</span>
+              <span className="text-[#605B53]">•</span>
+              <span className="hover:text-white transition-colors">IMPLEMENTED_IN</span>
+              <span className="text-[#605B53]">•</span>
+              <span className="hover:text-white transition-colors">SERVES</span>
+              <span className="text-[#605B53]">•</span>
+              <span className="hover:text-white transition-colors">PRODUCES</span>
+              <span className="text-[#605B53]">•</span>
+              <span className="text-[#DFB88B] font-bold">OVERLAPS_WITH</span>
             </div>
           </div>
         </div>
 
         {/* Right 4 Cols: Selected Node Contextual Panel */}
-        <div className="lg:col-span-4 p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-6">
+        <div className="lg:col-span-4 p-6 bg-[#181816] border border-[#33312D] rounded-sm space-y-6 shadow-xl">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A]">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#DFB88B] font-semibold">
                 NODE METADATA
               </span>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#191917] border border-[#2A2926] text-[#C9C2B7]">
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#22211D] border border-[#38352F] text-[#FAF8F5] font-semibold">
                 {selectedNode.type}
               </span>
             </div>
-            <h3 className="text-xl font-bold text-[#F3F0E8] font-editorial mt-2">
+            <h3 className="text-xl font-bold text-white font-editorial mt-2">
               {selectedNode.label}
             </h3>
             {selectedNode.subtext && (
-              <p className="text-xs text-[#8E887E] mt-0.5">{selectedNode.subtext}</p>
+              <p className="text-xs text-[#DDD7CD] mt-1 leading-relaxed">{selectedNode.subtext}</p>
             )}
           </div>
 
           {/* Connected Edges */}
-          <div className="space-y-3 font-mono text-xs border-t border-[#2A2926] pt-4">
+          <div className="space-y-3 font-mono text-xs border-t border-[#302E2A] pt-4">
             <span className="text-[10px] text-[#8E887E] uppercase block">
               Direct Relationships ({connectedNodeIds.size - 1})
             </span>
