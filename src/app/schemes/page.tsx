@@ -6,6 +6,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { SCHEMES_DATA, MINISTRIES_DATA } from '@/lib/data/governance-data';
 import { Scheme } from '@/lib/types';
 import { Search, Filter, ArrowUpRight, ChevronRight, SlidersHorizontal, Layers } from 'lucide-react';
+import { formatIndianNumber } from '@/lib/formatters';
 
 export default function SchemeExplorerPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -165,12 +166,12 @@ export default function SchemeExplorerPage() {
 
                   {/* Beneficiaries */}
                   <td className="p-3.5 text-right text-slate-600">
-                    {scheme.beneficiariesCount.toLocaleString()}
+                    {formatIndianNumber(scheme.beneficiariesCount)}
                   </td>
 
                   {/* Projects */}
                   <td className="p-3.5 text-right text-slate-600">
-                    {scheme.projectsCount.toLocaleString()}
+                    {formatIndianNumber(scheme.projectsCount)}
                   </td>
 
                   {/* Coverage Gauge with visual progress indicator */}

@@ -20,6 +20,7 @@ import { CrossDatasetJoinEngine } from '../join/cross-dataset-join';
 import { computeDeterministicSha256 } from '../pipeline/provenance';
 import { LgdRegistry } from '../registry/lgd-registry';
 import { DistrictNormalizer } from '../normalization/district-normalizer';
+import { formatIndianNumber } from '@/lib/formatters';
 
 export class InvestigationEngine {
   /**
@@ -692,7 +693,7 @@ export class InvestigationEngine {
         sourceFacts: [
           `Approved scheme allocations total ₹${totalAlloc} Cr (JJM: ₹${jjmAlloc} Cr, PMAY-G: ₹${pmaygAlloc} Cr, PKVY: ₹${pkvyAlloc} Cr).`,
           `Verified disbursements/drawdowns total ₹${totalUtil} Cr (JJM: ₹${jjmUtil} Cr, PMAY-G: ₹${pmaygUtil} Cr, PKVY: ₹${pkvyUtil} Cr).`,
-          `Target district LGD code is ${targetLgd} with ${districtEntity.population.toLocaleString()} census population and ${districtEntity.beneficiariesCount.toLocaleString()} tracked scheme beneficiaries.`,
+          `Target district LGD code is ${targetLgd} with ${formatIndianNumber(districtEntity.population)} census population and ${formatIndianNumber(districtEntity.beneficiariesCount)} tracked scheme beneficiaries.`,
         ],
         derivedMetrics: [
           `Composite financial drawdown rate is ${compositeDrawdownRate}% (₹${totalUtil} Cr disbursed / ₹${totalAlloc} Cr approved allocation).`,

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { EvidenceRecord } from '@/lib/types';
+import { formatIndianNumber } from '@/lib/formatters';
 import {
   X,
   ExternalLink,
@@ -170,7 +171,7 @@ export function EvidenceDrawer({ isOpen, onClose, record }: EvidenceDrawerProps)
               <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
                 <span className="text-slate-500 text-[10px] block font-semibold">VERIFIED BENEFICIARIES</span>
                 <span className="font-mono font-bold text-slate-900 text-sm">
-                  {record.beneficiaries.toLocaleString()}
+                  {formatIndianNumber(record.beneficiaries)}
                 </span>
               </div>
 

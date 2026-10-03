@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { SCHEMES_DATA, OVERLAPS_DATA, EVIDENCE_RECORDS } from '@/lib/data/governance-data';
+import { formatIndianNumber } from '@/lib/formatters';
 import {
   ArrowLeft,
   Calendar,
@@ -328,7 +329,7 @@ export default function SchemeDetailPage({ params }: SchemeDetailPageProps) {
               Beneficiary Enrollment Profile
             </h3>
             <p className="text-slate-700 font-sans leading-relaxed">
-              Total Verified: {(scheme.beneficiariesCount).toLocaleString()} individuals across marginal landholding categories. Direct Benefit Transfer Aadhaar seeding at 94.2%.
+              Total Verified: {formatIndianNumber(scheme.beneficiariesCount)} individuals across marginal landholding categories. Direct Benefit Transfer Aadhaar seeding at 94.2%.
             </p>
           </div>
         )}

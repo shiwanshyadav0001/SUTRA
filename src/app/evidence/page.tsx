@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Layers,
 } from 'lucide-react';
+import { formatIndianNumber } from '@/lib/formatters';
 
 export default function EvidenceHubPage() {
   const { openEvidence } = useIntelligence();
@@ -118,7 +119,7 @@ export default function EvidenceHubPage() {
                   {dataset.name}
                 </h3>
                 <div className="text-xl font-bold font-mono text-slate-900 mt-0.5">
-                  {dataset.recordsCount.toLocaleString()}
+                  {formatIndianNumber(dataset.recordsCount)}
                   <span className="text-[10px] font-normal text-slate-500 ml-1">records</span>
                 </div>
               </div>
@@ -236,7 +237,7 @@ export default function EvidenceHubPage() {
                       ₹{record.utilizedCr} Cr
                     </td>
                     <td className="p-3.5 text-right text-slate-600">
-                      {record.beneficiaries.toLocaleString()}
+                      {formatIndianNumber(record.beneficiaries)}
                     </td>
                     <td className="p-3.5 text-[10px]">
                       <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700">

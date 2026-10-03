@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
+import { formatDeterministicIST } from '@/lib/formatters';
 
 export function Topbar() {
   const pathname = usePathname();
@@ -37,10 +38,7 @@ export function Topbar() {
   // Live dynamic clock updating every 30s
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date();
-      const day = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-      const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
-      setCurrentDateTime(`${day} • ${time} IST`);
+      setCurrentDateTime(formatDeterministicIST(new Date()));
     };
     updateTime();
     const interval = setInterval(updateTime, 30000);
@@ -84,7 +82,7 @@ export function Topbar() {
   };
 
   return (
-    <header className="h-16 border-b border-[#1E293B] bg-[#0B132B] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-20 shadow-md">
+    <header className="h-16 border-b border-[#1E293B] bg-[#0B132B] pl-14 pr-3 sm:px-6 md:pl-6 flex items-center justify-between sticky top-0 z-20 shadow-md">
       {/* Group 1: Title & Operational Scope Breadcrumb */}
       <div className="flex items-center space-x-3 min-w-0">
         <div className="truncate">
@@ -151,7 +149,9 @@ export function Topbar() {
               }`}
             />
           </span>
-          <span className="text-[11px] font-bold text-white hidden sm:inline">DATA LIVE</span>
+          <span className="text-[11px] font-bold text-white hidden sm:inline">
+            {liveMode === 'VERIFIED_SOURCE' ? 'VERIFIED DATA' : 'LIVE SIMULATION'}
+          </span>
           <span
             className={`text-[9px] px-1.5 py-0.5 rounded font-semibold hidden lg:inline ${
               liveMode === 'VERIFIED_SOURCE'
@@ -159,7 +159,7 @@ export function Topbar() {
                 : 'bg-amber-950 text-amber-300 border border-amber-800'
             }`}
           >
-            {liveMode === 'VERIFIED_SOURCE' ? 'VERIFIED' : 'STREAM'}
+            {liveMode === 'VERIFIED_SOURCE' ? 'OFFICIAL CADENCE' : 'SYNTHETIC STREAM'}
           </span>
         </button>
 
