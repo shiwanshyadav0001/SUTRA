@@ -17,6 +17,7 @@ import {
   Settings,
   ChevronRight,
   ShieldAlert,
+  Compass,
 } from 'lucide-react';
 
 interface NavItem {
@@ -29,6 +30,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { name: 'Command', href: '/command', icon: LayoutDashboard, symbol: '⌂' },
+  { name: 'Investigate', href: '/investigate', icon: Compass, badge: 'V2', symbol: '✦' },
   { name: 'Intelligence', href: '/overlaps', icon: Layers, symbol: '◎' },
   { name: 'Geography', href: '/map', icon: MapPin, symbol: '⌖' },
   { name: 'Schemes', href: '/schemes', icon: FolderKanban, symbol: '◇' },

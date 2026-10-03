@@ -19,6 +19,7 @@ export interface DatasetSource {
   geographicKey: string;
   temporalCoverage: string;
   provenanceHash: string;
+  reportingFrequency?: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL' | string;
 }
 
 export interface SourceFieldDefinition {
@@ -268,3 +269,335 @@ export interface ResolvedCanonicalEntity<T = unknown> {
   matchDetails: MatchDetails;
   entity?: T;
 }
+
+export type JoinQuality = 'EXACT' | 'ALIAS' | 'FUZZY' | 'UNRESOLVED';
+
+export type FindingType =
+  | 'FINANCIAL_DRAWDOWN_DIVERGENCE'
+  | 'PHYSICAL_DELIVERY_PACE_DIVERGENCE'
+  | 'GEOGRAPHIC_CO_OCCURRENCE'
+  | 'TEMPORAL_ALIGNMENT_RISK'
+  | 'GEOGRAPHIC_CONVERGENCE_GAP'
+  | 'CAPITAL_DRAWDOWN_DIVERGENCE'
+  | 'INFRASTRUCTURE_DELIVERY_LAG'
+  | 'CROSS_PROGRAMME_SYNERGY_OPPORTUNITY'
+  | 'GEOGRAPHIC_OVERLAP'
+  | 'COVERAGE_CONVERGENCE_SIGNAL';
+
+export type DataClassification =
+  | 'VERIFIED_SOURCE_DATA'
+  | 'DERIVED_ANALYSIS'
+  | 'SIMULATION'
+  | 'DEMONSTRATION_DATA';
+
+export type FactClassification = 'SOURCE_FACT' | 'DERIVED_METRIC' | 'INTERPRETATION';
+
+export type TemporalAlignmentState = 'ALIGNED' | 'PARTIALLY_ALIGNED' | 'ASYNC_REPORTING';
+
+export type FinancialStage =
+  | 'APPROVED_ALLOCATION'
+  | 'EXPENDITURE_DRAWDOWN'
+  | 'DISBURSED_DBT'
+  | 'PHYSICAL_PROGRESS'
+  | 'COVERAGE_RATE'
+  | 'TRANSITION_RATE';
+
+export interface MetricDefinition {
+  metricKey: string;
+  displayName: string;
+  exactSourceField: string;
+  datasetId: string;
+  publisher: string;
+  unit: string;
+  financialStage?: FinancialStage;
+  reportingPeriod: string;
+  reportingFrequency: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL';
+  geographyLgd: string;
+  classification: FactClassification;
+  transformationDescription?: string;
+}
+
+export interface MetricAuditLineage {
+  metricId: string;
+  uiLabel: string;
+  displayValue: string;
+  classification: FactClassification;
+  unit: string;
+  financialStage?: FinancialStage;
+  sourceDatasetId?: string;
+  sourceField?: string;
+  sourceRecordNumber?: string;
+  sourceValue?: number | string;
+  reportingPeriod?: string;
+  formula?: string;
+  derivationStep?: string;
+}
+
+export interface ConfidenceComponent {
+  name: string;
+  rating: string;
+  score: number; // 0.0 to 1.0
+  weight: number; // 0.0 to 1.0
+  rationale: string;
+}
+
+export interface ConfidenceAssessment {
+  overallScore: number; // 0 to 100
+  rating: 'VERY_HIGH' | 'HIGH' | 'MEDIUM' | 'LOW';
+  methodology: string;
+  components: {
+    sourceAuthority: ConfidenceComponent;
+    geographicJoin: ConfidenceComponent;
+    temporalAlignment: ConfidenceComponent;
+    metricCompleteness: ConfidenceComponent;
+    transformationComplexity: ConfidenceComponent;
+  };
+}
+
+export interface WhyFlaggedChain {
+  district: string;
+  districtLgdCode: string;
+  lgdEntity: {
+    name: string;
+    code: string;
+    state: string;
+    censusCode?: string;
+  };
+  programmes: {
+    code: string;
+    name: string;
+    ministry: string;
+    allocationCr: number;
+    disbursedCr: number;
+    progressRate: number;
+    unit: string;
+  }[];
+  sourceDataPoints: {
+    datasetId: string;
+    metricName: string;
+    rawValue: number | string;
+    unit: string;
+    reportingPeriod: string;
+  }[];
+  sourceDataMetrics?: {
+    datasetId: string;
+    metricName: string;
+    rawValue: number | string;
+    unit: string;
+    reportingPeriod: string;
+  }[];
+  derivedMetrics: {
+    name: string;
+    formula: string;
+    value: number | string;
+    benchmarkDiff?: string;
+  }[];
+  derivedCalculations?: {
+    name: string;
+    formula: string;
+    value: number | string;
+    benchmarkDiff?: string;
+  }[];
+  signals: {
+    id: string;
+    type: string;
+    severity: 'HIGH' | 'MEDIUM' | 'LOW';
+    description: string;
+  }[];
+  findingId: string;
+  findingSummary?: {
+    findingId: string;
+    title: string;
+    type: string;
+  };
+  evidenceLinks: {
+    recordNumber: string;
+    datasetId: string;
+    primarySourceUrl: string;
+  }[];
+  evidenceAnchors?: {
+    recordNumber: string;
+    datasetId: string;
+    primarySourceUrl: string;
+  }[];
+}
+
+export interface ConvergenceOpportunity {
+  id: string; // e.g. SUTRA-CONV-NDB-01
+  investigationId: string;
+  title?: string;
+  districtId: string;
+  districtLgdCode: string;
+  districtName: string;
+  district?: {
+    id?: string;
+    name: string;
+    lgdCode: string;
+    state: string;
+  };
+  state: string;
+  programmes: {
+    code: string;
+    name: string;
+    ministry: string;
+    role?: string;
+  }[];
+  supportingFindings: (string | {
+    findingId: string;
+    findingType: string;
+    title: string;
+    contribution: string;
+  })[];
+  evidence: EvidenceRecord[];
+  rationale: string;
+  confidenceScore?: number;
+  confidence: number;
+  confidenceAssessment: ConfidenceAssessment;
+  limitations: string[];
+  actionableRecommendations: string[];
+  status: 'CANDIDATE_FOR_REVIEW' | 'FLAGGED_FOR_AUDIT' | 'ACTION_RECOMMENDED';
+}
+
+export interface JoinRecordResult {
+  primaryKey: string; // e.g. lgdCode '512'
+  districtName: string;
+  quality: JoinQuality;
+  confidence: number;
+  records: Record<string, EvidenceRecord>; // datasetId -> EvidenceRecord
+  joinedFields: Record<string, unknown>;
+}
+
+export interface FindingCalculation {
+  formulaName: string;
+  formulaLatex: string;
+  formulaText: string;
+  inputs: Record<string, number | string>;
+  outputValue: number | string;
+  outputUnit: string;
+  interpretation: string;
+  lineageItems?: MetricAuditLineage[];
+}
+
+export interface InvestigationFinding {
+  id: string; // e.g. SUTRA-FND-0001
+  investigationId: string; // e.g. INV-NDB-CONV-001
+  title: string;
+  findingType: FindingType;
+  districtId: string;
+  districtLgdCode: string;
+  districtName: string;
+  state: string;
+  temporalAlignment: TemporalAlignmentState;
+  temporalCoverageNote: string;
+  datasetsUsed: {
+    id: string;
+    name: string;
+    publisher: string;
+    sourceUrl: string;
+    recordCount: number;
+    reportingFrequency: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL';
+  }[];
+  sourceRecords: EvidenceRecord[];
+  metricDefinitions: MetricDefinition[];
+  metricLineage: MetricAuditLineage[];
+  joinKey: {
+    primary: string;
+    secondary?: string;
+    quality: JoinQuality;
+    confidence: number;
+  };
+  calculation: FindingCalculation;
+  summary: string;
+  detailedAnalysis: string;
+  factBreakdown: {
+    sourceFacts: string[];
+    derivedMetrics: string[];
+    interpretations: string[];
+  };
+  whyFlaggedChain?: WhyFlaggedChain;
+  policyRecommendations: string[];
+  confidenceAssessment: ConfidenceAssessment;
+  confidence: number; // overall numeric confidence 0-100 derived from confidenceAssessment
+  limitations: string[];
+  generatedTimestamp: string;
+  dataClassification: DataClassification;
+  provenanceHashes: {
+    inputHashes: string[];
+    joinHash: string;
+    calculationHash: string;
+    findingHash: string;
+  };
+}
+
+export interface GovernanceInvestigation {
+  id: string; // e.g. INV-NDB-CONV-001
+  title: string;
+  question: string;
+  districtIds: string[];
+  targetDistrict: string;
+  targetDistrictLgd: string;
+  datasets: DatasetSource[];
+  entities: {
+    id: string;
+    name: string;
+    type: string;
+    code?: string;
+    lgdCode?: string;
+  }[];
+  relationships: {
+    source: string;
+    target: string;
+    type: string;
+    label?: string;
+  }[];
+  findings: InvestigationFinding[];
+  convergenceOpportunities: ConvergenceOpportunity[];
+  evidence: EvidenceRecord[];
+  confidence: number;
+  confidenceAssessment: ConfidenceAssessment;
+  status: 'COMPLETED' | 'IN_PROGRESS' | 'FLAGGED';
+  createdAt: string;
+  methodology: string;
+  limitations: string[];
+  pipelineAuditTrail: {
+    step: string;
+    timestamp: string;
+    hash: string;
+    status: 'SUCCESS' | 'WARNING';
+  }[];
+}
+
+export interface InvestigationPipelineResult {
+  query: string;
+  interpretation: {
+    intent: string;
+    targetDistrict: string;
+    targetDistrictLgd: string;
+    programmesInvolved: string[];
+    analysisObjective: string;
+  };
+  datasets: DatasetSource[];
+  entityResolutionSteps: {
+    input: string;
+    resolved: string;
+    method: string;
+    confidence: number;
+    lgdCode?: string;
+  }[];
+  joinMatrix: JoinRecordResult[];
+  finding: InvestigationFinding; // Primary / Featured Finding
+  findings: InvestigationFinding[]; // Multi-finding list
+  investigation: GovernanceInvestigation; // Canonical Investigation Model
+  convergenceOpportunities: ConvergenceOpportunity[];
+  evidenceRecords: EvidenceRecord[];
+  methodology: string;
+  limitations: string[];
+  pipelineAuditTrail: {
+    step: string;
+    timestamp: string;
+    hash: string;
+    status: 'SUCCESS' | 'WARNING';
+  }[];
+}
+
+

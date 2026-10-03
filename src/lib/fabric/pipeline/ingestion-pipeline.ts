@@ -98,7 +98,13 @@ export class DataFabricPipeline {
     const allocatedCr = Number(p.Allocated_Cr || p.allocated_cr || p.budgetAllocationCr || p.budget_estimate || 0);
     const utilizedCr = Number(p.Utilized_Cr || p.utilized_cr || p.fundUtilizedCr || p.utilized_amount || 0);
     const beneficiaries = Number(p.Beneficiaries_Count || p.beneficiaries || p.beneficiaries_count || p.milestones_total || 0);
-    const completionRate = allocatedCr > 0 ? Number(((utilizedCr / allocatedCr) * 100).toFixed(1)) : 0;
+    const rawRate = p.Coverage_Rate ?? p.coverage_rate ?? p.Completion_Rate ?? p.completion_rate ?? p.coverage_percentage ?? p.completion_percentage;
+    const completionRate =
+      rawRate !== undefined && rawRate !== null && !Number.isNaN(Number(rawRate))
+        ? Number(rawRate)
+        : allocatedCr > 0
+        ? Number(((utilizedCr / allocatedCr) * 100).toFixed(1))
+        : 0;
     const outcomeScore = Number(p.Outcome_Score || p.outcome_score || p.outcome_index || Math.min(100, Math.round(completionRate * 0.95)));
 
     const normalizedFields = {

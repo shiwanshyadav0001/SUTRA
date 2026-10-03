@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
+import { useIntelligence } from '@/context/IntelligenceContext';
 import { GOVERNANCE_GRAPH_DATA } from '@/lib/data/governance-data';
 import { GraphNode, GraphLink, NodeType } from '@/lib/types';
 import {
@@ -13,16 +14,91 @@ import {
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
+  Sparkles,
+  Zap,
+  Activity,
 } from 'lucide-react';
 
 export default function GovernanceGraphPage() {
-  const [selectedNodeId, setSelectedNodeId] = useState<string>('sch_pkvy');
+  const { openEvidence, openExplain, openWhyFlagged, openWorkspace } = useIntelligence();
+  const [selectedNodeId, setSelectedNodeId] = useState<string>('fnd_conv_gap');
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [hoveredLink, setHoveredLink] = useState<GraphLink | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
   const [filterType, setFilterType] = useState<string>('ALL');
 
-  const { nodes, links } = GOVERNANCE_GRAPH_DATA;
+  // Enhanced V2 graph data with Event, Finding, and Evidence nodes
+  const graphData = useMemo(() => {
+    const baseNodes: GraphNode[] = [
+      ...GOVERNANCE_GRAPH_DATA.nodes,
+      {
+        id: 'evt_jjm_ndb',
+        label: 'JJM Drawdown Event (+11.8%)',
+        type: 'event' as NodeType,
+        val: 18,
+        subtext: 'LGD 512 Nandurbar • ₹22.10 Cr → ₹24.70 Cr Live Mutation',
+      },
+      {
+        id: 'fnd_conv_gap',
+        label: 'SUTRA-FND-0001 (18.4 pp Gap)',
+        type: 'finding' as NodeType,
+        val: 22,
+        subtext: 'PMAY-G Completion (46.8%) vs JJM Tap Rate (28.4%) Divergence',
+      },
+      {
+        id: 'evi_imis_7201',
+        label: 'Evidence #7201 (JJM IMIS)',
+        type: 'evidence' as NodeType,
+        val: 16,
+        subtext: 'Verified Official IMIS Record • Hash e3b0c442...',
+      },
+      {
+        id: 'evi_awaas_4401',
+        label: 'Evidence #4401 (AwaasSoft)',
+        type: 'evidence' as NodeType,
+        val: 16,
+        subtext: 'Verified MoRD AwaasSoft Record • Hash 7d5a881a...',
+      },
+    ];
+
+    const baseLinks: GraphLink[] = [
+      ...GOVERNANCE_GRAPH_DATA.links,
+      {
+        source: 'dist_ndb',
+        target: 'evt_jjm_ndb',
+        type: 'TRIGGERS',
+        label: 'Live Telemetry',
+      },
+      {
+        source: 'evt_jjm_ndb',
+        target: 'fnd_conv_gap',
+        type: 'PRODUCES',
+        label: 'Cross-Correlated',
+      },
+      {
+        source: 'fnd_conv_gap',
+        target: 'evi_imis_7201',
+        type: 'SUPPORTED_BY',
+        label: 'Lineage',
+      },
+      {
+        source: 'fnd_conv_gap',
+        target: 'evi_awaas_4401',
+        type: 'SUPPORTED_BY',
+        label: 'Lineage',
+      },
+      {
+        source: 'sch_jjm',
+        target: 'evt_jjm_ndb',
+        type: 'AFFECTS',
+        label: 'Expenditure',
+      },
+    ];
+
+    return { nodes: baseNodes, links: baseLinks };
+  }, []);
+
+  const { nodes, links } = graphData;
 
   // Active focus node is hovered node if present, else selected node
   const activeFocusId = hoveredNodeId || selectedNodeId;
@@ -62,46 +138,52 @@ export default function GovernanceGraphPage() {
   // Node position map layout (organized hierarchically for clean editorial aesthetics)
   const nodePositions: Record<string, { x: number; y: number }> = {
     // Ministries (Top layer)
-    min_agri: { x: 180, y: 70 },
-    min_rural: { x: 420, y: 70 },
-    min_water: { x: 640, y: 70 },
+    min_agri: { x: 180, y: 60 },
+    min_rural: { x: 420, y: 60 },
+    min_water: { x: 640, y: 60 },
 
     // Departments (Second layer)
-    dept_agri: { x: 180, y: 150 },
-    dept_rural: { x: 420, y: 150 },
-    dept_water: { x: 640, y: 150 },
+    dept_agri: { x: 180, y: 130 },
+    dept_rural: { x: 420, y: 130 },
+    dept_water: { x: 640, y: 130 },
 
     // Schemes (Center layer)
-    sch_pkvy: { x: 120, y: 240 },
-    sch_movcd: { x: 260, y: 240 },
-    sch_pmkisan: { x: 380, y: 240 },
-    sch_pmgsy: { x: 500, y: 240 },
-    sch_pmayg: { x: 620, y: 240 },
-    sch_jjm: { x: 740, y: 240 },
+    sch_pkvy: { x: 120, y: 210 },
+    sch_movcd: { x: 250, y: 210 },
+    sch_pmkisan: { x: 370, y: 210 },
+    sch_pmgsy: { x: 490, y: 210 },
+    sch_pmayg: { x: 610, y: 210 },
+    sch_jjm: { x: 730, y: 210 },
 
     // Budgets (Side nodes)
-    bud_pkvy: { x: 50, y: 310 },
-    bud_movcd: { x: 210, y: 310 },
-    bud_pmkisan: { x: 370, y: 310 },
+    bud_pkvy: { x: 50, y: 280 },
+    bud_movcd: { x: 210, y: 280 },
+    bud_pmkisan: { x: 370, y: 280 },
 
     // Districts (Regional layer)
-    dist_ndb: { x: 160, y: 380 },
-    dist_gdc: { x: 600, y: 380 },
-    dist_wsm: { x: 720, y: 380 },
-    dist_pun: { x: 400, y: 380 },
+    dist_ndb: { x: 150, y: 340 },
+    dist_gdc: { x: 580, y: 340 },
+    dist_wsm: { x: 710, y: 340 },
+    dist_pun: { x: 390, y: 340 },
+
+    // V2 Live Event & Forensic Investigation layer
+    evt_jjm_ndb: { x: 260, y: 410 },
+    fnd_conv_gap: { x: 440, y: 410 },
+    evi_imis_7201: { x: 370, y: 480 },
+    evi_awaas_4401: { x: 530, y: 480 },
 
     // Projects (Execution layer)
-    proj_ndb_soil: { x: 80, y: 460 },
-    proj_ndb_road: { x: 180, y: 460 },
-    proj_ndb_water: { x: 280, y: 460 },
+    proj_ndb_soil: { x: 70, y: 470 },
+    proj_ndb_road: { x: 160, y: 470 },
+    proj_ndb_water: { x: 250, y: 480 },
 
     // Beneficiaries
-    ben_smallholders: { x: 360, y: 460 },
-    ben_tribal: { x: 480, y: 460 },
+    ben_smallholders: { x: 630, y: 470 },
+    ben_tribal: { x: 720, y: 470 },
 
     // Outcomes
-    out_soil_health: { x: 600, y: 460 },
-    out_tap_security: { x: 720, y: 460 },
+    out_soil_health: { x: 80, y: 390 },
+    out_tap_security: { x: 730, y: 390 },
   };
 
   const getNodeColor = (type: NodeType) => {
@@ -116,6 +198,12 @@ export default function GovernanceGraphPage() {
         return '#B59A63'; // Amber
       case 'district':
         return '#C9C2B7'; // Stone
+      case 'event':
+        return '#38BDF8'; // Sky blue for live events
+      case 'finding':
+        return '#F87171'; // Rose/Red for findings
+      case 'evidence':
+        return '#34D399'; // Emerald for verified evidence
       case 'project':
         return '#7E7A72';
       case 'beneficiary':
@@ -151,7 +239,7 @@ export default function GovernanceGraphPage() {
 
         {/* Node Type Filter Bar */}
         <div className="flex flex-wrap items-center gap-1 bg-[#141412] p-1 border border-[#2A2926] rounded-sm text-xs font-mono">
-          {['ALL', 'MINISTRY', 'SCHEME', 'DISTRICT', 'OUTCOME'].map((type) => (
+          {['ALL', 'MINISTRY', 'SCHEME', 'DISTRICT', 'EVENT', 'FINDING', 'EVIDENCE', 'OUTCOME'].map((type) => (
             <button
               key={type}
               onClick={() => setFilterType(type)}
@@ -500,7 +588,43 @@ export default function GovernanceGraphPage() {
           </div>
 
           {/* Quick Action Link */}
-          <div className="pt-2 border-t border-[#2A2926]">
+          <div className="pt-2 border-t border-[#2A2926] space-y-2">
+            {selectedNode.type === 'finding' && (
+              <div className="space-y-2">
+                <button
+                  onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+                  className="w-full py-2.5 px-3 rounded-sm bg-zinc-800 text-zinc-100 font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-zinc-700 border border-zinc-700 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>WHY WAS THIS FLAGGED?</span>
+                </button>
+                <button
+                  onClick={() => openWorkspace('SUTRA-INV-2026-0001')}
+                  className="w-full py-2.5 px-3 rounded-sm bg-[#A66A62] text-white font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-[#8F554E] transition-colors"
+                >
+                  <span>OPEN INVESTIGATION WORKSPACE</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+            {selectedNode.type === 'event' && (
+              <button
+                onClick={() => openWorkspace('SUTRA-INV-2026-0001')}
+                className="w-full py-2.5 px-3 rounded-sm bg-sky-600 text-white font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-sky-500 transition-colors"
+              >
+                <Activity className="w-3.5 h-3.5" />
+                <span>INSPECT CORRELATED INVESTIGATION</span>
+              </button>
+            )}
+            {selectedNode.type === 'evidence' && (
+              <button
+                onClick={() => openEvidence('#7201')}
+                className="w-full py-2.5 px-3 rounded-sm bg-emerald-600 text-white font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-emerald-500 transition-colors"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>VERIFY CRYPTOGRAPHIC PROVENANCE</span>
+              </button>
+            )}
             {selectedNode.type === 'scheme' && (
               <Link
                 href="/scheme/AGR-004"

@@ -1,4 +1,5 @@
 export * from './data-fabric';
+export * from './events';
 
 export interface OverlapInsight {
   id: string;
@@ -59,7 +60,12 @@ export type NodeType =
   | 'district'
   | 'beneficiary'
   | 'budget'
-  | 'outcome';
+  | 'outcome'
+  | 'dataset'
+  | 'signal'
+  | 'finding'
+  | 'evidence'
+  | 'event';
 
 export type EdgeType =
   | 'OWNS'
@@ -67,7 +73,19 @@ export type EdgeType =
   | 'IMPLEMENTED_IN'
   | 'SERVES'
   | 'PRODUCES'
-  | 'OVERLAPS_WITH';
+  | 'OVERLAPS_WITH'
+  | 'ADMINISTERS'
+  | 'TARGETS'
+  | 'OPERATES_IN'
+  | 'REPORTS'
+  | 'GENERATES'
+  | 'SUPPORTS'
+  | 'SUPPORTED_BY'
+  | 'DERIVED_FROM'
+  | 'CO_OCCURS_WITH'
+  | 'TRIGGERS'
+  | 'AFFECTS';
+
 
 export interface GraphNode {
   id: string;
