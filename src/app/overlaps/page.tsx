@@ -4,20 +4,17 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
-import { OVERLAPS_DATA } from '@/lib/data/governance-data';
+import { OVERLAPS_DATA, EVIDENCE_RECORDS } from '@/lib/data/governance-data';
 import { OverlapInsight } from '@/lib/types';
 import { computeTfIdfCosine } from '@/lib/engines/math-algorithms';
 import {
   ArrowRight,
-  GitCompare,
-  Sliders,
   Sparkles,
   Calculator,
   Code,
   Network,
   RotateCcw,
   CheckCircle2,
-  AlertTriangle,
   FileSearch,
 } from 'lucide-react';
 
@@ -53,16 +50,26 @@ export default function OverlapsPage() {
     setWeightPeriod(15);
   };
 
-  const totalWeight = weightTarget + weightGeo + weightIntervention + weightPeriod || 1;
-  const dynamicallyCalculatedScore = Number(
-    (
-      (weightTarget * selectedOverlap.breakdown.targetGroup +
-        weightGeo * selectedOverlap.breakdown.geography +
-        weightIntervention * selectedOverlap.breakdown.intervention +
-        weightPeriod * selectedOverlap.breakdown.implementationPeriod) /
-      totalWeight
-    ).toFixed(1)
-  );
+  const totalWeight = weightTarget + weightGeo + weightIntervention + weightPeriod;
+  const hasWeights = totalWeight > 0;
+  const dynamicallyCalculatedScore = hasWeights
+    ? Number(
+        (
+          (weightTarget * selectedOverlap.breakdown.targetGroup +
+            weightGeo * selectedOverlap.breakdown.geography +
+            weightIntervention * selectedOverlap.breakdown.intervention +
+            weightPeriod * selectedOverlap.breakdown.implementationPeriod) /
+          totalWeight
+        ).toFixed(1)
+      )
+    : null;
+
+  // Open the first cited record that is actually registered; never silently
+  // open an unrelated fallback record.
+  const resolvedEvidenceId =
+    selectedOverlap.evidenceRecordIds.find((id) =>
+      EVIDENCE_RECORDS.some((r) => r.id === id || r.recordNumber === id)
+    ) || '#9281';
 
   // Live Policy Text Cosine Vectorizer Sandbox
   const [policyTextA, setPolicyTextA] = useState(PRESET_TEXTS.organic.a);
@@ -189,22 +196,27 @@ export default function OverlapsPage() {
                 Composite Alignment
               </span>
               <div className="text-3xl font-bold text-blue-700 mt-0.5">
-                {dynamicallyCalculatedScore}%
+                {dynamicallyCalculatedScore !== null ? `${dynamicallyCalculatedScore}%` : '—'}
               </div>
               <span
                 className={`text-[11px] font-semibold block ${
-                  dynamicallyCalculatedScore > 80
+                  dynamicallyCalculatedScore !== null && dynamicallyCalculatedScore > 80
                     ? 'text-rose-700 font-bold'
-                    : dynamicallyCalculatedScore > 75
+                    : dynamicallyCalculatedScore !== null && dynamicallyCalculatedScore > 75
                     ? 'text-amber-800 font-bold'
                     : 'text-blue-700'
                 }`}
               >
-                {dynamicallyCalculatedScore > 80
+                {dynamicallyCalculatedScore === null
+                  ? 'Weights unset'
+                  : dynamicallyCalculatedScore > 80
                   ? 'Critical Duplication'
                   : dynamicallyCalculatedScore > 75
                   ? 'Moderate Convergence'
                   : 'Low Overlap'}
+              </span>
+              <span className="text-[10px] text-slate-500 block mt-1">
+                Registered: {selectedOverlap.similarityScore}% • Sandbox-adjusted above
               </span>
             </div>
           </div>
@@ -264,7 +276,7 @@ export default function OverlapsPage() {
                 {/* Center Intersection Badge */}
                 <rect x="220" y="65" width="60" height="30" rx="4" fill="#0B132B" stroke="#F59E0B" strokeWidth="1.5" />
                 <text x="250" y="80" textAnchor="middle" fill="#FBBF24" fontSize="11" fontWeight="bold" fontFamily="monospace">
-                  {dynamicallyCalculatedScore}%
+                  {dynamicallyCalculatedScore !== null ? `${dynamicallyCalculatedScore}%` : '—'}
                 </text>
                 <text x="250" y="91" textAnchor="middle" fill="#CBD5E1" fontSize="7" fontFamily="monospace">
                   OVERLAP
@@ -365,6 +377,11 @@ export default function OverlapsPage() {
 
             <p className="text-xs text-slate-600">
               Drag weights to see how adjusting administrative priorities recalculates the composite overlap index:
+              {totalWeight === 0 && (
+                <span className="block mt-1 text-amber-700 font-semibold">
+                  All weights are zero, so the composite is undefined — move any slider or reset to restore it.
+                </span>
+              )}
             </p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
@@ -462,7 +479,7 @@ export default function OverlapsPage() {
               onClick={() =>
                 openExplain({
                   title: `${selectedOverlap.schemeAName} ⇄ ${selectedOverlap.schemeBName}`,
-                  subtitle: `${dynamicallyCalculatedScore}% Multi-Vector Programmatic Overlap`,
+                  subtitle: `${dynamicallyCalculatedScore !== null ? dynamicallyCalculatedScore : selectedOverlap.similarityScore}% Multi-Vector Programmatic Overlap`,
                   confidence: 89,
                   factors: [
                     { title: 'TARGET GROUP COINCIDENCE', weight: weightTarget },
@@ -470,7 +487,7 @@ export default function OverlapsPage() {
                     { title: 'GEOGRAPHIC BLOCK OVERLAP', weight: weightGeo },
                     { title: 'PERIOD CONCURRENCY', weight: weightPeriod },
                   ],
-                  evidenceRecordNumber: selectedOverlap.evidenceRecordIds[0] || 'SUTRA-EVD-9281',
+                  evidenceRecordNumber: resolvedEvidenceId,
                 })
               }
               className="px-4 py-2 rounded bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer"
@@ -479,10 +496,10 @@ export default function OverlapsPage() {
             </button>
 
             <button
-              onClick={() => openEvidence(selectedOverlap.evidenceRecordIds[0] || 'SUTRA-EVD-9281')}
+              onClick={() => openEvidence(resolvedEvidenceId)}
               className="px-4 py-2 rounded bg-blue-600 text-white font-medium text-xs hover:bg-blue-700 transition-colors flex items-center justify-center space-x-1.5 shadow-sm cursor-pointer"
             >
-              <span>View Supporting Data ({selectedOverlap.evidenceRecordIds[0] || 'SUTRA-EVD-9281'})</span>
+              <span>View Supporting Data ({resolvedEvidenceId})</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

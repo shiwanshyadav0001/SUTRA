@@ -14,12 +14,15 @@
  */
 export function formatIndianNumber(value: number | string | null | undefined): string {
   if (value === null || value === undefined || value === '') return '0';
-  const num = typeof value === 'string' ? Number(value.replace(/,/g, '')) : value;
-  if (isNaN(num)) return String(value);
+  const num =
+    typeof value === 'string' ? Number(value.trim().replace(/,/g, '')) : value;
+  if (typeof num !== 'number' || isNaN(num) || !isFinite(num)) return String(value);
 
   const isNegative = num < 0;
   const absNum = Math.abs(num);
-  const parts = absNum.toString().split('.');
+  // Guard against exponential notation for very large magnitudes.
+  const raw = absNum >= 1e21 ? absNum.toExponential().split('e')[0].replace('.', '') : absNum.toString();
+  const parts = raw.split('.');
   const integerPart = parts[0];
   const decimalPart = parts[1] !== undefined ? `.${parts[1]}` : '';
 
@@ -39,12 +42,14 @@ export function formatIndianNumber(value: number | string | null | undefined): s
  */
 export function formatStandardNumber(value: number | string | null | undefined): string {
   if (value === null || value === undefined || value === '') return '0';
-  const num = typeof value === 'string' ? Number(value.replace(/,/g, '')) : value;
-  if (isNaN(num)) return String(value);
+  const num =
+    typeof value === 'string' ? Number(value.trim().replace(/,/g, '')) : value;
+  if (typeof num !== 'number' || isNaN(num) || !isFinite(num)) return String(value);
 
   const isNegative = num < 0;
   const absNum = Math.abs(num);
-  const parts = absNum.toString().split('.');
+  const raw = absNum >= 1e21 ? absNum.toExponential().split('e')[0].replace('.', '') : absNum.toString();
+  const parts = raw.split('.');
   const integerPart = parts[0];
   const decimalPart = parts[1] !== undefined ? `.${parts[1]}` : '';
 
@@ -68,8 +73,9 @@ export function formatDeterministicNumber(
  */
 export function formatDeterministicCrores(value: number | string | null | undefined): string {
   if (value === null || value === undefined) return '₹0.00 Cr';
-  const num = typeof value === 'string' ? Number(value) : value;
-  if (isNaN(num)) return `₹${value} Cr`;
+  const num =
+    typeof value === 'string' ? Number(value.trim().replace(/,/g, '')) : value;
+  if (typeof num !== 'number' || isNaN(num) || !isFinite(num)) return `₹${value} Cr`;
   return `₹${num.toFixed(2)} Cr`;
 }
 
@@ -103,15 +109,16 @@ export function formatDeterministicIST(dateInput: Date = new Date()): string {
   const d = typeof dateInput === 'object' && dateInput instanceof Date ? dateInput : new Date(dateInput);
   if (isNaN(d.getTime())) return 'N/A';
 
-  // IST is UTC + 5 hours 30 minutes
-  const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-  const istTime = new Date(utc + (3600000 * 5.5));
+  // IST is UTC + 5 hours 30 minutes. Use pure UTC arithmetic so the server
+  // (UTC) and every client timezone produce byte-identical output.
+  const istMillis = d.getTime() + 5.5 * 3600000;
+  const ist = new Date(istMillis);
 
-  const day = String(istTime.getDate()).padStart(2, '0');
-  const month = MONTH_NAMES[istTime.getMonth()];
-  const year = istTime.getFullYear();
-  const hours = String(istTime.getHours()).padStart(2, '0');
-  const minutes = String(istTime.getMinutes()).padStart(2, '0');
+  const day = String(ist.getUTCDate()).padStart(2, '0');
+  const month = MONTH_NAMES[ist.getUTCMonth()];
+  const year = ist.getUTCFullYear();
+  const hours = String(ist.getUTCHours()).padStart(2, '0');
+  const minutes = String(ist.getUTCMinutes()).padStart(2, '0');
 
   return `${day} ${month} ${year} • ${hours}:${minutes} IST`;
 }

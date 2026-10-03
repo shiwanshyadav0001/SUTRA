@@ -1,16 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   X,
   Shield,
   ShieldCheck,
   CheckCircle2,
-  Lock,
-  Building2,
-  FileText,
-  Key,
-  ExternalLink,
 } from 'lucide-react';
 
 interface RoleContextModalProps {
@@ -19,12 +14,24 @@ interface RoleContextModalProps {
 }
 
 export function RoleContextModal({ isOpen, onClose }: RoleContextModalProps) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Apex desk context"
     >
       <div
         className="bg-white border border-slate-200 rounded-lg max-w-lg w-full shadow-2xl overflow-hidden flex flex-col font-sans"
@@ -67,7 +74,7 @@ export function RoleContextModal({ isOpen, onClose }: RoleContextModalProps) {
                 <ShieldCheck className="w-4 h-4 text-blue-700" />
                 Statutory Governance Audit Authority
               </span>
-              <span className="font-mono text-[10px] text-blue-700">ID: PMO-MH-2026-09</span>
+              <span className="font-mono text-[10px] text-blue-700">Desk Ref: APEX-MH-DEMO-01</span>
             </div>
             <p className="text-[11px] text-slate-600 leading-relaxed">
               Operating under Cabinet Secretariat statutory oversight mandates for inter-ministerial capital expenditure reconciliation, delivery tracking, and programmatic convergence.
@@ -88,8 +95,8 @@ export function RoleContextModal({ isOpen, onClose }: RoleContextModalProps) {
               </div>
 
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
-                <span className="text-[10px] text-slate-500 block">MINISTRY CLEARANCE</span>
-                <span className="font-bold text-slate-900 mt-0.5 block">6 Central Ministries</span>
+                <span className="text-[10px] text-slate-500 block">MINISTRY COVERAGE</span>
+                <span className="font-bold text-slate-900 mt-0.5 block">5 Central Ministries</span>
                 <span className="text-[10px] text-slate-500">Jal Shakti, MoRD, Agri</span>
               </div>
 
@@ -105,9 +112,9 @@ export function RoleContextModal({ isOpen, onClose }: RoleContextModalProps) {
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
                 <span className="text-[10px] text-slate-500 block">CRYPTOGRAPHIC TOKEN</span>
                 <span className="font-bold text-slate-900 mt-0.5 block truncate">
-                  SHA256:7f4a9...e3b
+                  SHA256: illustrative seal
                 </span>
-                <span className="text-[10px] text-slate-500">Immutable Audit Seal</span>
+                <span className="text-[10px] text-slate-500">Demo Session Marker</span>
               </div>
             </div>
           </div>
@@ -134,7 +141,7 @@ export function RoleContextModal({ isOpen, onClose }: RoleContextModalProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs font-mono">
-          <span className="text-slate-500">Session Secure • TLS 1.3 Certified</span>
+          <span className="text-slate-500">Demo console • No live government system connection</span>
           <button
             onClick={onClose}
             className="px-4 py-1.5 rounded-md bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors"

@@ -1,22 +1,16 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { EvidenceRecord } from '@/lib/types';
 import { formatIndianNumber } from '@/lib/formatters';
+import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
 import {
   X,
   ExternalLink,
-  Database,
-  FileText,
-  CheckCircle,
   ShieldCheck,
-  ArrowRight,
   GitBranch,
   Layers,
-  Calculator,
-  Hash,
 } from 'lucide-react';
 
 interface EvidenceDrawerProps {
@@ -27,9 +21,42 @@ interface EvidenceDrawerProps {
 
 export function EvidenceDrawer({ isOpen, onClose, record }: EvidenceDrawerProps) {
   const router = useRouter();
+
+  // Escape-to-close + body scroll lock while the drawer is open.
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen || !record) return null;
 
-  const utilizationRate = ((record.utilizedCr / record.allocatedCr) * 100).toFixed(1);
+  const utilizationRate =
+    record.allocatedCr > 0
+      ? ((record.utilizedCr / record.allocatedCr) * 100).toFixed(1)
+      : 'N/A';
+
+  const recordLgd =
+    record.districtLgdCode ||
+    MAHARASHTRA_DISTRICTS.find(
+      (d) => d.name.toLowerCase() === record.district.toLowerCase()
+    )?.lgdCode ||
+    'Not mapped';
+
+  const recordInvestigationId =
+    record.district.toLowerCase() === 'gadchiroli'
+      ? 'INV-GDC-CONV-002'
+      : record.district.toLowerCase() === 'washim'
+      ? 'INV-WSM-CONV-003'
+      : 'SUTRA-INV-2026-0001';
 
   const provenanceChain = [
     {
@@ -52,8 +79,8 @@ export function EvidenceDrawer({ isOpen, onClose, record }: EvidenceDrawerProps)
     },
     {
       step: '4. RESOLVED ENTITY',
-      title: `LGD:512 • ${record.district}, ${record.state}`,
-      detail: 'Deterministic LGD Code alignment with 100% exact match',
+      title: `LGD:${recordLgd} • ${record.district}, ${record.state}`,
+      detail: 'Deterministic LGD Code alignment against the district registry',
       status: 'RESOLVED',
     },
     {
@@ -70,21 +97,30 @@ export function EvidenceDrawer({ isOpen, onClose, record }: EvidenceDrawerProps)
     },
     {
       step: '7. FINDING GENERATED',
-      title: 'SUTRA-FND-0001 (Nandurbar Convergence Gap)',
-      detail: 'Cross-scheme tribal capital delivery deficit recorded',
+      title: record.usedIn || 'Cross-scheme convergence finding',
+      detail: 'Intelligence finding grounded in this record',
       status: 'ACTIVE',
     },
     {
       step: '8. INVESTIGATION',
-      title: 'INV-NDB-CONV-001 Investigation Workspace',
-      detail: 'Inter-ministerial dossier assembled for PMO apex review',
+      title: `${recordInvestigationId} Investigation Workspace`,
+      detail: `Inter-ministerial dossier for ${record.district} review`,
       status: 'READY',
     },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-xs transition-opacity">
-      <div className="w-full max-w-xl bg-white border-l border-slate-200 h-full flex flex-col justify-between overflow-y-auto shadow-2xl animate-in slide-in-from-right duration-300">
+    <div
+      className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-xs transition-opacity"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Evidence record ${record.recordNumber}`}
+    >
+      <div
+        className="w-full max-w-xl bg-white border-l border-slate-200 h-full flex flex-col justify-between overflow-y-auto shadow-2xl animate-in slide-in-from-right duration-300"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div>
@@ -230,7 +266,7 @@ export function EvidenceDrawer({ isOpen, onClose, record }: EvidenceDrawerProps)
               href={record.primarySourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-1.5 text-xs text-blue-700 hover:underline font-mono"
+              className="inline-flex items-center space-x-1.5 text-xs text-blue-700 hover:underline font-mono break-all"
             >
               <span>{record.primarySourceUrl}</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -243,7 +279,7 @@ export function EvidenceDrawer({ isOpen, onClose, record }: EvidenceDrawerProps)
           <button
             onClick={() => {
               onClose();
-              router.push('/investigation/SUTRA-INV-2026-0001');
+              router.push(`/investigation/${recordInvestigationId}`);
             }}
             className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >

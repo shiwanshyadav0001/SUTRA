@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import {
@@ -8,10 +8,6 @@ import {
   X,
   ChevronRight,
   ChevronLeft,
-  Sparkles,
-  ExternalLink,
-  ShieldCheck,
-  CheckCircle,
 } from 'lucide-react';
 
 interface TourStep {
@@ -60,7 +56,7 @@ const TOUR_STEPS: TourStep[] = [
     title: 'Ask SUTRA Natural Language Query',
     route: '/query',
     instruction:
-      'Demonstrate natural query translation without hallucination. Click ANALYZE to run the 7-stage verification checklist.',
+      'Demonstrate natural query translation without hallucination. Click INVESTIGATE to run the 6-step staged execution checklist.',
   },
   {
     step: 6,
@@ -104,6 +100,15 @@ export function GuidedDemoTour() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen]);
 
   const currentStep = TOUR_STEPS[currentStepIdx];
 
@@ -154,7 +159,7 @@ export function GuidedDemoTour() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 w-96 bg-white border border-slate-200 rounded-lg shadow-2xl p-5 text-xs space-y-3 animate-in slide-in-from-bottom-6">
+    <div className="fixed bottom-6 right-6 z-40 w-96 max-w-[calc(100vw-3rem)] bg-white border border-slate-200 rounded-lg shadow-2xl p-5 text-xs space-y-3 animate-in slide-in-from-bottom-6">
       {/* Top Banner */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <div className="flex items-center space-x-2">

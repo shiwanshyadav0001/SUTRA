@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
-import Link from 'next/link';
+import React, { useState, useMemo } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { InvestigationEngine } from '@/lib/fabric/investigation/investigation-engine';
 import { LgdRegistry } from '@/lib/fabric/registry/lgd-registry';
@@ -114,6 +113,16 @@ export default function InvestigateWorkspacePage() {
       investigationResult.finding
     );
   }, [investigationResult, activeFindingTab]);
+
+  // Dataset view-scope: lineage audit rows attributable to a deselected
+  // register are hidden. Derived rows (no sourceDatasetId) are always shown
+  // because they are computed across all canonical registers.
+  const scopedLineage = useMemo(() => {
+    if (!currentFinding) return [];
+    return currentFinding.metricLineage.filter(
+      (m) => !m.sourceDatasetId || selectedDatasets.includes(m.sourceDatasetId)
+    );
+  }, [currentFinding, selectedDatasets]);
 
   const handleStartInvestigation = (targetQuery?: string, targetLgdCode?: string) => {
     setIsExecuting(true);
@@ -294,7 +303,7 @@ export default function InvestigateWorkspacePage() {
               Canonical Source Datasets (Data Fabric v1.6)
             </h3>
             <span className="text-xs font-mono text-slate-500">
-              Official ministerial repositories • Deterministic LGD schemas
+              Toggles scope the lineage audit below • Pipeline totals span all registers
             </span>
           </div>
 
@@ -305,8 +314,17 @@ export default function InvestigateWorkspacePage() {
               return (
                 <div
                   key={ds.id}
+                  role="checkbox"
+                  aria-checked={isSelected}
+                  tabIndex={0}
                   onClick={() => toggleDataset(ds.id)}
-                  className={`p-4 rounded-lg border transition-all cursor-pointer space-y-2.5 ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      toggleDataset(ds.id);
+                    }
+                  }}
+                  className={`p-4 rounded-lg border transition-all cursor-pointer space-y-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                     isSelected
                       ? 'bg-white border-indigo-300 shadow-sm'
                       : 'bg-slate-50 border-slate-200 opacity-60'
@@ -324,6 +342,8 @@ export default function InvestigateWorkspacePage() {
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleDataset(ds.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label={`Include ${ds.name} in lineage view`}
                         className="accent-indigo-600 cursor-pointer"
                       />
                     </div>
@@ -336,7 +356,9 @@ export default function InvestigateWorkspacePage() {
                   </div>
                   <div className="pt-2 border-t border-slate-100 text-[10px] font-mono flex items-center justify-between">
                     <span className="text-slate-500">Frequency: {ds.frequency}</span>
-                    <span className="text-emerald-700 font-semibold">VERIFIED SOURCE</span>
+                    <span className={`font-semibold ${isSelected ? 'text-emerald-700' : 'text-slate-400'}`}>
+                      {isSelected ? 'IN LINEAGE VIEW' : 'EXCLUDED FROM VIEW'}
+                    </span>
                   </div>
                 </div>
               );
@@ -544,13 +566,16 @@ export default function InvestigateWorkspacePage() {
 
             {/* SECTION 6: EVIDENCE LINEAGE TABLE */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2 font-editorial">
                   <FileCheck2 className="h-4 w-4 text-blue-600" />
                   Section 6: Source Facts & Metric Lineage Audit
                 </h3>
                 <span className="text-xs font-mono text-slate-500">
-                  End-to-end provenance traceability
+                  View scope: {selectedDatasets.length} of {AVAILABLE_DATASETS.length} registers
+                  {selectedDatasets.length < AVAILABLE_DATASETS.length
+                    ? ' — toggle datasets above to restore rows'
+                    : ''}
                 </span>
               </div>
               <div className="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-2xs">
@@ -568,7 +593,19 @@ export default function InvestigateWorkspacePage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {currentFinding.metricLineage.map((m) => (
+                      {scopedLineage.length === 0 && (
+                        <tr>
+                          <td colSpan={7} className="p-6 text-center">
+                            <div className="text-xs font-semibold text-slate-700">
+                              All source-attributed rows are hidden by the current dataset view scope.
+                            </div>
+                            <div className="text-[11px] text-slate-500 mt-1">
+                              Re-select at least one canonical dataset above to restore the lineage audit.
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      {scopedLineage.map((m) => (
                         <tr key={m.metricId} className="hover:bg-blue-50/40 transition-colors">
                           <td className="p-3 font-semibold text-slate-900">{m.uiLabel}</td>
                           <td className="p-3 font-mono">
@@ -599,7 +636,7 @@ export default function InvestigateWorkspacePage() {
                           <td className="p-3 text-right">
                             {m.sourceRecordNumber && (
                               <button
-                                onClick={() => openEvidence(m.sourceRecordNumber ? `EV-${m.sourceRecordNumber}` : '')}
+                                onClick={() => openEvidence(m.sourceRecordNumber as string)}
                                 className="text-[11px] font-semibold text-blue-700 hover:underline flex items-center gap-1 ml-auto cursor-pointer"
                               >
                                 Trace Evidence <ExternalLink className="h-3 w-3" />

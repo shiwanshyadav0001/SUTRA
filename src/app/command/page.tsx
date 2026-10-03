@@ -2,45 +2,28 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { LiveGovernancePulse } from '@/components/live/LiveGovernancePulse';
 import { SourceHealthCard } from '@/components/live/SourceHealthCard';
 import {
-  GLOBAL_METRICS,
   SIGNALS_DATA,
-  OVERLAPS_DATA,
   MAHARASHTRA_DISTRICTS,
-  SCHEMES_DATA,
 } from '@/lib/data/governance-data';
 import {
-  TrendingUp,
   AlertTriangle,
   ArrowUpRight,
   ShieldCheck,
   ChevronRight,
-  Sparkles,
-  BarChart3,
-  Layers,
-  MapPin,
   CheckCircle2,
-  PieChart,
-  Activity,
-  FileText,
-  Search,
   Database,
-  ArrowRight,
   Compass,
-  FileSpreadsheet,
-  CheckCircle,
   Eye,
   GitBranch,
 } from 'lucide-react';
 
 export default function CommandCenterPage() {
-  const router = useRouter();
-  const { openEvidence, openExplain, openWhyFlagged, sourceHealth } = useIntelligence();
+  const { openEvidence, openWhyFlagged, sourceHealth } = useIntelligence();
 
   // Animated counters
   const [allocationCount, setAllocationCount] = useState(0);
@@ -655,7 +638,7 @@ export default function CommandCenterPage() {
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-bold text-slate-900">{sig.schemeName.split('(')[0]}</span>
                   <span className="font-mono text-xs font-bold text-rose-700">
-                    -{sig.deviation}% Deficit
+                    {Math.abs(sig.deviation)} pp behind benchmark
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-[11px] font-mono text-slate-600">
@@ -664,7 +647,7 @@ export default function CommandCenterPage() {
                 </div>
                 <div className="flex items-center justify-end space-x-2 pt-1 border-t border-amber-200/60">
                   <button
-                    onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+                    onClick={() => openWhyFlagged('SUTRA-FND-0001', sig.districtName)}
                     className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-700 hover:text-blue-700 hover:border-blue-400"
                   >
                     Why Flagged?
@@ -774,7 +757,7 @@ export default function CommandCenterPage() {
                 href={`/map?district=${dist.id}`}
                 className={`p-2 rounded border transition-all text-center group cursor-pointer ${statusStyle}`}
               >
-                <div className="text-[9px] text-slate-500 font-bold">LGD:{dist.lgdCode || 492 + idx}</div>
+                <div className="text-[9px] text-slate-500 font-bold">LGD:{dist.lgdCode}</div>
                 <div className="font-semibold text-xs truncate group-hover:text-blue-700 mt-0.5">
                   {dist.name}
                 </div>

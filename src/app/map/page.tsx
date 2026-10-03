@@ -1,56 +1,69 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
-import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
+import { MAHARASHTRA_DISTRICTS, EVIDENCE_RECORDS } from '@/lib/data/governance-data';
 import { District } from '@/lib/types';
 import {
   MapPin,
   Layers,
-  Info,
-  ArrowRight,
-  ShieldAlert,
   ChevronRight,
-  SlidersHorizontal,
-  CheckCircle2,
-  ExternalLink,
-  ZoomIn,
-  ZoomOut,
-  Maximize2,
-  Zap,
   Activity,
-  Radio,
-  AlertCircle,
   Network,
   Sparkles,
-  FileText,
 } from 'lucide-react';
 
 type MetricFilter = 'Coverage' | 'Utilization' | 'Beneficiaries' | 'Outcomes' | 'Gaps' | 'Signals';
 
-export default function GeographicIntelligencePage() {
+function resolveDistrictParam(param: string | null): District {
+  const fallback =
+    MAHARASHTRA_DISTRICTS.find((d) => d.name === 'Nandurbar') || MAHARASHTRA_DISTRICTS[0];
+  if (!param) return fallback;
+  const q = param.trim().toLowerCase();
+  return (
+    MAHARASHTRA_DISTRICTS.find(
+      (d) =>
+        d.id.toLowerCase() === q ||
+        d.code.toLowerCase() === q ||
+        d.name.toLowerCase() === q ||
+        (d.lgdCode || '').toLowerCase() === q
+    ) || fallback
+  );
+}
+
+function formatLakh(n: number): string {
+  if (n >= 100000) return `${(n / 100000).toFixed(1)}L`;
+  if (n >= 1000) return `${(n / 1000).toFixed(0)}K`;
+  return `${n}`;
+}
+
+function GeographicIntelligenceInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     openEvidence,
-    openExplain,
     openExecutiveBrief,
-    openWorkspace,
     openWhyFlagged,
-    latestEvent,
-    activeDistrictLiveState,
   } = useIntelligence();
 
   const [viewLevel, setViewLevel] = useState<'INDIA' | 'MAHARASHTRA'>('MAHARASHTRA');
   const [activeFilter, setActiveFilter] = useState<MetricFilter>('Gaps');
-  const [selectedDistrict, setSelectedDistrict] = useState<District>(
-    MAHARASHTRA_DISTRICTS.find((d) => d.name === 'Nandurbar') || MAHARASHTRA_DISTRICTS[0]
+  const [selectedDistrict, setSelectedDistrict] = useState<District>(() =>
+    resolveDistrictParam(searchParams.get('district'))
   );
   const [hoveredDistrict, setHoveredDistrict] = useState<District | null>(null);
   const [hoveredState, setHoveredState] = useState<typeof indiaStates[0] | null>(null);
-  const [mapTooltipPos, setMapTooltipPos] = useState<{ x: number; y: number } | null>(null);
+  // Tooltip anchor stored as container fractions (0–1) so positioning never
+  // depends on pixel widths that break on small viewports.
+  const [mapTooltipAnchor, setMapTooltipAnchor] = useState<{ fx: number; fy: number } | null>(null);
+
+  // Honor ?district=<id|code|name|lgd> deep links from Command Center,
+  // Governance Graph, and Gap pages so cross-page context is preserved.
+  useEffect(() => {
+    setSelectedDistrict(resolveDistrictParam(searchParams.get('district')));
+  }, [searchParams]);
 
   const indiaStates = [
     { name: 'Maharashtra', code: 'MH', coverage: 71, util: 73, alloc: '₹28,400 Cr', focus: true, x: 260, y: 310 },
@@ -86,38 +99,98 @@ export default function GeographicIntelligencePage() {
       return d.isGapFlagged ? '#F43F5E' : '#334155';
     }
 
+    if (activeFilter === 'Beneficiaries') {
+      if (d.beneficiariesCount >= 500000) return '#10B981';
+      if (d.beneficiariesCount >= 250000) return '#3B82F6';
+      return '#F43F5E';
+    }
+
+    if (activeFilter === 'Outcomes') {
+      // Outcome scores live on evidence records, not districts — fall back
+      // to the coverage scale and surface an explanatory notice instead of
+      // inventing a per-district outcome metric.
+      if (d.coverageRate >= 75) return '#10B981';
+      if (d.coverageRate >= 60) return '#3B82F6';
+      return '#F43F5E';
+    }
+
     return '#3B82F6';
   };
 
-  // Sub-district blocks for administrative hierarchy demonstration
-  const districtBlocks: Record<string, Array<{ name: string; lgd: string; coverage: number; status: 'CRITICAL' | 'MODERATE' | 'NORMAL' }>> = {
-    Nandurbar: [
-      { name: 'Akkalkuwa', lgd: '4831', coverage: 24, status: 'CRITICAL' },
-      { name: 'Akrani (Dhadgaon)', lgd: '4832', coverage: 21, status: 'CRITICAL' },
-      { name: 'Taloda', lgd: '4833', coverage: 31, status: 'MODERATE' },
-      { name: 'Shahada', lgd: '4834', coverage: 38, status: 'MODERATE' },
-      { name: 'Nandurbar (Hq)', lgd: '4835', coverage: 42, status: 'MODERATE' },
-      { name: 'Navapur', lgd: '4836', coverage: 29, status: 'CRITICAL' },
-    ],
-    Gadchiroli: [
-      { name: 'Bhamragad', lgd: '4790', coverage: 19, status: 'CRITICAL' },
-      { name: 'Etapalli', lgd: '4791', coverage: 22, status: 'CRITICAL' },
-      { name: 'Aheri', lgd: '4792', coverage: 28, status: 'MODERATE' },
-      { name: 'Sironcha', lgd: '4793', coverage: 33, status: 'MODERATE' },
-    ],
-    Washim: [
-      { name: 'Malegaon', lgd: '4980', coverage: 39, status: 'MODERATE' },
-      { name: 'Mangrulpir', lgd: '4981', coverage: 41, status: 'MODERATE' },
-      { name: 'Manora', lgd: '4982', coverage: 35, status: 'CRITICAL' },
-      { name: 'Washim (Hq)', lgd: '4983', coverage: 48, status: 'NORMAL' },
-    ],
+  const districtMetricLabel = (d: District): string => {
+    if (activeFilter === 'Coverage' || activeFilter === 'Outcomes') return `${d.coverageRate}%`;
+    if (activeFilter === 'Utilization') return `${d.fundUtilizationRate}%`;
+    if (activeFilter === 'Beneficiaries') return formatLakh(d.beneficiariesCount);
+    return `${d.projectsCount} proj`;
   };
 
-  const activeBlocks = districtBlocks[selectedDistrict.name] || [
-    { name: `${selectedDistrict.name} North`, lgd: '5001', coverage: selectedDistrict.coverageRate - 6, status: 'MODERATE' as const },
-    { name: `${selectedDistrict.name} Central`, lgd: '5002', coverage: selectedDistrict.coverageRate, status: 'NORMAL' as const },
-    { name: `${selectedDistrict.name} South`, lgd: '5003', coverage: selectedDistrict.coverageRate - 9, status: selectedDistrict.isGapFlagged ? 'CRITICAL' as const : 'NORMAL' as const },
-  ];
+  const legendItems =
+    activeFilter === 'Beneficiaries'
+      ? [
+          { color: 'bg-rose-500', label: 'Under 2.5L reached' },
+          { color: 'bg-blue-500', label: '2.5L – 5L reached' },
+          { color: 'bg-emerald-400', label: 'Above 5L reached' },
+        ]
+      : activeFilter === 'Coverage' || activeFilter === 'Outcomes'
+      ? [
+          { color: 'bg-rose-500', label: 'Below 60% coverage' },
+          { color: 'bg-blue-500', label: '60 – 75% coverage' },
+          { color: 'bg-emerald-400', label: 'Above 75% coverage' },
+        ]
+      : activeFilter === 'Utilization'
+      ? [
+          { color: 'bg-rose-500', label: 'Below 55% utilization' },
+          { color: 'bg-blue-500', label: '55 – 75% utilization' },
+          { color: 'bg-emerald-400', label: 'Above 75% utilization' },
+        ]
+      : [
+          { color: 'bg-rose-500', label: 'Severe Gap (>30 pp)' },
+          { color: 'bg-amber-500', label: 'Moderate Gap' },
+          { color: 'bg-emerald-400', label: 'Benchmark Met' },
+        ];
+
+  const resolveDistrictEvidence = (d: District): string => {
+    if (d.evidenceRecordId) {
+      const known = EVIDENCE_RECORDS.find(
+        (r) => r.id === d.evidenceRecordId || r.recordNumber === d.evidenceRecordId
+      );
+      if (known) return known.id;
+    }
+    const byDistrict = EVIDENCE_RECORDS.find(
+      (r) => r.district.toLowerCase() === d.name.toLowerCase()
+    );
+    return byDistrict ? byDistrict.id : EVIDENCE_RECORDS[0].id;
+  };
+
+  // Modeled sub-district coverage bands for hierarchy illustration. These are
+  // derived from the district coverage rate — not LGD taluka records — and
+  // are labeled as modeled so they are never mistaken for official data.
+  // Curated band names exist for the three deep-dive districts only.
+  const districtBandNames: Record<string, string[]> = {
+    Nandurbar: ['Akkalkuwa', 'Akrani (Dhadgaon)', 'Taloda', 'Shahada', 'Nandurbar (Hq)', 'Navapur'],
+    Gadchiroli: ['Bhamragad', 'Etapalli', 'Aheri', 'Sironcha'],
+    Washim: ['Malegaon', 'Mangrulpir', 'Manora', 'Washim (Hq)'],
+  };
+
+  const buildModeledBands = (d: District) => {
+    const names = districtBandNames[d.name] || [
+      `${d.name} North`,
+      `${d.name} Central`,
+      `${d.name} South`,
+    ];
+    const offsets = [-6, 0, -9, 3, -3, 5];
+    return names.map((name, i) => {
+      const coverage = Math.max(0, d.coverageRate + (offsets[i % offsets.length] || 0));
+      return {
+        name,
+        band: `BAND ${i + 1} • MODELED`,
+        coverage,
+        status: (coverage < d.coverageRate - 4 ? 'CRITICAL' : coverage < d.coverageRate + 2 ? 'MODERATE' : 'NORMAL') as 'CRITICAL' | 'MODERATE' | 'NORMAL',
+      };
+    });
+  };
+
+  const activeBlocks = buildModeledBands(selectedDistrict);
 
   return (
     <AppShell>
@@ -198,16 +271,12 @@ export default function GeographicIntelligencePage() {
                   : 'REGION: MAHARASHTRA STATE (36 DISTRICT BOUNDARIES ACTIVE)'}
               </span>
             </div>
-            <div className="text-[10px] font-mono text-slate-300 flex items-center gap-3">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" /> Severe Gap (&gt;30 pp)
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-amber-500" /> Moderate Gap
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" /> Benchmark Met
-              </span>
+            <div className="text-[10px] font-mono text-slate-300 flex flex-wrap items-center gap-3">
+              {legendItems.map((item) => (
+                <span key={item.label} className="flex items-center gap-1">
+                  <span className={`w-2 h-2 rounded-full ${item.color}`} /> {item.label}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -216,15 +285,24 @@ export default function GeographicIntelligencePage() {
             className="relative w-full h-[520px] bg-[#080E21] border border-[#1E293B] rounded-md overflow-hidden flex items-center justify-center p-4 shadow-inner"
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
-              setMapTooltipPos({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
-              });
+              if (rect.width > 0 && rect.height > 0) {
+                setMapTooltipAnchor({
+                  fx: (e.clientX - rect.left) / rect.width,
+                  fy: (e.clientY - rect.top) / rect.height,
+                });
+              }
             }}
             onMouseLeave={() => {
               setHoveredDistrict(null);
               setHoveredState(null);
-              setMapTooltipPos(null);
+              setMapTooltipAnchor(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setHoveredDistrict(null);
+                setHoveredState(null);
+                setMapTooltipAnchor(null);
+              }
             }}
           >
             {/* Latitude / Longitude Coordinate Ticks */}
@@ -253,11 +331,12 @@ export default function GeographicIntelligencePage() {
                   strokeWidth="1.5"
                 />
 
-                {/* State Clusters */}
+                {/* State Clusters — Maharashtra is the instrumented state;
+                    neighbours are illustrative context, not live telemetry. */}
                 {indiaStates.map((state) => (
                   <g
                     key={state.code}
-                    className="cursor-pointer transition-transform duration-200"
+                    className={state.focus ? 'cursor-pointer transition-transform duration-200' : 'cursor-not-allowed'}
                     onClick={() => {
                       if (state.name === 'Maharashtra') {
                         setViewLevel('MAHARASHTRA');
@@ -376,10 +455,21 @@ export default function GeographicIntelligencePage() {
                   return (
                     <g
                       key={district.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${district.name} district, coverage ${district.coverageRate} percent${district.isGapFlagged ? `, gap flagged ${district.gapPercentagePoints} points` : ''}. Press Enter to inspect.`}
                       className="cursor-pointer transition-transform duration-200"
                       onClick={() => setSelectedDistrict(district)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelectedDistrict(district);
+                        }
+                      }}
                       onMouseEnter={() => setHoveredDistrict(district)}
                       onMouseLeave={() => setHoveredDistrict(null)}
+                      onFocus={() => setHoveredDistrict(district)}
+                      onBlur={() => setHoveredDistrict(null)}
                     >
                       {/* Pulsing ring if selected */}
                       {isSelected && (
@@ -445,11 +535,7 @@ export default function GeographicIntelligencePage() {
                         fontFamily="monospace"
                         fontWeight="600"
                       >
-                        {activeFilter === 'Coverage'
-                          ? `${district.coverageRate}%`
-                          : activeFilter === 'Utilization'
-                          ? `${district.fundUtilizationRate}%`
-                          : `${district.projectsCount} proj`}
+                        {districtMetricLabel(district)}
                       </text>
 
                       {/* Priority Warning Dot on flagged districts */}
@@ -463,61 +549,60 @@ export default function GeographicIntelligencePage() {
             )}
 
             {/* Floating Tooltip for India State Hover */}
-            {hoveredState && mapTooltipPos && viewLevel === 'INDIA' && (
+            {hoveredState && mapTooltipAnchor && viewLevel === 'INDIA' && (
               <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3 py-2 rounded-md bg-[#0B132B] border border-[#233560] text-white font-mono text-xs shadow-2xl transition-opacity duration-150"
+                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3 py-2 rounded-md bg-[#0B132B] border border-[#233560] text-white font-mono text-xs shadow-2xl transition-opacity duration-150 max-w-[70%]"
                 style={{
-                  left: Math.min(Math.max(mapTooltipPos.x, 90), 510),
-                  top: Math.max(mapTooltipPos.y - 10, 10),
+                  left: `${Math.min(Math.max(mapTooltipAnchor.fx * 100, 18), 82)}%`,
+                  top: `${Math.max(mapTooltipAnchor.fy * 100 - 3, 8)}%`,
                 }}
               >
                 <div className="font-bold text-sm text-cyan-300">{hoveredState.name}</div>
-                <div className="text-[10px] text-slate-300 mt-0.5">Allocation: {hoveredState.alloc}</div>
-                <div className="flex gap-3 text-[10px] mt-1 pt-1 border-t border-[#1E293B]">
-                  <span>Coverage: <strong className="text-emerald-400">{hoveredState.coverage}%</strong></span>
-                  <span>Utilization: <strong className="text-cyan-400">{hoveredState.util}%</strong></span>
-                </div>
+                {hoveredState.focus ? (
+                  <>
+                    <div className="text-[10px] text-slate-300 mt-0.5">Allocation: {hoveredState.alloc}</div>
+                    <div className="flex gap-3 text-[10px] mt-1 pt-1 border-t border-[#1E293B]">
+                      <span>Coverage: <strong className="text-emerald-400">{hoveredState.coverage}%</strong></span>
+                      <span>Utilization: <strong className="text-cyan-400">{hoveredState.util}%</strong></span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-[10px] text-slate-400 mt-0.5">
+                    Illustrative context — SUTRA currently instruments Maharashtra (LGD state 27) only.
+                  </div>
+                )}
               </div>
             )}
 
             {/* Floating Tooltip for Maharashtra District Hover */}
-            {hoveredDistrict && mapTooltipPos && viewLevel === 'MAHARASHTRA' && (
-              <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded-md bg-[#0B132B] border border-cyan-500/50 text-white font-mono text-xs shadow-2xl min-w-[220px] transition-opacity duration-150"
-                style={{
-                  left: Math.min(Math.max(mapTooltipPos.x, 110), 690),
-                  top: Math.max(mapTooltipPos.y - 10, 10),
-                }}
-              >
-                <div className="flex items-center justify-between gap-3 border-b border-[#1E293B] pb-1.5 mb-1.5">
-                  <span className="font-bold text-sm text-white">{hoveredDistrict.name}</span>
-                  <span
-                    className={`text-[9px] uppercase px-1.5 py-0.5 rounded font-bold ${
-                      hoveredDistrict.isGapFlagged
-                        ? 'bg-rose-950 text-rose-300 border border-rose-800'
-                        : 'bg-emerald-950 text-emerald-300 border border-emerald-800'
-                    }`}
-                  >
-                    {hoveredDistrict.isGapFlagged ? `GAP ${hoveredDistrict.gapPercentagePoints} pp` : 'BENCHMARK MET'}
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
-                  <div>Coverage: <strong className="text-cyan-300">{hoveredDistrict.coverageRate}%</strong></div>
-                  <div>Utilization: <strong className="text-white">{hoveredDistrict.fundUtilizationRate}%</strong></div>
-                  <div>Projects: <strong className="text-slate-300">{hoveredDistrict.projectsCount}</strong></div>
-                  <div>Allocation: <strong className="text-emerald-400">₹{hoveredDistrict.budgetAllocatedCr} Cr</strong></div>
-                </div>
-                <div className="mt-1.5 pt-1 border-t border-[#1E293B] text-[9px] text-cyan-400">
-                  Click district to inspect cross-ministry telemetry
-                </div>
-              </div>
+            {hoveredDistrict && mapTooltipAnchor && viewLevel === 'MAHARASHTRA' && (
+              <DistrictHoverTooltip
+                district={hoveredDistrict}
+                fx={mapTooltipAnchor.fx}
+                fy={mapTooltipAnchor.fy}
+              />
             )}
 
             {/* Floating Map Watermark */}
             <div className="absolute bottom-3 left-3 text-[10px] font-mono text-slate-500">
-              LGD CODE MAPPED • EPSG:4326 PROJECTION • SURVEY OF INDIA COMPLIANT
+              LGD CODE MAPPED • SCHEMATIC DISTRICT CARTOGRAM (NOT SURVEY BOUNDARIES)
             </div>
           </div>
+
+          {activeFilter === 'Outcomes' && (
+            <div className="p-3 rounded-md bg-amber-950/60 border border-amber-800/60 text-amber-200 font-mono text-[11px] flex flex-wrap items-center justify-between gap-2">
+              <span>
+                Outcome scores are recorded per evidence record — not per district — so this layer reuses the
+                coverage scale. Open the Evidence Hub for record-level outcome scores.
+              </span>
+              <button
+                onClick={() => router.push('/evidence')}
+                className="px-2.5 py-1 rounded bg-amber-500/20 border border-amber-500/50 hover:bg-amber-500/30 text-amber-100 text-[11px] font-semibold cursor-pointer"
+              >
+                Open Evidence Hub →
+              </button>
+            </div>
+          )}
 
           <div className="flex items-center justify-between text-xs text-slate-400 font-mono pt-1">
             <span>
@@ -526,7 +611,7 @@ export default function GeographicIntelligencePage() {
                 : 'Click any district marker to inspect cross-ministry telemetry'}
             </span>
             <span>
-              Target Selected: <strong className="text-cyan-400">{selectedDistrict.name} (LGD: {selectedDistrict.code})</strong>
+              Target Selected: <strong className="text-cyan-400">{selectedDistrict.name} (LGD: {selectedDistrict.lgdCode})</strong>
             </span>
           </div>
         </div>
@@ -542,7 +627,7 @@ export default function GeographicIntelligencePage() {
                   DISTRICT LIVE INTELLIGENCE
                 </span>
                 <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#080E21] text-cyan-300 border border-[#1E3A8A] font-semibold">
-                  LGD {selectedDistrict.name === 'Nandurbar' ? '512' : selectedDistrict.code}
+                  LGD {selectedDistrict.lgdCode}
                 </span>
               </div>
               <h2 className="text-2xl font-bold text-white font-editorial mt-1">
@@ -568,7 +653,7 @@ export default function GeographicIntelligencePage() {
               <div className="p-3 rounded-md bg-[#080E21] border border-[#1E3A8A]">
                 <span className="text-[10px] text-slate-400 uppercase block font-semibold">BUDGET ALLOCATED</span>
                 <div className="text-base font-bold text-cyan-300 mt-0.5">₹{selectedDistrict.budgetAllocatedCr} Cr</div>
-                <span className="text-[10px] text-slate-400">Across 4 schemes</span>
+                <span className="text-[10px] text-slate-400">Across {selectedDistrict.activeSchemesCount} schemes</span>
               </div>
 
               <div className={`p-3 rounded-md border ${selectedDistrict.isGapFlagged ? 'bg-rose-950/80 border-rose-800' : 'bg-emerald-950/80 border-emerald-800'}`}>
@@ -583,7 +668,7 @@ export default function GeographicIntelligencePage() {
             {/* Action Buttons */}
             <div className="space-y-2 pt-2 border-t border-[#1E3A8A]">
               <button
-                onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+                onClick={() => openWhyFlagged('SUTRA-FND-0001', selectedDistrict.name)}
                 className="w-full py-2 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/50 rounded-md text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-300" />
@@ -600,7 +685,7 @@ export default function GeographicIntelligencePage() {
 
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <button
-                  onClick={() => openEvidence(selectedDistrict.evidenceRecordId || '#7201')}
+                  onClick={() => openEvidence(resolveDistrictEvidence(selectedDistrict))}
                   className="py-1.5 px-2.5 bg-[#080E21] hover:bg-[#101F42] border border-[#233560] text-slate-200 rounded-md text-xs font-medium transition-colors cursor-pointer text-center truncate"
                 >
                   View Evidence
@@ -623,7 +708,7 @@ export default function GeographicIntelligencePage() {
                 ADMINISTRATIVE HIERARCHY DRILL-DOWN
               </span>
               <span className="text-[10px] font-mono text-slate-500">
-                LGD Level 3 (Taluka)
+                Modeled bands (not LGD records)
               </span>
             </div>
 
@@ -638,12 +723,12 @@ export default function GeographicIntelligencePage() {
             <div className="space-y-2 pt-1">
               {activeBlocks.map((block) => (
                 <div
-                  key={block.lgd}
+                  key={block.name}
                   className="flex items-center justify-between p-2 rounded bg-white border border-slate-200 text-xs font-mono"
                 >
                   <div>
                     <span className="font-semibold text-slate-900 block">{block.name}</span>
-                    <span className="text-[10px] text-slate-400">LGD: {block.lgd} • Block Hub</span>
+                    <span className="text-[10px] text-slate-400">{block.band}</span>
                   </div>
                   <div className="text-right">
                     <span className="font-bold text-slate-900 block">{block.coverage}% cov</span>
@@ -664,12 +749,69 @@ export default function GeographicIntelligencePage() {
             </div>
 
             <div className="text-[10px] font-mono text-slate-500 pt-1 border-t border-slate-100 flex items-center justify-between">
-              <span>Habitations: ~1,240</span>
-              <span>GPs: 593 Active</span>
+              <span>Zone: {selectedDistrict.zone}</span>
+              <span>Benchmark: {selectedDistrict.regionalBenchmarkRate}%</span>
             </div>
           </div>
         </div>
       </div>
     </AppShell>
+  );
+}
+
+function DistrictHoverTooltip({
+  district,
+  fx,
+  fy,
+}: {
+  district: District;
+  fx: number;
+  fy: number;
+}) {
+  const leftPct = Math.min(Math.max(fx * 100, 20), 80);
+  return (
+    <div
+      className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded-md bg-[#0B132B] border border-cyan-500/50 text-white font-mono text-xs shadow-2xl w-[260px] max-w-[70%] transition-opacity duration-150"
+      style={{
+        left: `${leftPct}%`,
+        top: `${Math.max(fy * 100 - 3, 10)}%`,
+      }}
+    >
+      <div className="flex items-center justify-between gap-3 border-b border-[#1E293B] pb-1.5 mb-1.5">
+        <span className="font-bold text-sm text-white truncate">{district.name}</span>
+        <span
+          className={`text-[9px] uppercase px-1.5 py-0.5 rounded font-bold shrink-0 ${
+            district.isGapFlagged
+              ? 'bg-rose-950 text-rose-300 border border-rose-800'
+              : 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+          }`}
+        >
+          {district.isGapFlagged ? `GAP ${district.gapPercentagePoints} pp` : 'BENCHMARK MET'}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
+        <div>Coverage: <strong className="text-cyan-300">{district.coverageRate}%</strong></div>
+        <div>Utilization: <strong className="text-white">{district.fundUtilizationRate}%</strong></div>
+        <div>Projects: <strong className="text-slate-300">{district.projectsCount}</strong></div>
+        <div>Allocation: <strong className="text-emerald-400">₹{district.budgetAllocatedCr} Cr</strong></div>
+      </div>
+      <div className="mt-1.5 pt-1 border-t border-[#1E293B] text-[9px] text-cyan-400">
+        Click district to inspect cross-ministry telemetry
+      </div>
+    </div>
+  );
+}
+
+export default function GeographicIntelligencePage() {
+  return (
+    <Suspense
+      fallback={
+        <AppShell>
+          <div className="p-8 text-sm font-mono text-slate-500">Loading geographic intelligence…</div>
+        </AppShell>
+      }
+    >
+      <GeographicIntelligenceInner />
+    </Suspense>
   );
 }

@@ -9,28 +9,30 @@ import { WhyFlaggedModal } from '@/components/investigation/WhyFlaggedModal';
 import { InvestigationPipelineInspector } from '@/components/investigation/InvestigationPipelineInspector';
 import {
   ShieldCheck,
-  Activity,
   ArrowRight,
   Calculator,
   Database,
   MapPin,
   Network,
   Download,
-  CheckCircle2,
-  AlertTriangle,
   ChevronRight,
   Sparkles,
-  Layers,
-  Calendar,
-  FileCheck2,
-  Clock,
-  Radio,
-  Share2,
 } from 'lucide-react';
+import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
+
+// Investigation references issued across the platform resolve to the district
+// whose records they were opened against. Unknown references fall back to the
+// canonical Nandurbar convergence investigation with an on-page notice.
+const INVESTIGATION_DISTRICT_MAP: Record<string, string> = {
+  'SUTRA-INV-2026-0001': 'Nandurbar',
+  'INV-NDB-CONV-001': 'Nandurbar',
+  'INV-GDC-CONV-002': 'Gadchiroli',
+  'INV-WSM-CONV-003': 'Washim',
+};
 
 export default function InvestigationWorkspaceDetailPage({ params }: PageProps) {
   const resolvedParams = use(params);
@@ -38,10 +40,8 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
 
   const {
     openEvidence,
-    openExplain,
     openWhyFlagged,
     openExecutiveBrief,
-    activeEvents,
   } = useIntelligence();
 
   const [activeTab, setActiveTab] = useState<
@@ -49,13 +49,23 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
   >('OVERVIEW');
   const [selectedFindingId, setSelectedFindingId] = useState<string>('SUTRA-FND-0001');
 
-  // Run or retrieve deterministic canonical investigation for Nandurbar LGD 512
+  // Resolve the investigation reference to its district; unknown references
+  // show the canonical Nandurbar investigation with an explicit notice.
+  const knownInvestigation = INVESTIGATION_DISTRICT_MAP[investigationId] !== undefined;
+  const targetDistrictName = INVESTIGATION_DISTRICT_MAP[investigationId] || 'Nandurbar';
+
+  // Run or retrieve deterministic canonical investigation for the resolved district
   const investigationResult = useMemo(() => {
-    return InvestigationEngine.runDistrictConvergenceInvestigation('Nandurbar');
-  }, []);
+    return InvestigationEngine.runDistrictConvergenceInvestigation(targetDistrictName);
+  }, [targetDistrictName]);
 
   const { investigation, findings, datasets, convergenceOpportunities } = investigationResult;
   const currentFinding = findings.find((f) => f.id === selectedFindingId) || findings[0];
+
+  const briefDistrict =
+    MAHARASHTRA_DISTRICTS.find(
+      (d) => d.name.toLowerCase() === investigation.targetDistrict.toLowerCase()
+    ) || null;
 
   return (
     <AppShell>
@@ -82,11 +92,17 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
             <p className="text-xs sm:text-sm text-slate-300 max-w-3xl mt-1">
               {investigation.question}
             </p>
+            {!knownInvestigation && (
+              <p className="text-[11px] font-mono text-amber-300 bg-amber-950/60 border border-amber-800/60 rounded px-2.5 py-1.5 mt-2 max-w-3xl">
+                Unrecognized investigation reference — showing the canonical Nandurbar convergence
+                investigation. Open a workspace from Signals, Map, or Evidence for a district-scoped case.
+              </p>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
             <button
-              onClick={() => openWhyFlagged(currentFinding.id)}
+              onClick={() => openWhyFlagged(currentFinding.id, investigation.targetDistrict)}
               className="px-3.5 py-2 rounded-md bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-200 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
@@ -94,7 +110,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
             </button>
 
             <button
-              onClick={() => openExecutiveBrief()}
+              onClick={() => openExecutiveBrief(briefDistrict || undefined)}
               className="px-3.5 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-md"
             >
               <Download className="w-3.5 h-3.5" />
@@ -135,16 +151,18 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
 
         {/* Navigation Tabs */}
         <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#1E293B] text-xs font-mono">
-          {[
-            { id: 'OVERVIEW', label: '1. FINDINGS & CORRELATION' },
-            { id: 'CALCULATIONS', label: '2. MATHEMATICAL PROOF' },
-            { id: 'EVIDENCE', label: '3. SOURCE EVIDENCE AUDIT' },
-            { id: 'RELATIONSHIPS', label: '4. GOVERNANCE GRAPH' },
-            { id: 'TIMELINE', label: '5. EVENT PIPELINE TIMELINE' },
-          ].map((tab) => (
+          {(
+            [
+              { id: 'OVERVIEW', label: '1. FINDINGS & CORRELATION' },
+              { id: 'CALCULATIONS', label: '2. MATHEMATICAL PROOF' },
+              { id: 'EVIDENCE', label: '3. SOURCE EVIDENCE AUDIT' },
+              { id: 'RELATIONSHIPS', label: '4. GOVERNANCE GRAPH' },
+              { id: 'TIMELINE', label: '5. EVENT PIPELINE TIMELINE' },
+            ] as { id: 'OVERVIEW' | 'EVIDENCE' | 'CALCULATIONS' | 'RELATIONSHIPS' | 'TIMELINE'; label: string }[]
+          ).map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id)}
               className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 activeTab === tab.id
                   ? 'bg-blue-600 text-white shadow-md'
@@ -168,15 +186,24 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                 <span className="text-[10px] font-mono tracking-wider text-blue-700 font-bold uppercase">
                   INVESTIGATION FINDINGS REGISTRY ({findings.length})
                 </span>
-                <span className="text-xs font-mono text-slate-500 font-medium">LGD 512 Multi-Scheme Join</span>
+                <span className="text-xs font-mono text-slate-500 font-medium">LGD {investigation.targetDistrictLgd} Multi-Scheme Join</span>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-3 font-mono text-xs">
                 {findings.map((fnd) => (
                   <div
                     key={fnd.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={selectedFindingId === fnd.id}
                     onClick={() => setSelectedFindingId(fnd.id)}
-                    className={`p-3.5 rounded-md border transition-all cursor-pointer shadow-2xs ${
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedFindingId(fnd.id);
+                      }
+                    }}
+                    className={`p-3.5 rounded-md border transition-all cursor-pointer shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                       selectedFindingId === fnd.id
                         ? 'bg-blue-50/50 border-blue-500 ring-1 ring-blue-500'
                         : 'bg-slate-50 border-slate-200 hover:border-slate-300'
@@ -209,7 +236,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                   </h2>
                 </div>
                 <button
-                  onClick={() => openWhyFlagged(currentFinding.id)}
+                  onClick={() => openWhyFlagged(currentFinding.id, investigation.targetDistrict)}
                   className="px-3 py-1.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 text-xs font-mono font-semibold flex items-center gap-1.5 hover:bg-amber-100 transition-colors cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-600" />
@@ -234,7 +261,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                 <div className="p-3 rounded-md bg-emerald-50/50 border border-emerald-200">
                   <span className="text-[10px] text-slate-500 block uppercase font-semibold">JOIN QUALITY</span>
                   <span className="text-xl font-bold text-emerald-800 mt-1 block">100% EXACT</span>
-                  <span className="text-[9px] text-slate-500">LGD: 512 Exact Key Match</span>
+                  <span className="text-[9px] text-slate-500">LGD: {investigation.targetDistrictLgd} Exact Key Match</span>
                 </div>
 
                 <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
@@ -308,7 +335,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
               </span>
 
               <Link
-                href="/map"
+                href={`/map?district=${investigation.targetDistrictLgd}`}
                 className="w-full py-2 px-3 rounded-md bg-slate-50 border border-slate-200 hover:border-blue-400 transition-colors flex items-center justify-between text-slate-700 font-semibold"
               >
                 <span className="flex items-center gap-2">
@@ -330,7 +357,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
               </Link>
 
               <button
-                onClick={() => openExecutiveBrief()}
+                onClick={() => openExecutiveBrief(briefDistrict || undefined)}
                 className="w-full py-2.5 px-3 rounded-md bg-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors cursor-pointer shadow-2xs"
               >
                 <Download className="w-3.5 h-3.5" />
@@ -452,7 +479,10 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
               MINISTRY ──▶ SCHEME ──▶ DISTRICT ──▶ EVENT ──▶ FINDING ──▶ EVIDENCE
             </div>
             <p className="text-slate-600 text-xs font-sans leading-relaxed">
-              Ministry of Jal Shakti & Ministry of Rural Development operate concurrently in Nandurbar (LGD: 512). The live JJM expenditure mutation generates statutory finding SUTRA-FND-0001, anchored to verified Evidence Record #7201.
+              {investigation.targetDistrict} (LGD: {investigation.targetDistrictLgd}): concurrent
+              programme delivery tracked across the three canonical registers. The live drawdown
+              telemetry generates statutory finding {currentFinding.id}, anchored to its source
+              evidence records below.
             </p>
           </div>
         </div>

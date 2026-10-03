@@ -26,14 +26,21 @@ export default function EvidenceHubPage() {
   const [searchFilter, setSearchFilter] = useState('');
 
   const selectedDataset =
-    DATASETS_META.find((d) => d.id === selectedDatasetId) || DATASETS_META[1];
+    DATASETS_META.find((d) => d.id === selectedDatasetId) || null;
 
-  const filteredRecords = EVIDENCE_RECORDS.filter(
-    (r) =>
-      r.district.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      r.schemeName.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      r.recordNumber.toLowerCase().includes(searchFilter.toLowerCase())
-  );
+  const filteredRecords = EVIDENCE_RECORDS.filter((r) => {
+    const matchesDataset = !selectedDatasetId || r.datasetId === selectedDatasetId;
+    if (!matchesDataset) return false;
+    const q = searchFilter.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      r.district.toLowerCase().includes(q) ||
+      r.schemeName.toLowerCase().includes(q) ||
+      r.recordNumber.toLowerCase().includes(q) ||
+      r.state.toLowerCase().includes(q) ||
+      r.sourceType.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <AppShell>
@@ -94,13 +101,22 @@ export default function EvidenceHubPage() {
       </div>
 
       {/* Dataset Overview Grid on Light Evidence Surfaces */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5" role="listbox" aria-label="Select dataset repository">
         {DATASETS_META.map((dataset) => {
           const isSelected = dataset.id === selectedDatasetId;
           return (
             <div
               key={dataset.id}
+              role="option"
+              aria-selected={isSelected}
+              tabIndex={0}
               onClick={() => setSelectedDatasetId(dataset.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedDatasetId(dataset.id);
+                }
+              }}
               className={`p-4 rounded-lg surface-evidence border transition-all cursor-pointer space-y-2.5 shadow-2xs ${
                 isSelected
                   ? 'border-blue-600 ring-2 ring-blue-500/20 shadow-md'
@@ -142,37 +158,47 @@ export default function EvidenceHubPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 pb-3">
           <div>
             <span className="text-[10px] font-mono uppercase text-blue-700 font-semibold">
-              ACTIVE REPOSITORY INSPECTOR: {selectedDataset.id}
+              {selectedDataset
+                ? `ACTIVE REPOSITORY INSPECTOR: ${selectedDataset.id}`
+                : 'ACTIVE REPOSITORY INSPECTOR: ALL REPOSITORIES'}
             </span>
             <h2 className="text-lg font-bold text-slate-900 font-editorial mt-0.5">
-              {selectedDataset.name}
+              {selectedDataset ? selectedDataset.name : 'All dataset repositories'}
             </h2>
-            <p className="text-xs text-slate-600 mt-0.5">{selectedDataset.description}</p>
+            <p className="text-xs text-slate-600 mt-0.5">
+              {selectedDataset
+                ? selectedDataset.description
+                : 'Records below span every registered repository. Select a dataset card above to inspect its canonical schema.'}
+            </p>
           </div>
 
-          <div className="flex items-center space-x-3 text-xs font-mono">
-            <span className="text-slate-600">
-              Source Type: <strong className="text-slate-900 font-semibold">{selectedDataset.sourceType}</strong>
-            </span>
-          </div>
+          {selectedDataset && (
+            <div className="flex items-center space-x-3 text-xs font-mono">
+              <span className="text-slate-600">
+                Source Type: <strong className="text-slate-900 font-semibold">{selectedDataset.sourceType}</strong>
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Fields list */}
-        <div>
-          <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1.5 font-semibold">
-            CANONICAL SCHEMA FIELDS
-          </span>
-          <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
-            {selectedDataset.fields.map((f) => (
-              <span
-                key={f}
-                className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 shadow-2xs"
-              >
-                {f}
-              </span>
-            ))}
+        {selectedDataset && (
+          <div>
+            <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1.5 font-semibold">
+              CANONICAL SCHEMA FIELDS
+            </span>
+            <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
+              {selectedDataset.fields.map((f) => (
+                <span
+                  key={f}
+                  className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 shadow-2xs"
+                >
+                  {f}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Records Audit Table */}
@@ -184,6 +210,9 @@ export default function EvidenceHubPage() {
             </h3>
             <p className="text-xs text-slate-500">
               Click any record to inspect exact field telemetry, transformation, and 8-stage provenance lineage.
+              {selectedDatasetId
+                ? ` Showing records from ${selectedDataset?.id ?? selectedDatasetId} — ${selectedDataset?.name ?? ''} (${filteredRecords.length} of ${EVIDENCE_RECORDS.length}).`
+                : ` Showing records from all repositories (${filteredRecords.length} of ${EVIDENCE_RECORDS.length}).`}
             </p>
           </div>
 
@@ -215,10 +244,38 @@ export default function EvidenceHubPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
+                {filteredRecords.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="p-8 text-center">
+                      <div className="text-sm font-semibold text-slate-700">
+                        No records match this dataset and search combination.
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Try clearing the search or selecting a different dataset repository above.
+                      </div>
+                      <button
+                        onClick={() => {
+                          setSearchFilter('');
+                          setSelectedDatasetId('');
+                        }}
+                        className="mt-3 px-3 py-1.5 bg-white border border-slate-300 rounded text-xs text-blue-700 hover:border-blue-400 font-semibold cursor-pointer"
+                      >
+                        Show all records
+                      </button>
+                    </td>
+                  </tr>
+                )}
                 {filteredRecords.map((record) => (
                   <tr
                     key={record.id}
-                    className="hover:bg-blue-50/40 transition-colors cursor-pointer"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openEvidence(record.id);
+                      }
+                    }}
+                    className="hover:bg-blue-50/40 transition-colors cursor-pointer focus:outline-none focus:bg-blue-50/60"
                     onClick={() => openEvidence(record.id)}
                   >
                     <td className="p-3.5 font-bold text-blue-700">

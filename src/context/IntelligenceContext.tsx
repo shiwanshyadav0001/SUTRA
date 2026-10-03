@@ -37,7 +37,7 @@ export interface IntelligenceContextType {
   openExplain: (params: ExplainParams) => void;
   openExecutiveBrief: (district?: District) => void;
   openEngineSpec: () => void;
-  openWhyFlagged: (findingId?: string) => void;
+  openWhyFlagged: (findingId?: string, districtName?: string) => void;
   openWorkspace: (investigationId?: string) => void;
   selectedDistrict: District | null;
   setSelectedDistrict: (district: District | null) => void;
@@ -99,9 +99,9 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
   const [signalStatuses, setSignalStatuses] = useState<
     Record<string, 'ACTIVE' | 'ACKNOWLEDGED' | 'INVESTIGATING' | 'ESCALATED_PMO' | 'RESOLVED'>
   >({
-    'SIG-001': 'ACTIVE',
-    'SIG-002': 'ACTIVE',
-    'SIG-003': 'ACTIVE',
+    'SIG-01': 'ACTIVE',
+    'SIG-02': 'ACTIVE',
+    'SIG-03': 'ACTIVE',
   });
 
   const updateSignalStatus = (
@@ -171,7 +171,7 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
       };
     }),
     sources: sourceHealth,
-    latestInvestigationId: latestEvent?.investigationId || 'INV-NDB-CONV-001',
+    latestInvestigationId: latestEvent?.investigationId || 'SUTRA-INV-2026-0001',
     latestEvent: latestEvent || undefined,
     lastEventTimestamp: latestEvent?.timestamp || '2026-10-02T22:00:00.000Z',
   };
@@ -288,19 +288,24 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
     setIsBriefOpen(true);
   };
 
-  const openWhyFlagged = (findingId = 'SUTRA-FND-0001') => {
-    setActiveFindingId(findingId);
+  const openWhyFlagged = (findingId = 'SUTRA-FND-0001', districtName?: string) => {
     try {
-      const invResult = InvestigationEngine.runDistrictConvergenceInvestigation('Nandurbar');
+      const invResult = InvestigationEngine.runDistrictConvergenceInvestigation(
+        districtName || 'Nandurbar'
+      );
       const targetFinding = invResult.findings.find((f) => f.id === findingId) || invResult.finding;
       setWhyFlaggedChain(targetFinding?.whyFlaggedChain || null);
+      // If the requested id has no forensic chain (e.g. a signal id was
+      // passed), label the modal with the resolved finding so the header
+      // never claims an unsupported finding identity.
+      setActiveFindingId(targetFinding?.id || findingId);
     } catch {
-      // fallback
+      setActiveFindingId(findingId);
     }
     setIsWhyFlaggedOpen(true);
   };
 
-  const openWorkspace = (investigationId = 'INV-NDB-CONV-001') => {
+  const openWorkspace = (investigationId = 'SUTRA-INV-2026-0001') => {
     if (typeof window !== 'undefined') {
       window.location.assign(`/investigation/${investigationId}`);
     }

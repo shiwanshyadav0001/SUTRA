@@ -23,11 +23,10 @@ import {
 } from 'lucide-react';
 
 interface LiveGovernancePulseProps {
-  compact?: boolean;
   onOpenWhyFlagged?: (findingId: string) => void;
 }
 
-export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveGovernancePulseProps) {
+export function LiveGovernancePulse({ onOpenWhyFlagged }: LiveGovernancePulseProps) {
   const router = useRouter();
   const {
     events,
@@ -251,13 +250,13 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
         </div>
 
         <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-          <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Pipeline Latency</div>
+          <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Pipeline Reference</div>
           <div className="font-mono text-sm font-bold text-emerald-700 mt-0.5 flex items-center gap-1.5">
             <span>32.7 ms</span>
-            <span className="text-[10px] text-slate-400 font-normal">total</span>
+            <span className="text-[10px] text-slate-400 font-normal">stage budgets (illustrative)</span>
           </div>
           <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-            Source → Event: 11.5ms
+            Reference only — not measured telemetry
           </div>
         </div>
 
@@ -272,7 +271,7 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
         <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
           <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Active Investigation</div>
           <Link
-            href="/investigation/INV-NDB-CONV-001"
+            href="/investigation/SUTRA-INV-2026-0001"
             className="font-mono text-xs font-bold text-blue-700 hover:underline mt-0.5 truncate flex items-center gap-1"
           >
             <span>{telemetrySummary.latestInvestigationId}</span>
@@ -334,7 +333,7 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
           <div className="pt-2 border-t border-slate-200">
             <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-2">
               <span className="font-semibold">Event Processing Pipeline</span>
-              <span className="text-emerald-700 font-medium">Latencies: 4.2ms → 1.8ms → 2.1ms → 3.4ms → 6.9ms → 14.3ms</span>
+              <span className="text-slate-500 font-medium">Reference stage budgets (illustrative)</span>
             </div>
             <div className="grid grid-cols-6 gap-1.5">
               {pipelineSteps.map((s, idx) => {
@@ -407,7 +406,7 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
 
             {/* Inspect Investigation */}
             <Link
-              href={`/investigation/${activeEvent.investigationId || 'INV-NDB-CONV-001'}`}
+              href={`/investigation/${activeEvent.investigationId || 'SUTRA-INV-2026-0001'}`}
               className="px-3 py-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Layers className="h-3.5 w-3.5 text-blue-600" />

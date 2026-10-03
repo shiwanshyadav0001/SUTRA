@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
@@ -11,14 +11,9 @@ import {
   Search,
   Sparkles,
   ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
   ChevronRight,
-  Database,
-  BarChart2,
   FileText,
   AlertTriangle,
-  Info,
   Layers,
   MapPin,
   ExternalLink,
@@ -29,12 +24,21 @@ function QueryContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || 'Why was Nandurbar flagged for cross-programme convergence gap?';
 
-  const { openEvidence, openExplain, openWhyFlagged, openWorkspace } = useIntelligence();
+  const { openEvidence, openWhyFlagged, openWorkspace } = useIntelligence();
   const [queryInput, setQueryInput] = useState(initialQuery);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [queryResult, setQueryResult] = useState<QueryExecutionResult | null>(null);
   const [viewMode, setViewMode] = useState<'INVESTIGATION' | 'TELEMETRY'>('INVESTIGATION');
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const runIdRef = useRef(0);
+
+  // Clear any in-flight staged run when the component unmounts.
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   const sampleQueries = [
     'Why was Nandurbar flagged for cross-programme convergence gap?',
@@ -57,25 +61,39 @@ function QueryContent() {
     setQueryResult(null);
     setActiveStepIndex(0);
 
-    // Concurrently trigger backend API route
+    // Cancel any previous staged run so rapid re-submits can't interleave.
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    const runId = ++runIdRef.current;
+
+    // Concurrently trigger backend API route (5s timeout, abortable).
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
     const apiPromise = fetch('/api/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: q }),
+      signal: controller.signal,
     })
-      .then((res) => res.json())
-      .catch(() => null);
+      .then((res) => (res.ok ? res.json() : null))
+      .catch(() => null)
+      .finally(() => clearTimeout(timeout));
 
     const stepsCount = 6;
     let current = 0;
 
-    const interval = setInterval(async () => {
+    intervalRef.current = setInterval(async () => {
+      // A newer run superseded this one — stop silently.
+      if (runId !== runIdRef.current) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        return;
+      }
       current++;
       setActiveStepIndex(current);
 
       if (current >= stepsCount) {
-        clearInterval(interval);
+        if (intervalRef.current) clearInterval(intervalRef.current);
         const apiData = await apiPromise;
+        if (runId !== runIdRef.current) return;
         if (apiData && apiData.result) {
           setQueryResult(apiData.result);
         } else {
@@ -155,7 +173,9 @@ function QueryContent() {
             <button
               key={idx}
               onClick={() => handleRunQuery(q)}
-              className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-800 transition-colors truncate max-w-xs text-left"
+              disabled={isAnalyzing}
+              title={q}
+              className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-800 transition-colors truncate max-w-xs text-left disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {q}
             </button>
@@ -211,7 +231,7 @@ function QueryContent() {
                   </div>
                   {isDone && (
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                      VERIFIED
+                      DONE
                     </span>
                   )}
                 </div>
@@ -223,7 +243,7 @@ function QueryContent() {
 
       {/* Query Result Presentation */}
       {queryResult && !isAnalyzing && (
-        <div className="space-y-5 animate-in fade-in duration-300">
+        <div className="space-y-5 animate-in fade-in duration-300" aria-live="polite">
           {/* Unsupported Query Handler */}
           {!queryResult.isSupported ? (
             <div className="p-6 rounded-lg bg-white border border-amber-300 shadow-sm space-y-4">
@@ -296,7 +316,7 @@ function QueryContent() {
                   </span>
                   <span className="text-slate-400">•</span>
                   <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-medium">
-                    target: &quot;{queryResult.structuredIntent.targetDistrict || 'Nandurbar'}&quot;
+                    target: &quot;{queryResult.structuredIntent.targetDistrict || 'Not specified'}&quot;
                   </span>
                 </div>
 
@@ -376,7 +396,7 @@ function QueryContent() {
                           {queryResult.topResult.district.name.toUpperCase()}
                         </h3>
                         <p className="text-xs text-slate-500">
-                          {queryResult.topResult.district.zone}, Maharashtra (LGD: {queryResult.topResult.district.lgdCode || '512'})
+                          {queryResult.topResult.district.zone}, Maharashtra (LGD: {queryResult.topResult.district.lgdCode || 'Not available'})
                         </p>
                       </div>
 
@@ -423,7 +443,7 @@ function QueryContent() {
                     {/* Action Buttons */}
                     <div className="flex flex-wrap gap-2.5 justify-end pt-1">
                       <button
-                        onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+                        onClick={() => openWhyFlagged('SUTRA-FND-0001', queryResult.topResult.district.name)}
                         className="px-3.5 py-2 rounded-md bg-slate-100 border border-slate-300 text-xs text-slate-800 hover:bg-slate-200 transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5 text-amber-600" />
@@ -431,7 +451,7 @@ function QueryContent() {
                       </button>
 
                       <button
-                        onClick={() => openWorkspace('INV-NDB-CONV-001')}
+                        onClick={() => openWorkspace('SUTRA-INV-2026-0001')}
                         className="px-3.5 py-2 rounded-md bg-slate-100 border border-slate-300 text-xs text-slate-800 hover:bg-slate-200 transition-colors font-medium cursor-pointer"
                       >
                         OPEN WORKSPACE

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { SCHEMES_DATA, MINISTRIES_DATA } from '@/lib/data/governance-data';
 import { Scheme } from '@/lib/types';
-import { Search, Filter, ArrowUpRight, ChevronRight, SlidersHorizontal, Layers } from 'lucide-react';
+import { Search, ChevronRight } from 'lucide-react';
 import { formatIndianNumber } from '@/lib/formatters';
 
 export default function SchemeExplorerPage() {
@@ -94,6 +94,23 @@ export default function SchemeExplorerPage() {
 
       {/* Table Interface with Department Identity & Coverage Visualizers */}
       <div className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
+        <div className="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+          <span>
+            Showing {filteredSchemes.length} of {SCHEMES_DATA.length} registered schemes
+          </span>
+          {(searchQuery || selectedMinistry !== 'all' || selectedStatus !== 'all') && (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedMinistry('all');
+                setSelectedStatus('all');
+              }}
+              className="text-blue-700 hover:underline font-semibold cursor-pointer"
+            >
+              Reset filters
+            </button>
+          )}
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono">
             <thead className="bg-[#0B132B] text-slate-200 text-[10px] uppercase tracking-wider font-semibold border-b border-[#1E293B]">
@@ -110,6 +127,18 @@ export default function SchemeExplorerPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
+              {filteredSchemes.length === 0 && (
+                <tr>
+                  <td colSpan={9} className="p-8 text-center">
+                    <div className="text-sm font-semibold text-slate-700">
+                      No schemes match this search and filter combination.
+                    </div>
+                    <div className="text-xs text-slate-500 mt-1">
+                      Try a different keyword, ministry, or status — or reset the filters above.
+                    </div>
+                  </td>
+                </tr>
+              )}
               {filteredSchemes.map((scheme) => (
                 <tr
                   key={scheme.id}

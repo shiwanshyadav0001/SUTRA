@@ -35,6 +35,19 @@ export async function GET(request: NextRequest) {
 
   // Server-Sent Events (SSE) Streaming Response
   const encoder = new TextEncoder();
+  let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+  let unsubscribe: (() => void) | null = null;
+
+  const cleanup = () => {
+    if (heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+      heartbeatInterval = null;
+    }
+    if (unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
+  };
 
   const stream = new ReadableStream({
     start(controller) {
@@ -49,7 +62,7 @@ export async function GET(request: NextRequest) {
       controller.enqueue(encoder.encode(`data: ${initialPayload}\n\n`));
 
       // 2. Subscribe to new events from EventBus
-      const unsubscribe = EventBus.subscribe((newEvent) => {
+      unsubscribe = EventBus.subscribe((newEvent) => {
         if (!lgd || newEvent.lgdCode === lgd) {
           try {
             const eventPayload = JSON.stringify({
@@ -60,32 +73,33 @@ export async function GET(request: NextRequest) {
             });
             controller.enqueue(encoder.encode(`data: ${eventPayload}\n\n`));
           } catch {
-            // Stream closed
-            unsubscribe();
+            // Stream closed — release subscription and heartbeat
+            cleanup();
           }
         }
       });
 
       // 3. Heartbeat every 15s to keep connection alive
-      const heartbeatInterval = setInterval(() => {
+      heartbeatInterval = setInterval(() => {
         try {
           controller.enqueue(encoder.encode(`: heartbeat\n\n`));
         } catch {
-          clearInterval(heartbeatInterval);
-          unsubscribe();
+          cleanup();
         }
       }, 15000);
 
       // Clean up when client disconnects
       request.signal.addEventListener('abort', () => {
-        clearInterval(heartbeatInterval);
-        unsubscribe();
+        cleanup();
         try {
           controller.close();
         } catch {
           // ignore
         }
       });
+    },
+    cancel() {
+      cleanup();
     },
   });
 

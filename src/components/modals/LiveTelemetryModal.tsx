@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import {
   X,
@@ -33,32 +33,55 @@ export function LiveTelemetryModal({ isOpen, onClose }: LiveTelemetryModalProps)
     resetLiveEvents,
   } = useIntelligence();
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshingId, setRefreshingId] = useState<string | null>(null);
   const [refreshSuccess, setRefreshSuccess] = useState<string | null>(null);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   const handleManualPoll = async (sourceId: string) => {
-    setIsRefreshing(true);
+    setRefreshingId(sourceId);
     setRefreshSuccess(null);
+    setRefreshError(null);
     try {
       const res = await fetch('/api/ingest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'poll', sourceId }),
       });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setRefreshSuccess(`Polled ${sourceId}: ${data.message || 'Latest snapshot synchronized.'}`);
     } catch {
-      setRefreshSuccess(`Polled ${sourceId}: Source verified up to date.`);
+      setRefreshError(
+        `Poll for ${sourceId} failed: ingestion endpoint unreachable. Showing last verified snapshot instead — no data was fabricated.`
+      );
     } finally {
-      setIsRefreshing(false);
-      setTimeout(() => setRefreshSuccess(null), 4000);
+      setRefreshingId(null);
+      setTimeout(() => {
+        setRefreshSuccess(null);
+        setRefreshError(null);
+      }, 6000);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Live data infrastructure monitor"
+    >
       <div
         className="bg-white border border-slate-200 rounded-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto text-slate-800 shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
@@ -105,14 +128,20 @@ export function LiveTelemetryModal({ isOpen, onClose }: LiveTelemetryModalProps)
               <span>{refreshSuccess}</span>
             </div>
           )}
+          {refreshError && (
+            <div className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 flex items-center gap-2">
+              <span className="font-bold">SYNC FAILED:</span>
+              <span>{refreshError}</span>
+            </div>
+          )}
 
           {/* Quick Metrics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
               <span className="text-[10px] text-slate-500 uppercase block">STREAM STATUS</span>
-              <span className="text-sm font-bold text-emerald-600 mt-0.5 block flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                ONLINE
+              <span className={`text-sm font-bold mt-0.5 flex items-center gap-1.5 ${isLiveStreaming ? 'text-emerald-600' : 'text-amber-600'}`}>
+                <span className={`w-2 h-2 rounded-full ${isLiveStreaming ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
+                {isLiveStreaming ? 'STREAMING' : 'PAUSED'}
               </span>
               <span className="text-[10px] text-slate-500">SSE /api/live/events</span>
             </div>
@@ -128,7 +157,7 @@ export function LiveTelemetryModal({ isOpen, onClose }: LiveTelemetryModalProps)
             <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
               <span className="text-[10px] text-slate-500 uppercase block">BUFFER OCCUPANCY</span>
               <span className="text-sm font-bold text-blue-700 mt-0.5 block">
-                {events.length} / 60
+                {events.length} / 50
               </span>
               <span className="text-[10px] text-slate-500">In-memory ring buffer</span>
             </div>
@@ -245,11 +274,11 @@ export function LiveTelemetryModal({ isOpen, onClose }: LiveTelemetryModalProps)
                     </div>
                     <button
                       onClick={() => handleManualPoll(src.id || 'DS-JJM')}
-                      disabled={isRefreshing}
-                      className="p-1.5 rounded border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-700 transition-colors"
+                      disabled={refreshingId !== null}
+                      className="p-1.5 rounded border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-700 transition-colors disabled:opacity-50"
                       title="Trigger source sync"
                     >
-                      <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-600' : ''}`} />
+                      <RefreshCw className={`w-3.5 h-3.5 ${refreshingId === (src.id || 'DS-JJM') ? 'animate-spin text-blue-600' : ''}`} />
                     </button>
                   </div>
                 </div>

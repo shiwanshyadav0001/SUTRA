@@ -134,7 +134,8 @@ export function CommandPaletteModal({ isOpen, onClose }: CommandPaletteModalProp
     if (isOpen) {
       setSearchTerm('');
       setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
+      const timer = setTimeout(() => inputRef.current?.focus(), 50);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 

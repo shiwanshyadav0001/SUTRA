@@ -2,23 +2,13 @@
 
 import React, { useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
-import { ENTITY_RESOLUTION_SAMPLES } from '@/lib/data/governance-data';
 import { EntityResolutionEngine } from '@/lib/engines/entity-resolution';
-import { computeLevenshtein, parseAndAnalyzeTreasuryCsv, ParsedTreasuryRow } from '@/lib/engines/math-algorithms';
+import { computeLevenshtein, parseAndAnalyzeTreasuryCsv } from '@/lib/engines/math-algorithms';
 import {
   UploadCloud,
   FileSpreadsheet,
   CheckCircle2,
-  GitBranch,
-  Layers,
-  ArrowRight,
-  Database,
-  Sparkles,
   RefreshCw,
-  Sliders,
-  AlertTriangle,
-  Code,
-  FileText,
   Server,
   Activity,
   Check,
@@ -51,10 +41,20 @@ export default function DataIngestionPage() {
 
   const levDetails = computeLevenshtein(customInput, liveResult.resolved);
 
+  const matchQuality = (() => {
+    if (!customInput.trim()) return null;
+    if (liveResult.method === 'Unverified-Entity')
+      return { label: 'NO RELIABLE MATCH — VERIFY MANUALLY', classes: 'text-rose-700' };
+    if ((liveResult.confidence || 0) >= 98)
+      return { label: 'HIGH-CONFIDENCE LGD MATCH', classes: 'text-emerald-700' };
+    return { label: 'FUZZY MATCH — REVIEW ADVISED', classes: 'text-amber-700' };
+  })();
+
   // Dynamic CSV Ingestion Engine State
   const [csvContent, setCsvContent] = useState(SAMPLE_RAW_TREASURY_CSV);
   const [analysisResult, setAnalysisResult] = useState(() => parseAndAnalyzeTreasuryCsv(SAMPLE_RAW_TREASURY_CSV));
   const [isProcessingCsv, setIsProcessingCsv] = useState(false);
+  const [csvError, setCsvError] = useState<string | null>(null);
   const [fileName, setFileName] = useState('treasury_sanction_feed_q2.csv');
 
   // Live Watcher Ingestion Trigger State
@@ -100,6 +100,8 @@ export default function DataIngestionPage() {
     },
   ];
 
+  // Connector self-check: validates the registered connector descriptor
+  // locally. This does not poll a live government endpoint.
   const handleTriggerSync = (sourceId: string) => {
     setSyncingSourceId(sourceId);
     setSyncSuccessId(null);
@@ -114,18 +116,37 @@ export default function DataIngestionPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setCsvError(null);
+    if (file.size > 2 * 1024 * 1024) {
+      setCsvError(`"${file.name}" exceeds the 2 MB in-browser parse limit. Upload a smaller extract.`);
+      e.target.value = '';
+      return;
+    }
+
     setFileName(file.name);
     setIsProcessingCsv(true);
 
     const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target?.result as string;
-      setCsvContent(text);
-      const res = parseAndAnalyzeTreasuryCsv(text);
-      setAnalysisResult(res);
+    reader.onerror = () => {
+      setCsvError(`Could not read "${file.name}". Please retry with a UTF-8 .csv file.`);
       setIsProcessingCsv(false);
     };
+    reader.onload = (event) => {
+      try {
+        const text = event.target?.result as string;
+        if (!text || !text.trim()) throw new Error('empty file');
+        setCsvContent(text);
+        setAnalysisResult(parseAndAnalyzeTreasuryCsv(text));
+      } catch {
+        setCsvError(
+          `"${file.name}" could not be parsed as District_Name,Scheme_Code,Allocated_Cr,Utilized_Cr. Previous results retained.`
+        );
+      } finally {
+        setIsProcessingCsv(false);
+      }
+    };
     reader.readAsText(file);
+    e.target.value = '';
   };
 
   const handleReloadDefaultCsv = () => {
@@ -172,7 +193,7 @@ export default function DataIngestionPage() {
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 font-semibold">
             <Activity className="w-3.5 h-3.5" />
-            <span>4/4 Sources Healthy</span>
+            <span>4 Registered Connectors</span>
           </div>
         </div>
 
@@ -219,17 +240,17 @@ export default function DataIngestionPage() {
                 {syncingSourceId === source.id ? (
                   <>
                     <RefreshCw className="w-3 h-3 text-blue-600 animate-spin" />
-                    <span>Syncing Feed...</span>
+                    <span>Checking…</span>
                   </>
                 ) : syncSuccessId === source.id ? (
                   <>
                     <Check className="w-3 h-3 text-emerald-600" />
-                    <span className="text-emerald-700">Synchronized</span>
+                    <span className="text-emerald-700">Descriptor OK (local)</span>
                   </>
                 ) : (
                   <>
                     <RefreshCw className="w-3 h-3 text-slate-500" />
-                    <span>Trigger Ingestion</span>
+                    <span>Run Connector Self-Check</span>
                   </>
                 )}
               </button>
@@ -342,7 +363,11 @@ export default function DataIngestionPage() {
             </div>
             <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-emerald-200">
               <span className="text-slate-600 font-medium">{liveResult.targetType}</span>
-              <span className="font-bold text-emerald-700">VERIFIED SOURCE • EXACT LGD MATCH</span>
+              {matchQuality ? (
+                <span className={`font-bold ${matchQuality.classes}`}>{matchQuality.label}</span>
+              ) : (
+                <span className="font-bold text-slate-400">TYPE TO RESOLVE</span>
+              )}
             </div>
           </div>
         </div>
@@ -355,11 +380,12 @@ export default function DataIngestionPage() {
             <div className="flex items-center space-x-2">
               <FileSpreadsheet className="w-5 h-5 text-blue-700" />
               <h2 className="text-lg font-bold text-slate-900 font-editorial">
-                Real-Time CSV Ingestion & Z-Score Anomaly Engine
+                CSV Ingestion & Z-Score Anomaly Engine
               </h2>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Upload any raw CSV file with district allocations or run our live uncurated treasury feed.
+              Upload any raw CSV file with district allocations, or parse the built-in sample treasury
+              feed (intentional spelling variants included to exercise the normalizer).
             </p>
           </div>
 
@@ -372,10 +398,10 @@ export default function DataIngestionPage() {
               <span>Reset Sample Feed</span>
             </button>
 
-            <label className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs font-mono rounded-md cursor-pointer transition-all flex items-center space-x-1.5 shadow-2xs">
+            <label className={`px-4 py-1.5 font-semibold text-xs font-mono rounded-md transition-all flex items-center space-x-1.5 shadow-2xs ${isProcessingCsv ? 'bg-slate-300 text-slate-500 cursor-wait' : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'}`}>
               <UploadCloud className="w-4 h-4" />
-              <span>Upload Custom CSV</span>
-              <input type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
+              <span>{isProcessingCsv ? 'Parsing…' : 'Upload Custom CSV'}</span>
+              <input type="file" accept=".csv" onChange={handleFileUpload} disabled={isProcessingCsv} className="hidden" aria-label="Upload custom CSV file" />
             </label>
           </div>
         </div>
@@ -385,23 +411,23 @@ export default function DataIngestionPage() {
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
             <span className="text-[10px] text-slate-500 block uppercase font-semibold">PARSED ROWS</span>
             <span className="text-xl font-bold text-slate-900">{analysisResult.totalRows}</span>
-            <span className="text-[10px] text-emerald-700 block mt-0.5 font-medium">100% Normalized</span>
+            <span className="text-[10px] text-slate-500 block mt-0.5 font-medium">Parsed locally in-browser</span>
           </div>
 
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
             <span className="text-[10px] text-slate-500 block uppercase font-semibold">TOTAL SANCTIONED</span>
             <span className="text-xl font-bold text-slate-900">₹{analysisResult.totalAllocatedCr} Cr</span>
-            <span className="text-[10px] text-slate-500 block mt-0.5">Across Ministries</span>
+            <span className="text-[10px] text-slate-500 block mt-0.5">Row-sum of current file</span>
           </div>
 
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
             <span className="text-[10px] text-slate-500 block uppercase font-semibold">TOTAL DRAWDOWN</span>
             <span className="text-xl font-bold text-slate-900">₹{analysisResult.totalUtilizedCr} Cr</span>
-            <span className="text-[10px] text-slate-500 block mt-0.5">PFMS Verified</span>
+            <span className="text-[10px] text-slate-500 block mt-0.5">Row-sum of current file</span>
           </div>
 
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
-            <span className="text-[10px] text-slate-500 block uppercase font-semibold">MEAN POPULATION PACE</span>
+            <span className="text-[10px] text-slate-500 block uppercase font-semibold">MEAN UTILIZATION (μ)</span>
             <span className="text-xl font-bold text-emerald-700">{analysisResult.avgUtilization}%</span>
             <span className="text-[10px] text-slate-500 block mt-0.5">Statutory Mean (μ)</span>
           </div>
@@ -423,6 +449,11 @@ export default function DataIngestionPage() {
               Engine: Levenshtein DP + Statistical Z-Score Outlier
             </span>
           </div>
+          {csvError && (
+            <div className="px-4 py-2.5 bg-rose-50 border-b border-rose-200 text-xs text-rose-800 font-mono">
+              {csvError}
+            </div>
+          )}
 
           <div className="overflow-x-auto max-h-80">
             <table className="w-full text-left font-mono text-xs">
@@ -442,9 +473,11 @@ export default function DataIngestionPage() {
                 {analysisResult.rows.map((r, i) => (
                   <tr key={i} className="hover:bg-blue-50/40 transition-colors">
                     <td className="p-3 text-rose-700 font-semibold">{r.rawDistrict}</td>
-                    <td className="p-3 text-emerald-800 font-bold flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{r.normalizedDistrict}</span>
+                    <td className="p-3 text-emerald-800 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span>{r.normalizedDistrict}</span>
+                      </span>
                     </td>
                     <td className="p-3 text-slate-700">{r.schemeCode}</td>
                     <td className="p-3 text-slate-900 font-semibold">₹{r.allocatedCr}</td>

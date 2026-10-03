@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { WhyFlaggedChain } from '@/lib/types/data-fabric';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import {
@@ -27,10 +27,25 @@ interface Props {
 export function WhyFlaggedModal({ chain, isOpen, onClose, onTraceEvidence }: Props) {
   const { openEvidence } = useIntelligence();
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !chain) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Forensic evidence chain"
+    >
       <div
         className="bg-white border border-slate-200 rounded-lg w-full max-w-4xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden text-xs"
         onClick={(e) => e.stopPropagation()}
@@ -88,7 +103,7 @@ export function WhyFlaggedModal({ chain, isOpen, onClose, onTraceEvidence }: Pro
               </div>
               <div>
                 <span className="text-slate-500 block text-[11px]">Census Code:</span>
-                <span className="text-slate-800 font-mono">{chain.lgdEntity.censusCode || '512'}</span>
+                <span className="text-slate-800 font-mono">{chain.lgdEntity.censusCode || chain.districtLgdCode}</span>
               </div>
             </div>
           </div>

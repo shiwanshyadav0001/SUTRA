@@ -30,6 +30,14 @@ export function LoadingTransition({
   };
 
   useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter') finishTransition();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [router, destinationRoute, onComplete]);
+
+  useEffect(() => {
     // Stage 1: Ministries thread synchronization
     const t1 = setTimeout(() => setStep(1), 500);
     // Stage 2: Schemes and cross-ministerial overlap detection
@@ -161,6 +169,16 @@ export function LoadingTransition({
                 Weaving cross-ministerial intelligence threads...
               </span>
             )}
+          </div>
+
+          {/* Skip control — never trap the user behind the intro */}
+          <div className="pt-3 text-center">
+            <button
+              onClick={finishTransition}
+              className="px-4 py-1.5 font-mono text-[11px] tracking-widest uppercase text-[#8E887E] border border-[#2A2926] hover:text-[#F3F0E8] hover:border-[#B78A5A] transition-colors cursor-pointer"
+            >
+              Skip intro →
+            </button>
           </div>
         </div>
       </div>

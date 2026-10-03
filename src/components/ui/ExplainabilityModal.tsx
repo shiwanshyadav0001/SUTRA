@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface Factor {
@@ -19,21 +19,49 @@ interface ExplainabilityModalProps {
   evidenceRecordNumber?: string;
 }
 
+// Callers pass weights either as 0–100 points or 0–1 fractions, and
+// confidence either way too — normalize once so bars and labels are exact.
+function toPercent(value: number): number {
+  if (!isFinite(value)) return 0;
+  const pct = value <= 1 ? value * 100 : value;
+  return Math.min(100, Math.max(0, pct));
+}
+
 export function ExplainabilityModal({
   isOpen,
   onClose,
   title,
   subtitle,
-  confidence: _confidence,
+  confidence,
   factors,
   onViewEvidence,
   evidenceRecordNumber = '#9281',
 }: ExplainabilityModalProps) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
+  const confidencePct = toPercent(confidence);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-      <div className="w-full max-w-lg bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Why this insight"
+    >
+      <div
+        className="w-full max-w-lg bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="p-5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
           <div>
@@ -88,36 +116,41 @@ export function ExplainabilityModal({
               <span className="text-[10px] font-mono uppercase tracking-wider text-slate-600 font-semibold">
                 Decomposed Attribution Factors
               </span>
-              <span className="text-[10px] font-mono text-slate-500">WEIGHT</span>
+              <span className="text-[10px] font-mono text-slate-500">
+                MODEL CONFIDENCE: {confidencePct.toFixed(0)}%
+              </span>
             </div>
 
             <div className="space-y-2">
-              {factors.map((factor, idx) => (
-                <div
-                  key={idx}
-                  className="p-3 rounded-md bg-slate-50 border border-slate-200 flex items-center justify-between"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-[11px] font-mono font-bold text-blue-700">
-                      0{idx + 1}
-                    </span>
-                    <div>
-                      <p className="font-medium text-slate-800 text-xs uppercase tracking-wide">
-                        {factor.title}
-                      </p>
-                      <div className="w-36 bg-slate-200 h-1.5 rounded-full mt-1.5 overflow-hidden">
-                        <div
-                          className="bg-blue-600 h-full rounded-full"
-                          style={{ width: `${factor.weight}%` }}
-                        />
+              {factors.map((factor, idx) => {
+                const pct = toPercent(factor.weight);
+                return (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-md bg-slate-50 border border-slate-200 flex items-center justify-between"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="text-[11px] font-mono font-bold text-blue-700">
+                        0{idx + 1}
+                      </span>
+                      <div>
+                        <p className="font-medium text-slate-800 text-xs uppercase tracking-wide">
+                          {factor.title}
+                        </p>
+                        <div className="w-36 bg-slate-200 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                          <div
+                            className="bg-blue-600 h-full rounded-full"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
+                    <span className="font-mono font-bold text-sm text-slate-900">
+                      {pct.toFixed(0)}%
+                    </span>
                   </div>
-                  <span className="font-mono font-bold text-sm text-slate-900">
-                    {factor.weight}%
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

@@ -4,13 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   Search,
-  Shield,
   Cpu,
-  Radio,
   Globe2,
   Clock,
-  ExternalLink,
-  ChevronDown,
 } from 'lucide-react';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
@@ -75,9 +71,16 @@ export function Topbar() {
     setRegionalScope(val);
     if (val === 'ALL_MH') {
       // keep current or default
-    } else {
-      const matched = MAHARASHTRA_DISTRICTS.find((d) => d.name === val || d.id === val);
-      if (matched) setSelectedDistrict(matched);
+      return;
+    }
+    const matched = MAHARASHTRA_DISTRICTS.find((d) => d.name === val || d.id === val);
+    if (matched) {
+      setSelectedDistrict(matched);
+      // If the user is already on the geographic map, carry the scope there
+      // via deep link so the selection visibly takes effect.
+      if (pathname?.startsWith('/map')) {
+        router.push(`/map?district=${matched.id}`);
+      }
     }
   };
 

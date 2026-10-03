@@ -6,7 +6,9 @@ import { useRouter } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
-import { ShieldAlert, ArrowRight, CheckCircle2, ChevronRight, BarChart2, Sparkles, Layers, MapPin } from 'lucide-react';
+import { ArrowRight, Sparkles, Layers, MapPin } from 'lucide-react';
+import { EVIDENCE_RECORDS } from '@/lib/data/governance-data';
+import { formatIndianNumber } from '@/lib/formatters';
 
 export default function GeographicGapsPage() {
   const router = useRouter();
@@ -15,7 +17,41 @@ export default function GeographicGapsPage() {
     (a, b) => b.gapPercentagePoints - a.gapPercentagePoints
   );
 
+  if (gapDistricts.length === 0) {
+    return (
+      <AppShell>
+        <div className="max-w-2xl mx-auto my-12 p-8 bg-white border border-slate-200 rounded-lg shadow-sm text-center space-y-3">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-emerald-700 font-bold">
+            No territorial gaps detected
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 font-editorial">
+            All districts meet the regional benchmark
+          </h1>
+          <p className="text-xs text-slate-600">
+            The gap radar currently flags no district below its regional coverage benchmark.
+          </p>
+        </div>
+      </AppShell>
+    );
+  }
+
   const nandurbar = gapDistricts[0];
+
+  const resolveDistrictEvidence = (districtName: string): string | null => {
+    const rec = EVIDENCE_RECORDS.find(
+      (r) => r.district.toLowerCase() === districtName.toLowerCase()
+    );
+    return rec ? rec.id : null;
+  };
+
+  const explainFactors = (flagFactors: string[]) => {
+    const n = Math.max(flagFactors.length, 1);
+    const base = Math.floor(100 / n);
+    return flagFactors.map((f, i) => ({
+      title: f.toUpperCase(),
+      weight: i === 0 ? 100 - base * (n - 1) : base,
+    }));
+  };
 
   return (
     <AppShell>
@@ -44,7 +80,7 @@ export default function GeographicGapsPage() {
               {nandurbar.name.toUpperCase()}
             </h2>
             <p className="text-xs text-slate-600">
-              {nandurbar.zone}, Maharashtra • LGD Code: {nandurbar.code}
+              {nandurbar.zone}, Maharashtra • LGD Code: {nandurbar.lgdCode || 'Not mapped'}
             </p>
           </div>
 
@@ -53,7 +89,7 @@ export default function GeographicGapsPage() {
             <div className="text-3xl sm:text-4xl font-bold text-rose-700">
               {nandurbar.gapPercentagePoints} pp
             </div>
-            <span className="text-[10px] text-slate-500">Deficit below 64% benchmark</span>
+            <span className="text-[10px] text-slate-500">Deficit below {nandurbar.regionalBenchmarkRate}% benchmark</span>
           </div>
         </div>
 
@@ -108,26 +144,26 @@ export default function GeographicGapsPage() {
             <div className="space-y-1.5 text-xs text-slate-700">
               <div className="flex items-center space-x-2">
                 <span className="text-emerald-700 font-bold">✓</span>
-                <span>High eligible population (1.6M total pop, high smallholder ratio)</span>
+                <span>High eligible population ({formatIndianNumber(nandurbar.population)} total pop, demand index {nandurbar.eligibleDemandIndex}/100)</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-emerald-700 font-bold">✓</span>
-                <span>Low programme coverage (28% vs 64% regional average)</span>
+                <span>Low programme coverage ({nandurbar.coverageRate}% vs {nandurbar.regionalBenchmarkRate}% regional average)</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-emerald-700 font-bold">✓</span>
-                <span>Low intervention density (only 14 active work projects)</span>
+                <span>Low intervention density (only {nandurbar.projectsCount} active work projects)</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-emerald-700 font-bold">✓</span>
-                <span>Low fund drawdown pace (42% drawn vs 73% national pace)</span>
+                <span>Low fund drawdown pace ({nandurbar.fundUtilizationRate}% drawn vs {nandurbar.regionalBenchmarkRate}% benchmark coverage)</span>
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2.5 justify-end">
             <button
-              onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+              onClick={() => openWhyFlagged('SUTRA-FND-0001', nandurbar.name)}
               className="px-4 py-2 rounded-md bg-white hover:bg-slate-50 text-amber-900 border border-amber-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
@@ -143,7 +179,7 @@ export default function GeographicGapsPage() {
             </button>
 
             <button
-              onClick={() => openEvidence('SUTRA-EVD-9281')}
+              onClick={() => openEvidence('#9281')}
               className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs"
             >
               <span>VIEW EVIDENCE →</span>
@@ -201,14 +237,14 @@ export default function GeographicGapsPage() {
                   onClick={() =>
                     openExplain({
                       title: `${dist.name} Coverage Gap Analysis`,
+                      subtitle: `Coverage ${dist.coverageRate}% vs benchmark ${dist.regionalBenchmarkRate}% (gap ${dist.gapPercentagePoints} pp)`,
                       confidence: 84,
-                      factors: [
-                        { title: 'TERRAIN LOGISTICS OVERHEAD', weight: 32 },
-                        { title: 'MILESTONE GEO-TAG RECONCILIATION', weight: 28 },
-                        { title: 'LOCAL TENDER LIQUIDATION', weight: 24 },
-                        { title: 'SEASONAL RAINFED STOPPAGE', weight: 16 },
-                      ],
-                      evidenceRecordNumber: dist.name === 'Gadchiroli' ? '#4412' : '#7211',
+                      factors: explainFactors(dist.flagFactors),
+                      evidenceRecordNumber: resolveDistrictEvidence(dist.name)
+                        ? EVIDENCE_RECORDS.find(
+                            (r) => r.district.toLowerCase() === dist.name.toLowerCase()
+                          )?.recordNumber
+                        : undefined,
                     })
                   }
                   className="text-slate-600 hover:text-blue-700 font-medium cursor-pointer"
@@ -224,13 +260,22 @@ export default function GeographicGapsPage() {
                     <MapPin className="w-3 h-3 text-blue-600" />
                     <span>View Map</span>
                   </Link>
-                  <button
-                    onClick={() => openEvidence(dist.name === 'Gadchiroli' ? '#4412' : '#7211')}
-                    className="text-blue-700 hover:underline flex items-center gap-1 font-mono text-[11px] cursor-pointer"
-                  >
-                    <span>Supporting Record</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
+                  {resolveDistrictEvidence(dist.name) ? (
+                    <button
+                      onClick={() => {
+                        const recId = resolveDistrictEvidence(dist.name);
+                        if (recId) openEvidence(recId);
+                      }}
+                      className="text-blue-700 hover:underline flex items-center gap-1 font-mono text-[11px] cursor-pointer"
+                    >
+                      <span>Supporting Record</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  ) : (
+                    <span className="text-slate-400 font-mono text-[11px]">
+                      No district record yet
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

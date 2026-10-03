@@ -9,17 +9,12 @@ import { SIGNALS_DATA } from '@/lib/data/governance-data';
 import { GovernanceEvent } from '@/lib/types/events';
 import {
   ArrowRight,
-  Radio,
   Sparkles,
-  ShieldCheck,
-  AlertTriangle,
   Clock,
   CheckCircle2,
-  ExternalLink,
   Layers,
   Check,
   Send,
-  Filter,
 } from 'lucide-react';
 
 type FilterTab = 'ALL' | 'CRITICAL_HIGH' | 'MEDIUM' | 'LIVE_EVENTS' | 'ACKNOWLEDGED';
@@ -28,23 +23,33 @@ export default function SignalsPage() {
   const router = useRouter();
   const {
     openEvidence,
-    openExplain,
     openWhyFlagged,
     openWorkspace,
     activeEvents,
     signalStatuses,
     updateSignalStatus,
+    telemetrySummary,
   } = useIntelligence();
 
   const [activeTab, setActiveTab] = useState<FilterTab>('ALL');
 
+  // Deviations are stored as negative shortfalls (e.g. -27 = 27 pp behind
+  // benchmark), so severity is judged on magnitude.
+  const severityOf = (deviation: number): 'HIGH' | 'MEDIUM' =>
+    Math.abs(deviation) > 10 ? 'HIGH' : 'MEDIUM';
+
+  const acknowledgedCount = SIGNALS_DATA.filter((sig) => {
+    const status = signalStatuses[sig.id] || 'DETECTED';
+    return status === 'ACKNOWLEDGED' || status === 'ESCALATED_PMO' || status === 'RESOLVED';
+  }).length;
+
   const filteredSignals = SIGNALS_DATA.filter((sig) => {
     const status = signalStatuses[sig.id] || 'DETECTED';
     if (activeTab === 'CRITICAL_HIGH') {
-      return sig.deviation > 10;
+      return severityOf(sig.deviation) === 'HIGH';
     }
     if (activeTab === 'MEDIUM') {
-      return sig.deviation <= 10;
+      return severityOf(sig.deviation) === 'MEDIUM';
     }
     if (activeTab === 'ACKNOWLEDGED') {
       return status === 'ACKNOWLEDGED' || status === 'ESCALATED_PMO' || status === 'RESOLVED';
@@ -89,7 +94,7 @@ export default function SignalsPage() {
                 : 'text-rose-700 hover:bg-rose-50'
             }`}
           >
-            HIGH SEVERITY ({SIGNALS_DATA.filter((s) => s.deviation > 10).length})
+            HIGH SEVERITY ({SIGNALS_DATA.filter((s) => Math.abs(s.deviation) > 10).length})
           </button>
           <button
             onClick={() => setActiveTab('MEDIUM')}
@@ -99,7 +104,17 @@ export default function SignalsPage() {
                 : 'text-amber-800 hover:bg-amber-50'
             }`}
           >
-            MEDIUM ({SIGNALS_DATA.filter((s) => s.deviation <= 10).length})
+            MEDIUM ({SIGNALS_DATA.filter((s) => Math.abs(s.deviation) <= 10).length})
+          </button>
+          <button
+            onClick={() => setActiveTab('ACKNOWLEDGED')}
+            className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+              activeTab === 'ACKNOWLEDGED'
+                ? 'bg-blue-600 text-white shadow-2xs'
+                : 'text-blue-800 hover:bg-blue-50'
+            }`}
+          >
+            REVIEWED ({acknowledgedCount})
           </button>
           <button
             onClick={() => setActiveTab('LIVE_EVENTS')}
@@ -115,7 +130,7 @@ export default function SignalsPage() {
 
         <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
           <Clock className="w-3.5 h-3.5 text-blue-600" />
-          <span>Simulation Cadence: 24.3 events/min</span>
+          <span>Session cadence: {telemetrySummary.eventsPerMinute} events/min (synthetic stream)</span>
         </div>
       </div>
 
@@ -200,9 +215,27 @@ export default function SignalsPage() {
             <span className="text-xs font-mono text-slate-500">Verified against PFMS & MIS</span>
           </div>
 
+          {filteredSignals.length === 0 && (
+            <div className="p-8 rounded-lg border border-dashed border-slate-300 bg-white text-center space-y-1.5">
+              <div className="text-sm font-semibold text-slate-700">
+                No signals match this filter.
+              </div>
+              <div className="text-xs text-slate-500">
+                {activeTab === 'ACKNOWLEDGED'
+                  ? 'Acknowledge, escalate, or resolve a signal using the ACTION controls to see it listed here.'
+                  : 'Try a different severity or review tab.'}
+              </div>
+              <button
+                onClick={() => setActiveTab('ALL')}
+                className="mt-2 px-3 py-1.5 bg-white border border-slate-300 rounded text-xs text-blue-700 hover:border-blue-400 font-semibold cursor-pointer"
+              >
+                Show all signals
+              </button>
+            </div>
+          )}
           {filteredSignals.map((signal) => {
             const currentStatus = signalStatuses[signal.id] || 'DETECTED';
-            const isHighDeviation = signal.deviation > 10;
+            const isHighDeviation = severityOf(signal.deviation) === 'HIGH';
 
             return (
               <div
@@ -278,9 +311,9 @@ export default function SignalsPage() {
                   <div className="p-3.5 rounded-md bg-white border border-slate-200 shadow-2xs">
                     <span className="text-slate-500 text-[10px] block font-semibold uppercase">DEFICIT SPREAD</span>
                     <span className="text-2xl font-bold text-rose-700 mt-1 block">
-                      {signal.deviation} pp
+                      {Math.abs(signal.deviation)} pp
                     </span>
-                    <span className="text-[10px] text-slate-500 font-medium">Pacing shortfall</span>
+                    <span className="text-[10px] text-slate-500 font-medium">Pacing shortfall vs benchmark</span>
                   </div>
 
                   {/* Temporal Trendline Mini Visualizer */}
@@ -300,9 +333,8 @@ export default function SignalsPage() {
                       </svg>
                     </div>
                     <div className="flex justify-between text-[9px] text-slate-400">
-                      <span>Q1: 18%</span>
-                      <span>Q2: 24%</span>
-                      <span className="text-rose-400 font-bold">Q3: {signal.currentUtilization}%</span>
+                      <span>Target: {signal.expectedUtilization}%</span>
+                      <span className="text-rose-400 font-bold">Current: {signal.currentUtilization}%</span>
                     </div>
                   </div>
                 </div>
@@ -383,7 +415,7 @@ export default function SignalsPage() {
                   {/* Navigation and Investigation Links */}
                   <div className="flex flex-wrap items-center gap-2">
                     <button
-                      onClick={() => openWhyFlagged(signal.id)}
+                      onClick={() => openWhyFlagged(signal.id, signal.districtName)}
                       className="px-3.5 py-1.5 rounded-md bg-white border border-slate-300 text-xs text-slate-800 hover:bg-slate-100 transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-amber-600" />

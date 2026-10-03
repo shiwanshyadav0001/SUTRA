@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { X, Cpu, ShieldCheck, Zap, Database } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { X, Cpu, ShieldCheck } from 'lucide-react';
 
 interface EngineSpecModalProps {
   isOpen: boolean;
@@ -9,11 +9,29 @@ interface EngineSpecModalProps {
 }
 
 export function EngineSpecModal({ isOpen, onClose }: EngineSpecModalProps) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white border border-slate-200 rounded-lg max-w-3xl w-full max-h-[85vh] overflow-y-auto text-xs text-slate-800 shadow-2xl p-6 space-y-6">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mathematical foundations"
+    >
+      <div
+        className="bg-white border border-slate-200 rounded-lg max-w-3xl w-full max-h-[85vh] overflow-y-auto text-xs text-slate-800 shadow-2xl p-6 space-y-6"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-4">
           <div className="flex items-center space-x-3">
@@ -119,18 +137,23 @@ export function EngineSpecModal({ isOpen, onClose }: EngineSpecModalProps) {
         </div>
 
         {/* System Benchmarks */}
-        <div className="grid grid-cols-3 gap-3 text-center border-t border-slate-200 pt-4">
-          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-            <span className="text-[10px] text-slate-500 uppercase font-semibold block">Query Latency</span>
-            <span className="text-base font-bold text-emerald-700 font-mono">18 ms</span>
-          </div>
-          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-            <span className="text-[10px] text-slate-500 uppercase font-semibold block">String Normalization</span>
-            <span className="text-base font-bold text-blue-700 font-mono">4.2 ms / token</span>
-          </div>
-          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-            <span className="text-[10px] text-slate-500 uppercase font-semibold block">Standards Alignment</span>
-            <span className="text-base font-bold text-slate-900 font-mono">LGD / PFMS / SECC</span>
+        <div className="border-t border-slate-200 pt-4 space-y-2">
+          <span className="text-[10px] font-mono uppercase text-slate-500 font-semibold">
+            Reference design targets (illustrative — not measured benchmarks)
+          </span>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <span className="text-[10px] text-slate-500 uppercase font-semibold block">Query Latency Target</span>
+              <span className="text-base font-bold text-emerald-700 font-mono">≤ 18 ms</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <span className="text-[10px] text-slate-500 uppercase font-semibold block">Normalization Budget</span>
+              <span className="text-base font-bold text-blue-700 font-mono">≤ 4.2 ms / token</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <span className="text-[10px] text-slate-500 uppercase font-semibold block">Standards Alignment</span>
+              <span className="text-base font-bold text-slate-900 font-mono">LGD / PFMS / SECC</span>
+            </div>
           </div>
         </div>
 

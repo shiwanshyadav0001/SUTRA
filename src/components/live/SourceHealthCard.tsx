@@ -10,6 +10,9 @@ interface SourceHealthCardProps {
 }
 
 export function SourceHealthCard({ sourceHealth, className = '' }: SourceHealthCardProps) {
+  const activeCount = sourceHealth.filter(
+    (s) => s.status === 'ONLINE' || s.status === 'SIMULATED'
+  ).length;
   const getStatusBadge = (status: SourceHealthStatus['status']) => {
     switch (status) {
       case 'ONLINE':
@@ -72,14 +75,14 @@ export function SourceHealthCard({ sourceHealth, className = '' }: SourceHealthC
         </div>
         <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
           <Activity className="w-3.5 h-3.5 text-emerald-600" />
-          <span>3/3 Active Pipelines</span>
+          <span>{activeCount}/{sourceHealth.length} Active Pipelines</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {sourceHealth.map((source) => (
+        {sourceHealth.map((source, idx) => (
           <div
-            key={source.id || source.datasetId}
+            key={source.id || source.datasetId || `source-${idx}`}
             className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:border-blue-300 hover:bg-white transition-all group shadow-2xs"
           >
             <div className="flex items-center justify-between mb-2.5">
@@ -113,14 +116,14 @@ export function SourceHealthCard({ sourceHealth, className = '' }: SourceHealthC
                   <RefreshCw className="w-3 h-3 text-slate-400" />
                   Freshness:
                 </span>
-                <span className="text-slate-700">{source.freshness}</span>
+                <span className="text-slate-700">{source.freshness || 'Not reported'}</span>
               </div>
               <div className="flex items-center justify-between text-slate-500">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="w-3 h-3 text-emerald-600" />
                   Verification:
                 </span>
-                <span className="text-emerald-700 font-semibold">{source.verificationLevel}</span>
+                <span className="text-emerald-700 font-semibold">{source.verificationLevel || 'Pending'}</span>
               </div>
             </div>
           </div>

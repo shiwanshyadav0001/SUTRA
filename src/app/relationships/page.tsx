@@ -9,26 +9,47 @@ import { GOVERNANCE_GRAPH_DATA } from '@/lib/data/governance-data';
 import { GraphNode, GraphLink, NodeType } from '@/lib/types';
 import {
   Network,
-  Info,
-  Filter,
-  Layers,
   ArrowRight,
   ShieldCheck,
-  CheckCircle2,
   Sparkles,
-  Zap,
   Activity,
   MapPin,
-  FileText,
 } from 'lucide-react';
+
+const SCHEME_DOSSIER_MAP: Record<string, string> = {
+  sch_pkvy: 'AGR-004',
+  sch_movcd: 'AGR-008',
+  sch_pmkisan: 'AGR-001',
+  sch_pmgsy: 'RUR-002',
+  sch_pmayg: 'RUR-003',
+  sch_jjm: 'JAL-001',
+};
+
+const GRAPH_DISTRICT_MAP: Record<string, string> = {
+  dist_ndb: 'DIST-27',
+  dist_gdc: 'DIST-34',
+  dist_wsm: 'DIST-16',
+  dist_pun: 'DIST-25',
+};
+
+const GRAPH_EVIDENCE_MAP: Record<string, string> = {
+  evi_rec_9281: 'REC-9281',
+  evi_rec_4412: 'REC-4412',
+};
+
+const FILTER_SCOPE: Record<string, NodeType[]> = {
+  ALL: [],
+  SCHEMES: ['scheme', 'budget', 'project'],
+  MINISTRIES: ['ministry', 'department'],
+  FINDINGS: ['finding', 'event'],
+  EVIDENCE: ['evidence'],
+};
 
 export default function GovernanceGraphPage() {
   const router = useRouter();
-  const { openEvidence, openExplain, openWhyFlagged, openWorkspace } = useIntelligence();
+  const { openEvidence, openWhyFlagged } = useIntelligence();
   const [selectedNodeId, setSelectedNodeId] = useState<string>('fnd_conv_gap');
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  const [hoveredLink, setHoveredLink] = useState<GraphLink | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
   const [filterType, setFilterType] = useState<string>('ALL');
 
   // Enhanced V2 graph data with Event, Finding, and Evidence nodes
@@ -40,7 +61,7 @@ export default function GovernanceGraphPage() {
         label: 'JJM Drawdown Event (+11.8%)',
         type: 'event' as NodeType,
         val: 18,
-        subtext: 'LGD 512 Nandurbar • ₹22.10 Cr → ₹24.70 Cr Live Mutation',
+        subtext: 'LGD 512 Nandurbar • ₹22.10 Cr → ₹24.70 Cr (synthetic stream movement)',
       },
       {
         id: 'fnd_conv_gap',
@@ -50,18 +71,18 @@ export default function GovernanceGraphPage() {
         subtext: 'PMAY-G Completion (46.8%) vs JJM Tap Rate (28.4%) Divergence',
       },
       {
-        id: 'evi_imis_7201',
-        label: 'Evidence #7201 (JJM IMIS)',
+        id: 'evi_rec_9281',
+        label: 'Evidence #9281 (PFMS Finance)',
         type: 'evidence' as NodeType,
         val: 16,
-        subtext: 'Verified Official IMIS Record • Hash e3b0c442...',
+        subtext: 'Nandurbar finance record • Union Budget / PFMS',
       },
       {
-        id: 'evi_awaas_4401',
-        label: 'Evidence #4401 (AwaasSoft)',
+        id: 'evi_rec_4412',
+        label: 'Evidence #4412 (Housing Outcome)',
         type: 'evidence' as NodeType,
         val: 16,
-        subtext: 'Verified MoRD AwaasSoft Record • Hash 7d5a881a...',
+        subtext: 'Gadchiroli housing record • State Administrative Register',
       },
     ];
 
@@ -81,13 +102,13 @@ export default function GovernanceGraphPage() {
       },
       {
         source: 'fnd_conv_gap',
-        target: 'evi_imis_7201',
+        target: 'evi_rec_9281',
         type: 'SUPPORTED_BY',
         label: 'Lineage',
       },
       {
         source: 'fnd_conv_gap',
-        target: 'evi_awaas_4401',
+        target: 'evi_rec_4412',
         type: 'SUPPORTED_BY',
         label: 'Lineage',
       },
@@ -139,36 +160,51 @@ export default function GovernanceGraphPage() {
 
   const nodePositions: Record<string, { x: number; y: number }> = {
     min_agri: { x: 180, y: 60 },
-    min_rural: { x: 420, y: 60 },
-    min_water: { x: 640, y: 60 },
+    min_rural: { x: 430, y: 60 },
+    min_water: { x: 680, y: 60 },
 
     dept_agri: { x: 180, y: 130 },
-    dept_rural: { x: 420, y: 130 },
-    dept_water: { x: 640, y: 130 },
+    dept_rural: { x: 430, y: 130 },
+    dept_water: { x: 680, y: 130 },
 
-    sch_pkvy: { x: 120, y: 210 },
-    sch_movcd: { x: 250, y: 210 },
-    sch_pmkisan: { x: 370, y: 210 },
-    sch_pmgsy: { x: 490, y: 210 },
-    sch_pmayg: { x: 610, y: 210 },
-    sch_jjm: { x: 730, y: 210 },
+    sch_pkvy: { x: 90, y: 215 },
+    sch_movcd: { x: 225, y: 215 },
+    sch_pmkisan: { x: 360, y: 215 },
+    sch_pmgsy: { x: 495, y: 215 },
+    sch_pmayg: { x: 625, y: 215 },
+    sch_jjm: { x: 755, y: 215 },
 
-    bud_pkvy: { x: 50, y: 280 },
-    bud_movcd: { x: 210, y: 280 },
-    bud_pmkisan: { x: 330, y: 280 },
-    bud_pmgsy: { x: 450, y: 280 },
-    bud_pmayg: { x: 570, y: 280 },
-    bud_jjm: { x: 770, y: 280 },
+    bud_pkvy: { x: 90, y: 290 },
+    bud_movcd: { x: 225, y: 290 },
+    bud_pmkisan: { x: 360, y: 290 },
 
-    dist_ndb: { x: 220, y: 360 },
-    dist_gad: { x: 420, y: 360 },
-    dist_wsh: { x: 620, y: 360 },
+    dist_ndb: { x: 110, y: 370 },
+    dist_gdc: { x: 330, y: 370 },
+    dist_wsm: { x: 540, y: 370 },
+    dist_pun: { x: 740, y: 370 },
 
-    evt_jjm_ndb: { x: 300, y: 440 },
-    fnd_conv_gap: { x: 480, y: 440 },
-    evi_imis_7201: { x: 640, y: 440 },
-    evi_awaas_4401: { x: 730, y: 360 },
+    proj_ndb_soil: { x: 80, y: 455 },
+    proj_ndb_road: { x: 220, y: 455 },
+    proj_ndb_water: { x: 360, y: 455 },
+    ben_smallholders: { x: 540, y: 455 },
+    ben_tribal: { x: 710, y: 455 },
+
+    out_soil_health: { x: 220, y: 530 },
+    out_tap_security: { x: 480, y: 530 },
+
+    evt_jjm_ndb: { x: 180, y: 610 },
+    fnd_conv_gap: { x: 400, y: 610 },
+    evi_rec_9281: { x: 590, y: 610 },
+    evi_rec_4412: { x: 750, y: 610 },
   };
+
+  const inFilterScope = (type: NodeType): boolean => {
+    const scope = FILTER_SCOPE[filterType];
+    if (!scope || scope.length === 0) return true;
+    return scope.includes(type);
+  };
+
+  const scopedNodeCount = nodes.filter((n) => inFilterScope(n.type)).length;
 
   const getNodeColor = (type: NodeType) => {
     switch (type) {
@@ -211,10 +247,16 @@ export default function GovernanceGraphPage() {
         </div>
 
         {/* Filter Types */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-md text-xs font-mono">
+        <div
+          className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-md text-xs font-mono"
+          role="tablist"
+          aria-label="Filter graph nodes by category"
+        >
           {['ALL', 'SCHEMES', 'MINISTRIES', 'FINDINGS', 'EVIDENCE'].map((type) => (
             <button
               key={type}
+              role="tab"
+              aria-selected={filterType === type}
               onClick={() => setFilterType(type)}
               className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 filterType === type
@@ -235,7 +277,7 @@ export default function GovernanceGraphPage() {
           <div className="flex flex-wrap items-center justify-between text-xs font-mono text-slate-300 border-b border-[#1E293B] pb-3">
             <div className="flex items-center space-x-2 font-semibold text-cyan-400">
               <Network className="w-4 h-4 text-cyan-400" />
-              <span>INTERACTIVE TOPOLOGY CANVAS ({nodes.length} NODES, {links.length} CONDUITS)</span>
+              <span>INTERACTIVE TOPOLOGY CANVAS ({nodes.length} NODES, {links.length} CONDUITS{filterType !== 'ALL' ? ` • ${scopedNodeCount} IN ${filterType} SCOPE` : ''})</span>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-[10px]">
               <span className="flex items-center gap-1">
@@ -253,17 +295,17 @@ export default function GovernanceGraphPage() {
             </div>
           </div>
 
-          <div className="relative w-full h-[520px] bg-[#080E21] border border-[#1E293B] rounded-md overflow-hidden flex items-center justify-center shadow-inner">
+          <div className="relative w-full h-[560px] bg-[#080E21] border border-[#1E293B] rounded-md overflow-hidden flex items-center justify-center shadow-inner">
             <svg
               className="w-full h-full"
-              viewBox="0 0 820 520"
+              viewBox="0 0 860 660"
               preserveAspectRatio="xMidYMid meet"
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                setTooltipPos({
-                  x: e.clientX - rect.left,
-                  y: e.clientY - rect.top,
-                });
+              role="img"
+              aria-label="Governance relationship graph. Use Tab to move between nodes and Enter to select."
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setHoveredNodeId(null);
+                }
               }}
             >
               <defs>
@@ -292,7 +334,7 @@ export default function GovernanceGraphPage() {
                 </marker>
               </defs>
 
-              <rect width="820" height="520" fill="url(#graphGridDark)" />
+              <rect width="860" height="660" fill="url(#graphGridDark)" />
 
               {/* Render Graph Links */}
               {links.map((link, i) => {
@@ -335,19 +377,32 @@ export default function GovernanceGraphPage() {
                 const isSelected = selectedNodeId === node.id;
                 const isHovered = hoveredNodeId === node.id;
                 const isConnected = activeConnectedNodeIds.has(node.id);
+                const inScope = inFilterScope(node.type);
                 const color = getNodeColor(node.type);
 
                 return (
                   <g
                     key={node.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${node.type} node: ${node.label}. Press Enter to view dossier.`}
                     className="cursor-pointer"
                     onClick={() => setSelectedNodeId(node.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedNodeId(node.id);
+                      }
+                    }}
                     onMouseEnter={() => {
                       setHoveredNodeId(node.id);
-                      setTooltipPos(pos);
                     }}
                     onMouseLeave={() => setHoveredNodeId(null)}
-                    opacity={isSelected || isHovered ? 1 : isConnected ? 0.95 : 0.4}
+                    onFocus={() => {
+                      setHoveredNodeId(node.id);
+                    }}
+                    onBlur={() => setHoveredNodeId(null)}
+                    opacity={!inScope ? 0.12 : isSelected || isHovered ? 1 : isConnected ? 0.95 : 0.4}
                   >
                     {/* Glowing halo ring on hover or selection */}
                     {(isSelected || isHovered) && (
@@ -396,18 +451,12 @@ export default function GovernanceGraphPage() {
               })}
             </svg>
 
-            {/* Rich Floating Tooltip on Node Hover */}
-            {hoveredNode && tooltipPos && (
-              <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded-md bg-[#0B132B] border border-cyan-500/50 text-white font-mono text-xs shadow-2xl max-w-xs transition-all duration-150"
-                style={{
-                  left: `${(tooltipPos.x / 820) * 100}%`,
-                  top: `${Math.max((tooltipPos.y / 520) * 100 - 4, 6)}%`,
-                }}
-              >
-                <div className="flex items-center justify-between gap-3 border-b border-[#1E293B] pb-1 mb-1">
+            {/* Hovered-node readout bar — fixed position so it can never clip at SVG edges */}
+            {hoveredNode && (
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-3.5 py-2 rounded-md bg-[#0B132B]/95 border border-cyan-500/50 text-white font-mono text-xs shadow-2xl w-max max-w-[92%]">
+                <div className="flex items-center gap-2">
                   <span
-                    className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold"
+                    className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold shrink-0"
                     style={{
                       backgroundColor: `${getNodeColor(hoveredNode.type)}25`,
                       color: '#FFFFFF',
@@ -416,18 +465,14 @@ export default function GovernanceGraphPage() {
                   >
                     {hoveredNode.type}
                   </span>
-                  <span className="text-[10px] text-slate-300">
-                    {activeConnectedNodeIds.size - 1} Links Connected
+                  <span className="font-bold text-sm text-cyan-300 truncate">{hoveredNode.label}</span>
+                  <span className="text-[10px] text-slate-300 shrink-0">
+                    {activeConnectedNodeIds.size - 1} links
                   </span>
                 </div>
-                <div className="font-bold text-sm text-cyan-300">{hoveredNode.label}</div>
                 {hoveredNode.subtext && (
-                  <div className="text-[11px] text-slate-300 mt-0.5">{hoveredNode.subtext}</div>
+                  <div className="text-[11px] text-slate-300 mt-0.5 truncate">{hoveredNode.subtext}</div>
                 )}
-                <div className="mt-2 pt-1 border-t border-[#1E293B] flex items-center justify-between text-[9px] text-cyan-400">
-                  <span>Click to lock & view dossier</span>
-                  <span>ID: {hoveredNode.id}</span>
-                </div>
               </div>
             )}
           </div>
@@ -530,29 +575,52 @@ export default function GovernanceGraphPage() {
             )}
             {selectedNode.type === 'evidence' && (
               <button
-                onClick={() => openEvidence('SUTRA-EVD-7201')}
+                onClick={() => openEvidence(GRAPH_EVIDENCE_MAP[selectedNode.id] || 'REC-9281')}
                 className="w-full py-2 px-3 rounded-md bg-emerald-600 text-white font-semibold text-xs flex items-center justify-center space-x-1.5 hover:bg-emerald-700 transition-colors cursor-pointer shadow-2xs"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>VERIFY CRYPTOGRAPHIC PROVENANCE</span>
               </button>
             )}
-            {selectedNode.type === 'scheme' && (
-              <Link
-                href="/scheme/AGR-004"
-                className="w-full py-2 px-3 rounded-md bg-blue-600 text-white font-semibold text-xs flex items-center justify-center space-x-1.5 hover:bg-blue-700 transition-colors shadow-2xs"
-              >
-                <span>OPEN SCHEME DOSSIER</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            )}
+            {selectedNode.type === 'scheme' &&
+              (SCHEME_DOSSIER_MAP[selectedNode.id] ? (
+                <Link
+                  href={`/scheme/${SCHEME_DOSSIER_MAP[selectedNode.id]}`}
+                  className="w-full py-2 px-3 rounded-md bg-blue-600 text-white font-semibold text-xs flex items-center justify-center space-x-1.5 hover:bg-blue-700 transition-colors shadow-2xs"
+                >
+                  <span>OPEN SCHEME DOSSIER</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              ) : (
+                <Link
+                  href="/schemes"
+                  className="w-full py-2 px-3 rounded-md bg-blue-600 text-white font-semibold text-xs flex items-center justify-center space-x-1.5 hover:bg-blue-700 transition-colors shadow-2xs"
+                >
+                  <span>BROWSE SCHEME REGISTRY</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              ))}
             {selectedNode.type === 'district' && (
               <Link
-                href="/map?district=nandurbar"
+                href={`/map?district=${GRAPH_DISTRICT_MAP[selectedNode.id] || 'DIST-27'}`}
                 className="w-full py-2 px-3 rounded-md bg-blue-600 text-white font-semibold text-xs flex items-center justify-center space-x-1.5 hover:bg-blue-700 transition-colors shadow-2xs"
               >
                 <MapPin className="w-3.5 h-3.5" />
                 <span>FOCUS ON GEOGRAPHIC MAP</span>
+              </Link>
+            )}
+            {(selectedNode.type === 'ministry' ||
+              selectedNode.type === 'department' ||
+              selectedNode.type === 'budget' ||
+              selectedNode.type === 'project' ||
+              selectedNode.type === 'beneficiary' ||
+              selectedNode.type === 'outcome') && (
+              <Link
+                href="/evidence"
+                className="w-full py-2 px-3 rounded-md bg-slate-700 text-white font-semibold text-xs flex items-center justify-center space-x-1.5 hover:bg-slate-600 transition-colors shadow-2xs"
+              >
+                <span>TRACE IN EVIDENCE HUB</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
           </div>

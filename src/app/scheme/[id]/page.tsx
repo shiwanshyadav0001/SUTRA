@@ -8,17 +8,8 @@ import { SCHEMES_DATA, OVERLAPS_DATA, EVIDENCE_RECORDS } from '@/lib/data/govern
 import { formatIndianNumber } from '@/lib/formatters';
 import {
   ArrowLeft,
-  Calendar,
-  Layers,
-  FileText,
-  ShieldCheck,
-  TrendingUp,
-  MapPin,
-  Users,
-  CheckCircle2,
-  ExternalLink,
-  ChevronRight,
 } from 'lucide-react';
+import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
 
 interface SchemeDetailPageProps {
   params: Promise<{ id: string }>;
@@ -27,7 +18,7 @@ interface SchemeDetailPageProps {
 export default function SchemeDetailPage({ params }: SchemeDetailPageProps) {
   const resolvedParams = use(params);
   const schemeId = resolvedParams.id;
-  const { openEvidence, openExplain } = useIntelligence();
+  const { openEvidence } = useIntelligence();
 
   const [activeTab, setActiveTab] = useState<
     'Overview' | 'Finance' | 'Geography' | 'Beneficiaries' | 'Outcomes' | 'Relationships' | 'Evidence'
@@ -38,11 +29,52 @@ export default function SchemeDetailPage({ params }: SchemeDetailPageProps) {
       (s) =>
         s.id.toLowerCase() === schemeId.toLowerCase() ||
         s.code.toLowerCase() === schemeId.toLowerCase()
-    ) || SCHEMES_DATA[0];
+    ) || null;
+
+  // Unknown scheme ids render an explicit not-found panel instead of
+  // silently showing the wrong scheme's dossier.
+  if (!scheme) {
+    return (
+      <AppShell>
+        <div className="max-w-2xl mx-auto my-12 p-8 bg-white border border-slate-200 rounded-lg shadow-sm text-center space-y-3">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-rose-700 font-bold">
+            Scheme dossier not found
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 font-editorial">
+            No scheme matches &quot;{schemeId}&quot;
+          </h1>
+          <p className="text-xs text-slate-600">
+            The scheme registry contains {SCHEMES_DATA.length} programmes. The reference may be
+            mistyped or retired from the registry.
+          </p>
+          <Link
+            href="/schemes"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Scheme Explorer</span>
+          </Link>
+        </div>
+      </AppShell>
+    );
+  }
 
   const relatedOverlap = OVERLAPS_DATA.find(
     (o) => o.schemeAId === scheme.id || o.schemeBId === scheme.id
   );
+
+  const schemeEvidence =
+    EVIDENCE_RECORDS.filter((r) => r.schemeId === scheme.id).slice(0, 3);
+
+  const resolveDistrictHref = (name: string): string => {
+    const match = MAHARASHTRA_DISTRICTS.find(
+      (d) =>
+        d.name.toLowerCase() === name.toLowerCase() ||
+        d.code.toLowerCase() === name.toLowerCase() ||
+        (d.aliases || []).some((a) => a.toLowerCase() === name.toLowerCase())
+    );
+    return match ? `/map?district=${match.id}` : '/map';
+  };
 
   return (
     <AppShell>
@@ -233,7 +265,9 @@ export default function SchemeDetailPage({ params }: SchemeDetailPageProps) {
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-md space-y-1.5">
               <span className="text-slate-500 text-[10px] uppercase font-semibold">EXPENDITURE TRANCHES</span>
               <p className="text-slate-700 font-sans">
-                First tranche of 45% cleared in Q1. Second tranche delayed in tribal district clusters pending farmer cluster verification.
+                Typical release pattern (illustrative): an opening tranche clears in Q1 with subsequent
+                tranches following field verification. Scheme-specific releases are recorded in the
+                evidence ledger below.
               </p>
             </div>
           </div>
@@ -250,7 +284,7 @@ export default function SchemeDetailPage({ params }: SchemeDetailPageProps) {
                   <span className="text-[10px] text-slate-500 block font-semibold">DISTRICT</span>
                   <span className="text-sm font-bold text-slate-900">{dist}</span>
                   <Link
-                    href={`/map?district=${dist.toLowerCase()}`}
+                    href={resolveDistrictHref(dist)}
                     className="text-[11px] text-blue-700 hover:underline block mt-1 font-semibold"
                   >
                     View on Map →
@@ -303,23 +337,48 @@ export default function SchemeDetailPage({ params }: SchemeDetailPageProps) {
               <span className="text-xs font-mono text-slate-500">Audit Ready</span>
             </div>
 
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <span className="text-[10px] font-mono text-blue-700 font-bold block">RECORD #9281</span>
-                <span className="font-bold text-sm text-slate-900">
-                  Nandurbar District Expenditure Sanction
-                </span>
-                <span className="text-xs text-slate-500 block mt-0.5">
-                  Source: Union Budget / PFMS Scheme-wise expenditure feed
-                </span>
+            {schemeEvidence.length > 0 ? (
+              schemeEvidence.map((rec) => (
+                <div
+                  key={rec.id}
+                  className="p-4 bg-slate-50 border border-slate-200 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+                >
+                  <div>
+                    <span className="text-[10px] font-mono text-blue-700 font-bold block">
+                      RECORD {rec.recordNumber}
+                    </span>
+                    <span className="font-bold text-sm text-slate-900">
+                      {rec.district} District Expenditure Sanction
+                    </span>
+                    <span className="text-xs text-slate-500 block mt-0.5">
+                      Source: {rec.sourceType} • Allocated ₹{rec.allocatedCr} Cr / Utilized ₹{rec.utilizedCr} Cr
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => openEvidence(rec.id)}
+                    className="px-4 py-2 bg-blue-600 text-white font-semibold text-xs rounded-md hover:bg-blue-700 transition-colors cursor-pointer shadow-2xs shrink-0"
+                  >
+                    Inspect Record {rec.recordNumber}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="p-6 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-center space-y-2">
+                <div className="text-xs font-semibold text-slate-700">
+                  No evidence record registered for {scheme.code} yet.
+                </div>
+                <p className="text-[11px] text-slate-500">
+                  Records are registered as district finance snapshots arrive. Browse the hub for
+                  related programme records.
+                </p>
+                <Link
+                  href="/evidence"
+                  className="inline-block px-4 py-2 bg-white border border-slate-300 text-xs text-blue-700 font-semibold rounded-md hover:border-blue-400 transition-colors"
+                >
+                  Open Evidence Hub →
+                </Link>
               </div>
-              <button
-                onClick={() => openEvidence('SUTRA-EVD-9281')}
-                className="px-4 py-2 bg-blue-600 text-white font-semibold text-xs rounded-md hover:bg-blue-700 transition-colors cursor-pointer shadow-2xs"
-              >
-                Inspect Record #9281
-              </button>
-            </div>
+            )}
           </div>
         )}
 
@@ -329,7 +388,7 @@ export default function SchemeDetailPage({ params }: SchemeDetailPageProps) {
               Beneficiary Enrollment Profile
             </h3>
             <p className="text-slate-700 font-sans leading-relaxed">
-              Total Verified: {formatIndianNumber(scheme.beneficiariesCount)} individuals across marginal landholding categories. Direct Benefit Transfer Aadhaar seeding at 94.2%.
+              Total Verified: {formatIndianNumber(scheme.beneficiariesCount)} individuals across marginal landholding categories. District-wise DBT seeding status is tracked in the evidence records.
             </p>
           </div>
         )}

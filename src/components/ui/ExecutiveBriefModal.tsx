@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
-import { X, Printer, Shield, CheckCircle2 } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { X, Printer } from 'lucide-react';
 import { District } from '@/lib/types';
+import { SIGNALS_DATA } from '@/lib/data/governance-data';
+import { formatDeterministicDate } from '@/lib/formatters';
 
 interface ExecutiveBriefModalProps {
   isOpen: boolean;
@@ -11,11 +13,37 @@ interface ExecutiveBriefModalProps {
 }
 
 export function ExecutiveBriefModal({ isOpen, onClose, district }: ExecutiveBriefModalProps) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
+  const unabsorbedCr = Math.max(
+    0,
+    district.budgetAllocatedCr - district.fundUtilizedCr
+  ).toFixed(1);
+  const districtSignal = SIGNALS_DATA.find(
+    (s) => s.districtName?.toLowerCase() === district.name.toLowerCase()
+  );
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-      <div className="w-full max-w-2xl bg-white text-slate-900 rounded-lg shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Governance briefing for ${district.name}`}
+    >
+      <div
+        className="w-full max-w-2xl bg-white text-slate-900 rounded-lg shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Institutional Memo Header */}
         <div className="p-5 bg-slate-900 text-white flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -49,11 +77,11 @@ export function ExecutiveBriefModal({ isOpen, onClose, district }: ExecutiveBrie
             </div>
             <div>
               <span className="text-slate-500 block text-[10px] uppercase font-sans">LGD Code</span>
-              <strong className="text-slate-900 text-xs font-semibold">{district.code}</strong>
+              <strong className="text-slate-900 text-xs font-semibold">{district.lgdCode || 'Not mapped'}</strong>
             </div>
             <div>
               <span className="text-slate-500 block text-[10px] uppercase font-sans">Generation Date</span>
-              <strong className="text-slate-900 text-xs font-semibold">October 2026</strong>
+              <strong className="text-slate-900 text-xs font-semibold">{formatDeterministicDate(new Date())}</strong>
             </div>
             <div>
               <span className="text-slate-500 block text-[10px] uppercase font-sans">Security Tier</span>
@@ -67,33 +95,34 @@ export function ExecutiveBriefModal({ isOpen, onClose, district }: ExecutiveBrie
               1. Executive Finding: Territorial Coverage Deficit
             </h3>
             <p className="text-slate-700 bg-slate-50 p-3 rounded-md border border-slate-200 leading-normal">
-              {district.name} district exhibits a <strong className="text-rose-700">{district.gapPercentagePoints} percentage point deficit</strong> in statutory programme coverage relative to the 64% regional administrative benchmark. While eligible smallholder demand stands at {district.eligibleDemandIndex}/100, capital fund drawdown has lagged at {district.fundUtilizationRate}%.
+              {district.name} district exhibits a <strong className="text-rose-700">{district.gapPercentagePoints} percentage point deficit</strong> in statutory programme coverage relative to the {district.regionalBenchmarkRate}% regional administrative benchmark. While eligible demand stands at {district.eligibleDemandIndex}/100, capital fund drawdown is recorded at {district.fundUtilizationRate}%.
             </p>
           </div>
 
-          {/* Root Factors */}
+          {/* Root Factors — district's live early-signal attribution when one
+              exists, otherwise the district's own recorded gap factors. */}
           <div>
             <h3 className="font-bold text-xs uppercase tracking-wider text-slate-800 mb-1.5">
               2. Decomposed Attribution Factors
             </h3>
-            <div className="space-y-1.5 font-mono text-[11px] bg-slate-50 p-3.5 rounded-md border border-slate-200 text-slate-700">
-              <div className="flex justify-between items-center py-0.5">
-                <span>01. Low Fund Drawdown Velocity</span>
-                <strong className="text-slate-900 font-semibold">31% Weight</strong>
+            {districtSignal ? (
+              <div className="space-y-1.5 font-mono text-[11px] bg-slate-50 p-3.5 rounded-md border border-slate-200 text-slate-700">
+                {districtSignal.factors.map((f, i) => (
+                  <div key={i} className="flex justify-between items-center py-0.5">
+                    <span>0{i + 1}. {f.title}</span>
+                    <strong className="text-slate-900 font-semibold">{f.value}% Weight</strong>
+                  </div>
+                ))}
               </div>
-              <div className="flex justify-between items-center py-0.5">
-                <span>02. Milestone Geo-Tagging Approval Delays</span>
-                <strong className="text-slate-900 font-semibold">27% Weight</strong>
-              </div>
-              <div className="flex justify-between items-center py-0.5">
-                <span>03. Smallholder Direct Banking Validation Lags</span>
-                <strong className="text-slate-900 font-semibold">23% Weight</strong>
-              </div>
-              <div className="flex justify-between items-center py-0.5">
-                <span>04. Inter-District Logistics Overhead</span>
-                <strong className="text-slate-900 font-semibold">19% Weight</strong>
-              </div>
-            </div>
+            ) : (
+              <ul className="list-disc pl-5 space-y-1.5 text-slate-700 bg-slate-50 p-3.5 rounded-md border border-slate-200">
+                {district.flagFactors.length > 0 ? (
+                  district.flagFactors.map((f, i) => <li key={i}>{f}</li>)
+                ) : (
+                  <li>No gap factors recorded for this district — coverage meets the regional benchmark.</li>
+                )}
+              </ul>
+            )}
           </div>
 
           {/* Recommendations */}
@@ -106,10 +135,10 @@ export function ExecutiveBriefModal({ isOpen, onClose, district }: ExecutiveBrie
                 <strong className="text-slate-900">Single-Window Cluster Verification:</strong> Harmonize PKVY and MOVCDNER organic farmer registries to eliminate duplicate sanction orders.
               </li>
               <li>
-                <strong className="text-slate-900">Expedited Second Tranche Release:</strong> Mandate district treasury release of ₹8.3 Cr capital under Record #9281 upon mobile plinth verification.
+                <strong className="text-slate-900">Expedited Tranche Release:</strong> Mandate district treasury review of ₹{unabsorbedCr} Cr in unabsorbed capital (allocated ₹{district.budgetAllocatedCr} Cr, utilized ₹{district.fundUtilizedCr} Cr) upon field verification.
               </li>
               <li>
-                <strong className="text-slate-900">Telemetry Sync:</strong> Connect rural water flow sensors in 42 habitations to the central Jal Jeevan Mission national dashboard.
+                <strong className="text-slate-900">Telemetry Sync:</strong> Connect rural water flow sensors to the central Jal Jeevan Mission dashboard for auditable completion telemetry.
               </li>
             </ul>
           </div>
