@@ -109,13 +109,13 @@ export default function SignalsPage() {
                 : 'text-emerald-800 hover:bg-emerald-50'
             }`}
           >
-            LIVE STREAM ({activeEvents.length})
+            SYNTHETIC STREAM ({activeEvents.length})
           </button>
         </div>
 
         <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
           <Clock className="w-3.5 h-3.5 text-blue-600" />
-          <span>Realtime Ingestion: 24.3 events/min</span>
+          <span>Simulation Cadence: 24.3 events/min</span>
         </div>
       </div>
 
@@ -125,9 +125,9 @@ export default function SignalsPage() {
           <div className="flex items-center justify-between border-b border-slate-200 pb-2">
             <span className="text-[11px] font-mono tracking-wider text-emerald-800 font-bold uppercase flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
-              LIVE DETECTED STREAM EVENTS ({activeEvents.length})
+              LIVE SIMULATION • SYNTHETIC STREAM EVENTS ({activeEvents.length})
             </span>
-            <span className="text-xs font-mono text-slate-500">Continuous telemetry</span>
+            <span className="text-xs font-mono text-slate-500">Synthetic scenario generator</span>
           </div>
 
           {activeEvents.slice(0, 2).map((evt: GovernanceEvent) => (
@@ -250,9 +250,9 @@ export default function SignalsPage() {
 
                   <div className="text-left sm:text-right font-mono">
                     <span className="text-[10px] text-slate-500 uppercase block font-semibold">
-                      EVIDENCE CONFIDENCE
+                      DATA VERIFICATION
                     </span>
-                    <div className="text-3xl font-bold text-blue-700">{signal.confidence}%</div>
+                    <div className="text-base font-bold text-slate-900 mt-1">EVIDENCE TRACEABLE</div>
                     <span className="text-[10px] text-emerald-700 block font-semibold">Triangulated against PFMS</span>
                   </div>
                 </div>

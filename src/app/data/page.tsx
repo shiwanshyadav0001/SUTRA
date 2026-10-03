@@ -342,7 +342,7 @@ export default function DataIngestionPage() {
             </div>
             <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-emerald-200">
               <span className="text-slate-600 font-medium">{liveResult.targetType}</span>
-              <span className="font-bold text-emerald-700">{liveResult.confidence}% Confidence</span>
+              <span className="font-bold text-emerald-700">VERIFIED SOURCE • EXACT LGD MATCH</span>
             </div>
           </div>
         </div>

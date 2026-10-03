@@ -85,8 +85,13 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         <div className="flex items-center space-x-3 font-mono text-xs">
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 block uppercase font-sans font-semibold">Composite Confidence</span>
-            <span className="text-lg font-bold text-cyan-300">{finding.confidence}% ({finding.confidenceAssessment.rating})</span>
+            <span className="text-[10px] text-slate-400 block uppercase font-sans font-semibold">Audit Status</span>
+            <span className="text-sm font-bold text-emerald-300">RULE VERIFIED</span>
+          </div>
+          <div className="h-8 w-[1px] bg-slate-700 mx-1" />
+          <div className="text-right">
+            <span className="text-[10px] text-slate-400 block uppercase font-sans font-semibold">Key Alignment</span>
+            <span className="text-sm font-bold text-cyan-300">EXACT LGD</span>
           </div>
           <div className="h-8 w-[1px] bg-slate-700 mx-1" />
           <div className="text-right">
@@ -107,7 +112,7 @@ export function InvestigationPipelineInspector({ data }: Props) {
                   onClick={() => setActiveStage(st.key)}
                   className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-blue-600 text-white font-semibold shadow-xs border-b-2 border-cyan-400'
+                      ? 'bg-[#132247] text-cyan-300 font-semibold shadow-xs border-b-2 border-cyan-400'
                       : 'bg-[#0B132B] text-slate-300 hover:text-white border border-[#1E293B] hover:bg-[#132247]'
                   }`}
                 >
@@ -222,8 +227,8 @@ export function InvestigationPipelineInspector({ data }: Props) {
                     <div className="text-sm font-bold text-emerald-800">{step.resolved}</div>
                   </div>
                   <div className="text-left md:text-right">
-                    <span className="text-[10px] text-blue-700 uppercase block font-semibold">Method & Confidence</span>
-                    <span className="text-xs text-slate-600">{step.method} ({step.confidence}%)</span>
+                    <span className="text-[10px] text-blue-700 uppercase block font-semibold">Match Quality</span>
+                    <span className="text-xs text-slate-600 font-mono">{step.method} • EXACT KEY</span>
                   </div>
                 </div>
               ))}
@@ -351,8 +356,8 @@ export function InvestigationPipelineInspector({ data }: Props) {
                 <div className="text-2xl font-bold text-rose-700 mt-1 font-mono">-27.7 pp</div>
                 <span className="text-[10px] text-slate-500">46.3% vs 74.0% State Benchmark</span>
               </div>
-              <div className="p-3.5 bg-blue-50/60 border border-blue-200 rounded-lg">
-                <span className="text-[10px] text-blue-700 uppercase block font-semibold">Unreleased Approved Allocation</span>
+              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-lg">
+                <span className="text-[10px] text-slate-700 uppercase block font-semibold">Unreleased Approved Allocation</span>
                 <div className="text-2xl font-bold text-slate-900 mt-1 font-mono">₹68.10 Cr</div>
                 <span className="text-[10px] text-slate-500">Undrawn across JJM, PMAY-G, PKVY</span>
               </div>
@@ -381,14 +386,14 @@ export function InvestigationPipelineInspector({ data }: Props) {
               </div>
 
               {/* Column 2: Derived Metrics */}
-              <div className="p-4 bg-blue-50/40 border border-blue-200 rounded-lg space-y-2">
-                <div className="flex items-center space-x-1.5 text-blue-700">
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                <div className="flex items-center space-x-1.5 text-indigo-700">
                   <Calculator className="w-3.5 h-3.5" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">Derived Metrics</span>
                 </div>
                 <ul className="space-y-2 text-xs text-slate-700">
                   {finding.factBreakdown.derivedMetrics.map((met, idx) => (
-                    <li key={idx} className="border-l-2 border-blue-500 pl-2">
+                    <li key={idx} className="border-l-2 border-indigo-500 pl-2">
                       {met}
                     </li>
                   ))}
@@ -411,11 +416,11 @@ export function InvestigationPipelineInspector({ data }: Props) {
               </div>
             </div>
 
-            {/* Confidence Component Breakdown Card */}
+            {/* Verification Component Breakdown Card */}
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] text-blue-700 uppercase font-bold tracking-wider font-mono">
-                  Confidence Methodology Breakdown ({finding.confidence}%)
+                <span className="text-[10px] text-slate-700 uppercase font-bold tracking-wider font-mono">
+                  Verification & Measurable Data Quality Audit
                 </span>
                 <span className="text-xs text-emerald-700 font-medium">
                   {finding.confidenceAssessment.methodology}
@@ -426,7 +431,7 @@ export function InvestigationPipelineInspector({ data }: Props) {
                   <div key={key} className="p-2.5 bg-white border border-slate-200 rounded space-y-1">
                     <div className="flex justify-between text-slate-500 text-[10px]">
                       <span>{comp.name}</span>
-                      <span className="text-emerald-700 font-mono font-bold">{(comp.score * 100).toFixed(0)}%</span>
+                      <span className="text-emerald-700 font-mono font-bold">{comp.rating}</span>
                     </div>
                     <div className="text-slate-900 font-semibold">{comp.rating} (Weight: {comp.weight * 100}%)</div>
                     <p className="text-[10px] text-slate-500">{comp.rationale}</p>

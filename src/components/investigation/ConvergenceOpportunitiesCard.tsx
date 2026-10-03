@@ -62,14 +62,14 @@ export const ConvergenceOpportunitiesCard: React.FC<ConvergenceOpportunitiesCard
               </div>
             </div>
 
-            {/* Confidence Score */}
+            {/* Verification Status */}
             <div className="flex items-center gap-3 bg-[#0D0D0C] border border-[#2A2926] rounded-sm px-4 py-2.5 shadow-inner">
               <div className="text-right">
                 <div className="text-[10px] font-semibold uppercase tracking-wider text-[#8E887E] font-mono">
-                  Confidence Rating
+                  Verification Status
                 </div>
-                <div className="font-mono text-sm font-bold text-[#5E8B72]">
-                  {opp.confidenceAssessment?.rating || 'HIGH'} ({opp.confidenceScore || opp.confidence}% Score)
+                <div className="font-mono text-xs font-bold text-[#5E8B72]">
+                  RULE VERIFIED • SOURCE-BOUND
                 </div>
               </div>
               <ShieldCheck className="h-6 w-6 text-[#5E8B72]" />

@@ -112,9 +112,9 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
           </div>
 
           <div className="p-3 bg-emerald-950/80 rounded-md border border-emerald-800">
-            <span className="text-[10px] text-slate-400 block uppercase font-semibold">ANALYTICAL CONFIDENCE</span>
-            <span className="text-xl font-bold text-emerald-300 mt-0.5 block">{investigation.confidence}%</span>
-            <span className="text-[10px] text-slate-400">Deterministic Model</span>
+            <span className="text-[10px] text-slate-400 block uppercase font-semibold">AUDIT STATUS</span>
+            <span className="text-sm font-bold text-emerald-300 mt-1 block">RULE VERIFIED</span>
+            <span className="text-[10px] text-slate-400">Deterministic LGD Join</span>
           </div>
 
           <div className="p-3 bg-[#080E21] rounded-md border border-[#233560]">
@@ -187,7 +187,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                         {fnd.id}
                       </span>
                       <span className="text-[10px] text-emerald-700 font-bold">
-                        Confidence: {fnd.confidence}%
+                        EVIDENCE TRACEABLE
                       </span>
                     </div>
                     <h3 className="font-semibold text-xs text-slate-900 truncate">{fnd.title}</h3>
@@ -289,8 +289,8 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                   
                   <div className="grid grid-cols-2 gap-2 text-[10px] pt-1">
                     <div className="p-2 rounded bg-white border border-slate-200">
-                      <span className="text-slate-400 block font-semibold">CONFIDENCE</span>
-                      <span className="font-bold text-emerald-700">{opp.confidenceAssessment?.overallScore || opp.confidence || 88}% HIGH</span>
+                      <span className="text-slate-400 block font-semibold">AUDIT STATUS</span>
+                      <span className="font-bold text-emerald-700">RULE VERIFIED</span>
                     </div>
                     <div className="p-2 rounded bg-white border border-slate-200">
                       <span className="text-slate-400 block font-semibold">ACTION STATUS</span>

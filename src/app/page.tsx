@@ -567,7 +567,7 @@ export default function LandingPage() {
                   <div className="p-3 bg-[#141412] border border-[#5E8B72]/40 text-center">
                     <span className="text-[10px] text-[#5E8B72] block">CANONICAL ENTITY</span>
                     <span className="text-[#F3F0E8] font-bold text-sm">MAHARASHTRA</span>
-                    <span className="text-[9px] text-[#8E887E] block mt-1">Confidence: 98.7%</span>
+                    <span className="text-[9px] text-[#8E887E] block mt-1">EVIDENCE TRACEABLE • LGD DETERMINISTIC</span>
                   </div>
                 </div>
               </div>

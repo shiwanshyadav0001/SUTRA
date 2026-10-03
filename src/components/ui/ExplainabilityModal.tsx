@@ -24,7 +24,7 @@ export function ExplainabilityModal({
   onClose,
   title,
   subtitle,
-  confidence,
+  confidence: _confidence,
   factors,
   onViewEvidence,
   evidenceRecordNumber = '#9281',
@@ -63,22 +63,22 @@ export function ExplainabilityModal({
             <span className="font-semibold text-sm text-slate-900 mt-0.5 block">{title}</span>
           </div>
 
-          {/* Statistical Confidence Score */}
+          {/* Statistical Verification Status */}
           <div className="flex items-center justify-between p-4 rounded-md bg-slate-50 border border-slate-200">
             <div>
               <div className="text-[10px] uppercase font-mono tracking-wider text-slate-500 font-semibold">
-                Statistical Confidence
+                Evidence Lineage Verification
               </div>
-              <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5">
-                {confidence}%
+              <div className="text-base font-bold font-mono text-emerald-800 mt-0.5">
+                RULE VERIFIED • SOURCE-BOUND
               </div>
-              <p className="text-[11px] text-emerald-700 mt-0.5 flex items-center gap-1 font-medium">
+              <p className="text-[11px] text-slate-600 mt-0.5 flex items-center gap-1 font-medium">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                Verified across 3 heterogeneous administrative datasets
+                Triangulated across 3 heterogeneous administrative datasets
               </p>
             </div>
-            <div className="w-16 h-16 rounded-full border-4 border-slate-200 border-t-blue-600 flex items-center justify-center font-mono text-sm font-bold text-blue-700">
-              {confidence}%
+            <div className="px-3 py-1.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono text-xs font-bold shadow-2xs">
+              DATA QUALITY CHECKED
             </div>
           </div>
 

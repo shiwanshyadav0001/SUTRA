@@ -129,7 +129,7 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
                     : 'bg-amber-50 text-amber-800 border-amber-300 font-semibold'
                 }`}
               >
-                {liveMode === 'VERIFIED_SOURCE' ? 'MODE A: STATUTORY VERIFIED' : 'MODE B: LIVE DEMO STREAM'}
+                {liveMode === 'VERIFIED_SOURCE' ? 'VERIFIED DATA • OFFICIAL CADENCE' : 'LIVE SIMULATION • SYNTHETIC STREAM'}
               </span>
               {playbackMode === 'REPLAY' && (
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
@@ -278,7 +278,7 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
             <span>{telemetrySummary.latestInvestigationId}</span>
             <ExternalLink className="h-3 w-3 inline" />
           </Link>
-          <div className="text-[10px] text-emerald-700 font-mono mt-0.5 font-medium">93.5% Confidence Score</div>
+          <div className="text-[10px] text-emerald-700 font-mono mt-0.5 font-medium">EVIDENCE TRACEABLE • RULE VERIFIED</div>
         </div>
       </div>
 

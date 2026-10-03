@@ -12,7 +12,6 @@ import { ConvergenceOpportunitiesCard } from '@/components/investigation/Converg
 import { WhyFlaggedModal } from '@/components/investigation/WhyFlaggedModal';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import {
-  Compass,
   Search,
   Sparkles,
   ShieldCheck,
@@ -20,16 +19,12 @@ import {
   Database,
   GitMerge,
   ArrowRight,
-  RotateCcw,
   CheckCircle2,
   AlertTriangle,
   FileCheck2,
   ExternalLink,
-  ChevronRight,
   TrendingDown,
-  Info,
   Calendar,
-  Building,
   Target,
 } from 'lucide-react';
 
@@ -94,7 +89,6 @@ export default function InvestigateWorkspacePage() {
     'DS-PKVY-MH',
   ]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [hasStarted, setHasStarted] = useState<boolean>(true);
   const [activeFindingTab, setActiveFindingTab] = useState<string>('SUTRA-FND-0001');
   const [activeWhyFlaggedChain, setActiveWhyFlaggedChain] = useState<WhyFlaggedChain | null>(null);
   const [whyFlaggedFindingId, setWhyFlaggedFindingId] = useState<string>('SUTRA-FND-0001');
@@ -128,7 +122,6 @@ export default function InvestigateWorkspacePage() {
 
     setTimeout(() => {
       setIsExecuting(false);
-      setHasStarted(true);
     }, 400);
   };
 
@@ -147,295 +140,223 @@ export default function InvestigateWorkspacePage() {
   return (
     <AppShell>
       <div className="space-y-6 pb-20">
-        {/* Top Sovereign Bar */}
-        <div className="border-b border-slate-200 pb-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 border border-blue-200 text-blue-700 shadow-2xs">
-                <Compass className="h-5 w-5" />
+        {/* TOP: Investigation Identity + Source/Status Information */}
+        <div className="rounded-lg border border-[#1E293B] bg-[#0B132B] p-5 md:p-6 shadow-xl relative overflow-hidden text-white">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-300 bg-cyan-950/80 px-2.5 py-0.5 rounded border border-cyan-800">
+                  SUTRA APEX WORKSPACE
+                </span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded border border-emerald-800 flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3 text-emerald-400" />
+                  VERIFIED DATA • OFFICIAL CADENCE
+                </span>
+                <span className="font-mono text-[10px] text-slate-300 bg-[#080E21] px-2 py-0.5 rounded border border-[#1E293B]">
+                  Case: {investigationResult.investigation.id}
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                  <Calendar className="h-3 w-3 text-cyan-400" /> FY 2025-26 Q2
+                </span>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                    SUTRA APEX WORKSPACE
-                  </span>
-                  <span className="text-xs font-mono text-slate-500">
-                    Governance Intelligence Workspace
-                  </span>
-                </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight font-editorial mt-0.5">
-                  Forensic Multi-Programme Investigation Engine
-                </h1>
-              </div>
-            </div>
-
-            {hasStarted && (
-              <div className="flex items-center gap-2 font-mono text-xs">
-                <button
-                  onClick={() => setHasStarted(false)}
-                  className="px-3 py-1.5 rounded-md bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
-                >
-                  <RotateCcw className="h-3.5 w-3.5 text-slate-500" />
-                  New Query
-                </button>
-                <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-md px-3 py-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
-                  <span className="font-bold text-emerald-800">
-                    {investigationResult.investigation.status}
-                  </span>
-                  <span className="text-slate-400">·</span>
-                  <span className="text-emerald-700 font-semibold">
-                    {investigationResult.investigation.confidence}% Confidence
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* LAUNCH WORKSPACE (QUERY, DISTRICT & DATASETS) - Deep Midnight Console */}
-        <div className="rounded-lg border border-[#1E293B] bg-[#0B132B] p-5 md:p-6 shadow-xl space-y-5 text-white">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#1E293B]">
-            <div>
-              <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2 font-editorial">
-                <Search className="h-4 w-4 text-cyan-400" />
-                Initiate Sovereign Governance Investigation
-              </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Query the deterministic multi-dataset pipeline across 36 Maharashtra LGD districts and central schemes.
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight font-editorial">
+                {investigationResult.investigation.title}
+              </h1>
+              <p className="text-xs text-slate-300 leading-relaxed font-sans max-w-3xl">
+                Target District: <span className="text-white font-semibold">{currentFinding.districtName}</span> &bull; 
+                LGD Key: <span className="font-mono text-cyan-300 font-semibold">{investigationResult.interpretation.targetDistrictLgd}</span> &bull; 
+                State: <span className="text-slate-200">{currentFinding.state}</span> &bull; 
+                Objective: <span className="text-slate-300 italic">{investigationResult.investigation.question}</span>
               </p>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-800">
-              <ShieldCheck className="h-4 w-4 text-emerald-400" />
-              <span>Zero-PII • LGD-Deterministic • Cryptographically Sealed</span>
-            </div>
-          </div>
-
-          {/* Input Row */}
-          <div className="space-y-4">
-            <div className="flex flex-col md:flex-row gap-2.5">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Enter governance investigation question (e.g. Find convergence opportunities in Nandurbar)..."
-                  className="w-full pl-3.5 pr-4 py-2.5 rounded-md bg-[#080E21] border border-[#233560] text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 transition-all shadow-inner"
-                />
+            {/* Measurable Factor Badges */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 font-mono text-xs">
+              <div className="p-3 rounded-md bg-[#080E21] border border-[#233560] space-y-0.5 min-w-[140px]">
+                <div className="text-[10px] uppercase font-sans font-semibold text-slate-400">Key Alignment</div>
+                <div className="text-sm font-bold text-cyan-300">EXACT LGD (100%)</div>
+                <div className="text-[9px] text-slate-500">Zero Interpolated PII</div>
               </div>
-
-              {/* District Selector */}
-              <div className="w-full md:w-64">
-                <select
-                  value={selectedLgd}
-                  onChange={(e) => setSelectedLgd(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-md bg-[#080E21] border border-[#233560] text-white text-xs focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono cursor-pointer"
-                >
-                  {maharashtraDistricts.map((d) => (
-                    <option key={d.lgdCode} value={d.lgdCode} className="bg-[#0B132B] text-white">
-                      {d.name} (LGD: {d.lgdCode})
-                    </option>
-                  ))}
-                </select>
+              <div className="p-3 rounded-md bg-[#080E21] border border-[#233560] space-y-0.5 min-w-[140px]">
+                <div className="text-[10px] uppercase font-sans font-semibold text-slate-400">Source Triangulation</div>
+                <div className="text-sm font-bold text-emerald-400">3 CENTRAL REGISTERS</div>
+                <div className="text-[9px] text-slate-500">JJM, PMAY-G, PKVY</div>
               </div>
-
-              {/* Start Investigation Button */}
-              <button
-                onClick={() => handleStartInvestigation(query, selectedLgd)}
-                disabled={isExecuting}
-                className="px-5 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/40 transition-all disabled:opacity-50 cursor-pointer"
-              >
-                {isExecuting ? (
-                  <>
-                    <div className="h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Executing...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4 text-cyan-300" />
-                    Start Investigation
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Dataset Selectors */}
-            <div className="pt-2">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 font-mono">
-                Active Central Dataset Connectors (Data Fabric v1.6)
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                {AVAILABLE_DATASETS.map((ds) => {
-                  const isSelected = selectedDatasets.includes(ds.id);
-                  return (
-                    <div
-                      key={ds.id}
-                      onClick={() => toggleDataset(ds.id)}
-                      className={`cursor-pointer p-3 rounded-md border transition-all flex items-start justify-between shadow-sm ${
-                        isSelected
-                          ? 'bg-[#101F42] border-cyan-400 text-white'
-                          : 'bg-[#080E21] border-[#1E293B] text-slate-400 opacity-60 hover:opacity-90'
-                      }`}
-                    >
-                      <div className="space-y-0.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-mono text-xs font-bold text-cyan-300">
-                            {ds.id}
-                          </span>
-                          <span className="text-[10px] font-mono text-blue-200 bg-blue-950 px-1.5 rounded font-semibold border border-blue-800">
-                            {ds.frequency}
-                          </span>
-                        </div>
-                        <div className="text-xs text-white font-semibold">{ds.name}</div>
-                        <div className="text-[10px] text-slate-400">{ds.ministry}</div>
-                      </div>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => {}}
-                        className="mt-1 accent-cyan-400 cursor-pointer"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Suggested Investigations */}
-            <div className="pt-2 border-t border-[#1E293B]">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 font-mono">
-                Preset Governance Investigations
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-                {SUGGESTED_INVESTIGATIONS.map((preset) => (
-                  <button
-                    key={preset.title}
-                    onClick={() => handleStartInvestigation(preset.query, preset.districtLgd)}
-                    className="text-left p-3 rounded-md bg-[#080E21] border border-[#1E293B] hover:border-cyan-400 hover:bg-[#101F42] transition-all flex flex-col justify-between group shadow-sm cursor-pointer"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="font-semibold text-white group-hover:text-cyan-200 transition-colors">
-                          {preset.title}
-                        </span>
-                        <span className="font-mono text-[10px] text-slate-400">
-                          LGD: {preset.districtLgd}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
-                        {preset.description}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 text-[11px] font-semibold text-cyan-400 mt-2 pt-1.5 border-t border-[#1E293B]">
-                      Launch <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </button>
-                ))}
+              <div className="p-3 rounded-md bg-[#080E21] border border-amber-900/60 space-y-0.5 min-w-[140px]">
+                <div className="text-[10px] uppercase font-sans font-semibold text-amber-400">Safeguard Status</div>
+                <div className="text-xs font-bold text-amber-300">HUMAN REVIEW REQUIRED</div>
+                <div className="text-[9px] text-slate-500">No Automated Sanctions</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* INVESTIGATION WORKSPACE CONTENT */}
-        {hasStarted && (
-          <div className="space-y-8">
-            {/* INVESTIGATION HEADER - Deep Midnight Banner */}
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B132B] p-5 md:p-6 shadow-xl relative overflow-hidden text-white">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="space-y-1.5 max-w-3xl">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-cyan-300 bg-cyan-950/80 px-2.5 py-0.5 rounded border border-cyan-800">
-                      {investigationResult.investigation.id}
-                    </span>
-                    <span className="font-mono text-xs text-slate-300 bg-[#080E21] px-2 py-0.5 rounded border border-[#1E293B]">
-                      LGD: {investigationResult.interpretation.targetDistrictLgd}
-                    </span>
-                    <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
-                      <Calendar className="h-3 w-3 text-cyan-400" /> FY 2025-26 Q2
-                    </span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-white tracking-tight font-editorial">
-                    {investigationResult.investigation.title}
-                  </h2>
-                  <p className="text-xs text-slate-300 leading-relaxed font-sans">
-                    {investigationResult.investigation.question}
-                  </p>
-                </div>
+        {/* NEXT: Investigation Query / Target */}
+        <div className="rounded-lg border border-[#1E293B] bg-[#0F172A] p-5 md:p-6 shadow-lg space-y-4 text-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#1E293B]">
+            <div>
+              <h2 className="text-sm font-bold text-white tracking-tight flex items-center gap-2 font-editorial">
+                <Search className="h-4 w-4 text-cyan-400" />
+                Investigation Query & Analytical Scope
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Execute deterministic cross-programme triangulation across Maharashtra LGD local government directories.
+              </p>
+            </div>
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-800">
+              Zero-PII • Deterministic LGD Join • Cryptographically Sealed
+            </span>
+          </div>
 
-                {/* Multi-Component Confidence Widget */}
-                <div className="p-3.5 rounded-md bg-[#080E21] border border-[#233560] flex flex-col items-end gap-0.5 shadow-inner font-mono">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                    Evidence-Backed Audit Confidence
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-cyan-300">
-                      {investigationResult.finding.confidenceAssessment?.overallScore || 93.5}%
-                    </span>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                      {investigationResult.finding.confidenceAssessment?.rating || 'HIGH'}
-                    </span>
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">
-                    Triangulated across 3 Ministerial Registers
-                  </div>
-                </div>
-              </div>
+          <div className="flex flex-col md:flex-row gap-2.5">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Enter governance investigation question..."
+                className="w-full pl-3.5 pr-4 py-2.5 rounded-md bg-[#080E21] border border-[#233560] text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 transition-all shadow-inner font-sans"
+              />
             </div>
 
-            {/* SECTION 1: INVESTIGATION PIPELINE (8-STAGE INSPECTOR) */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2 font-editorial">
-                  <Layers className="h-4 w-4 text-blue-600" />
-                  Section 1: 8-Stage Deterministic Pipeline Inspector
-                </h3>
-                <span className="text-xs font-mono text-slate-500">
-                  Step-by-step cryptographic audit trail
-                </span>
-              </div>
-              <InvestigationPipelineInspector data={investigationResult} />
-            </div>
-
-            {/* SECTION 2: RELEVANT DATASETS */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2 font-editorial">
-                  <Database className="h-4 w-4 text-indigo-600" />
-                  Section 2: Triangulated Canonical Datasets
-                </h3>
-                <span className="text-xs font-mono text-slate-500">
-                  Official ministerial source repositories
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                {investigationResult.datasets.map((ds) => (
-                  <div
-                    key={ds.id}
-                    className="p-4 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-2.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-bold text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
-                        {ds.id}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-500">
-                        {ds.recordCount} Records Ingested
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-900">{ds.name}</h4>
-                      <div className="text-[11px] text-slate-500 font-medium mt-0.5">
-                        {ds.publisher}
-                      </div>
-                    </div>
-                    <div className="pt-2 border-t border-slate-100 text-[10px] text-slate-500 font-mono flex items-center justify-between">
-                      <span>Frequency: {ds.reportingFrequency}</span>
-                      <span className="text-emerald-700 font-semibold">STATUS: VERIFIED</span>
-                    </div>
-                  </div>
+            <div className="w-full md:w-64">
+              <select
+                value={selectedLgd}
+                onChange={(e) => setSelectedLgd(e.target.value)}
+                className="w-full py-2.5 px-3 rounded-md bg-[#080E21] border border-[#233560] text-white text-xs focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono cursor-pointer"
+              >
+                {maharashtraDistricts.map((d) => (
+                  <option key={d.lgdCode} value={d.lgdCode} className="bg-[#0B132B] text-white">
+                    {d.name} (LGD: {d.lgdCode})
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
+
+            <button
+              onClick={() => handleStartInvestigation(query, selectedLgd)}
+              disabled={isExecuting}
+              className="px-5 py-2.5 rounded-md bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-md border border-blue-500/30 transition-all disabled:opacity-50 cursor-pointer"
+            >
+              {isExecuting ? (
+                <>
+                  <div className="h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 text-cyan-300" />
+                  Execute Audit
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Preset Inquiries */}
+          <div className="pt-2 border-t border-[#1E293B]">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2 font-mono">
+              Pre-Configured Governance Scenarios
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+              {SUGGESTED_INVESTIGATIONS.map((preset) => (
+                <button
+                  key={preset.title}
+                  onClick={() => handleStartInvestigation(preset.query, preset.districtLgd)}
+                  className="text-left p-3 rounded-md bg-[#080E21] border border-[#1E293B] hover:border-cyan-400 hover:bg-[#132247] transition-all flex flex-col justify-between group shadow-sm cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="font-semibold text-white group-hover:text-cyan-200 transition-colors">
+                        {preset.title}
+                      </span>
+                      <span className="font-mono text-[10px] text-slate-400">
+                        LGD: {preset.districtLgd}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
+                      {preset.description}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 text-[11px] font-semibold text-cyan-400 mt-2 pt-1.5 border-t border-[#1E293B]">
+                    Select Scenario <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* NEXT: Source Datasets */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2 font-editorial">
+              <Database className="h-4 w-4 text-indigo-600" />
+              Canonical Source Datasets (Data Fabric v1.6)
+            </h3>
+            <span className="text-xs font-mono text-slate-500">
+              Official ministerial repositories • Deterministic LGD schemas
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            {AVAILABLE_DATASETS.map((ds) => {
+              const isSelected = selectedDatasets.includes(ds.id);
+              const matchingIngested = investigationResult.datasets.find((d) => d.id === ds.id);
+              return (
+                <div
+                  key={ds.id}
+                  onClick={() => toggleDataset(ds.id)}
+                  className={`p-4 rounded-lg border transition-all cursor-pointer space-y-2.5 ${
+                    isSelected
+                      ? 'bg-white border-indigo-300 shadow-sm'
+                      : 'bg-slate-50 border-slate-200 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-bold text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                      {ds.id}
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-mono text-slate-500">
+                        {matchingIngested?.recordCount || '432'} Records
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleDataset(ds.id)}
+                        className="accent-indigo-600 cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">{ds.name}</h4>
+                    <div className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      {ds.ministry}
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-slate-100 text-[10px] font-mono flex items-center justify-between">
+                    <span className="text-slate-500">Frequency: {ds.frequency}</span>
+                    <span className="text-emerald-700 font-semibold">VERIFIED SOURCE</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* NEXT: Investigation Pipeline */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2 font-editorial">
+              <Layers className="h-4 w-4 text-blue-600" />
+              8-Stage Deterministic Pipeline Inspector
+            </h3>
+            <span className="text-xs font-mono text-slate-500">
+              End-to-end cryptographic and formula audit trail
+            </span>
+          </div>
+          <InvestigationPipelineInspector data={investigationResult} />
+        </div>
 
             {/* SECTION 3: GOVERNANCE RELATIONSHIPS GRAPH */}
             <div className="space-y-3">
@@ -693,23 +614,46 @@ export default function InvestigateWorkspacePage() {
               </div>
             </div>
 
-            {/* SECTION 7: LIMITATIONS & SAFEGUARDS */}
-            <div className="p-5 rounded-lg border border-amber-200 bg-amber-50/50 space-y-2">
-              <div className="flex items-center gap-2 text-amber-900 font-bold text-xs uppercase tracking-wider font-mono">
-                <AlertTriangle className="h-4 w-4 text-amber-600" />
-                Section 7: Analytical Limitations & Institutional Safeguards
+            {/* SECTION 7: HUMAN REVIEW & ACTION SAFEGUARDS */}
+            <div className="p-5 rounded-lg border border-amber-300 bg-amber-50/60 space-y-3.5 shadow-2xs">
+              <div className="flex items-center justify-between border-b border-amber-200 pb-2">
+                <div className="flex items-center gap-2 text-amber-950 font-bold text-xs uppercase tracking-wider font-mono">
+                  <AlertTriangle className="h-4 w-4 text-amber-700" />
+                  Section 7: Statutory Human Review & Administrative Action Protocol
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 font-bold">
+                  HUMAN REVIEW REQUIRED
+                </span>
               </div>
-              <ul className="space-y-1.5 text-xs text-slate-700 list-disc pl-5 font-sans">
-                {investigationResult.limitations.map((lim, idx) => (
-                  <li key={idx} className="leading-relaxed">
-                    {lim}
-                  </li>
-                ))}
-              </ul>
+
+              <div className="grid md:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1.5 bg-white p-3.5 rounded border border-amber-200">
+                  <span className="font-semibold text-slate-900 uppercase text-[10px] font-mono block text-amber-800">
+                    Administrative Action Safeguards
+                  </span>
+                  <p className="text-slate-700 leading-relaxed">
+                    SUTRA produces candidate investigation leads and cross-dataset divergence telemetry. Under state administrative rules, this system <strong>does not execute automated sanctions, biometric blacklisting, or algorithmic fund freezing</strong>.
+                  </p>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Statutory officers must independently corroborate all algorithmic leads against field inspection logs and physical completion registers before issuing formal audit notices.
+                  </p>
+                </div>
+
+                <div className="space-y-1.5 bg-white p-3.5 rounded border border-amber-200">
+                  <span className="font-semibold text-slate-900 uppercase text-[10px] font-mono block text-amber-800">
+                    Known Dataset Constraints & Caveats
+                  </span>
+                  <ul className="space-y-1 text-slate-700 list-disc pl-4 text-[11px]">
+                    {investigationResult.limitations.map((lim, idx) => (
+                      <li key={idx} className="leading-relaxed">
+                        {lim}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        )}
-      </div>
 
       {/* WHY FLAGGED FORENSIC MODAL */}
       <WhyFlaggedModal
