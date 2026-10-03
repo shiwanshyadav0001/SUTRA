@@ -19,6 +19,7 @@ export function Topbar() {
     if (pathname.startsWith('/relationships')) return 'Governance Relationship Graph';
     if (pathname.startsWith('/signals')) return 'Early Signals & Anomaly Detection';
     if (pathname.startsWith('/query')) return 'Ask SUTRA Natural Intelligence';
+    if (pathname.startsWith('/investigate')) return 'Investigation Workspace';
     if (pathname.startsWith('/evidence')) return 'Evidence Hub & Audit Trail';
     if (pathname.startsWith('/data')) return 'Data Ingestion & Entity Resolution';
     if (pathname.startsWith('/intelligence/gaps')) return 'Geographic Gap Detection';

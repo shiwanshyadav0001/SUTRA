@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
@@ -18,12 +19,26 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
+  Zap,
+  Activity,
+  Radio,
+  AlertCircle,
+  Network,
+  Sparkles,
 } from 'lucide-react';
 
 type MetricFilter = 'Coverage' | 'Utilization' | 'Beneficiaries' | 'Outcomes' | 'Gaps' | 'Signals';
 
 export default function GeographicIntelligencePage() {
-  const { openEvidence, openExplain, openExecutiveBrief } = useIntelligence();
+  const {
+    openEvidence,
+    openExplain,
+    openExecutiveBrief,
+    openWorkspace,
+    openWhyFlagged,
+    latestEvent,
+    activeDistrictLiveState,
+  } = useIntelligence();
   const [viewLevel, setViewLevel] = useState<'INDIA' | 'MAHARASHTRA'>('MAHARASHTRA');
   const [activeFilter, setActiveFilter] = useState<MetricFilter>('Gaps');
   const [selectedDistrict, setSelectedDistrict] = useState<District>(
@@ -442,13 +457,16 @@ export default function GeographicIntelligencePage() {
 
         {/* Right 4 Cols: Contextual Intelligence Panel (Nandurbar focus) */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-6">
+          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-5">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A]">
-                  DISTRICT CONTEXTUAL INTELLIGENCE
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A] flex items-center gap-1.5">
+                  <Activity className="w-3 h-3 text-emerald-400" />
+                  DISTRICT LIVE INTELLIGENCE
                 </span>
-                <span className="text-xs font-mono text-[#8E887E]">{selectedDistrict.code}</span>
+                <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+                  LGD {selectedDistrict.name === 'Nandurbar' ? '512' : selectedDistrict.code}
+                </span>
               </div>
               <h2 className="text-2xl font-bold text-[#F3F0E8] font-editorial mt-1">
                 {selectedDistrict.name.toUpperCase()}
@@ -456,8 +474,64 @@ export default function GeographicIntelligencePage() {
               <p className="text-xs text-[#8E887E]">{selectedDistrict.zone}, Maharashtra</p>
             </div>
 
+            {/* Real-time Event Telemetry Banner if active */}
+            {activeDistrictLiveState[selectedDistrict.name] || (latestEvent && latestEvent.districtId === selectedDistrict.name) ? (
+              <div className="p-3.5 rounded bg-emerald-500/10 border border-emerald-500/30 font-mono text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
+                    <Radio className="w-3 h-3 animate-pulse" />
+                    LIVE TELEMETRY STREAM
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    MODE B • SIMULATED LIVE
+                  </span>
+                </div>
+                <div className="text-zinc-200 text-xs">
+                  {latestEvent?.districtId === selectedDistrict.name ? (
+                    <>
+                      <div className="font-semibold text-emerald-300">{latestEvent.schemeId}: {latestEvent.eventType.replace(/_/g, ' ')}</div>
+                      <div className="text-[11px] text-zinc-400 mt-0.5">
+                        ₹{latestEvent.previousValue} Cr → ₹{latestEvent.currentValue} Cr ({latestEvent.deltaPercent > 0 ? '+' : ''}{latestEvent.deltaPercent.toFixed(1)}%)
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-semibold text-emerald-300">JJM DRAWDOWN TELEMETRY</div>
+                      <div className="text-[11px] text-zinc-400 mt-0.5">
+                        ₹22.10 Cr → ₹24.70 Cr (+11.8%)
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ) : null}
+
+            {/* Cross-Programme Triangulation Status */}
+            <div className="space-y-2 font-mono text-xs">
+              <span className="text-[10px] uppercase tracking-wider text-zinc-400 block font-semibold">
+                CROSS-PROGRAMME TRIANGULATION
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
+                  <span className="text-[9px] text-zinc-400 block">JJM FHTC</span>
+                  <span className="text-xs font-bold text-zinc-100">28.4%</span>
+                  <span className="text-[8px] text-zinc-400 block">Verified</span>
+                </div>
+                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
+                  <span className="text-[9px] text-zinc-400 block">PMAY-G</span>
+                  <span className="text-xs font-bold text-emerald-400">46.8%</span>
+                  <span className="text-[8px] text-zinc-400 block">Physical</span>
+                </div>
+                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
+                  <span className="text-[9px] text-zinc-400 block">PKVY</span>
+                  <span className="text-xs font-bold text-amber-400">12 Clust</span>
+                  <span className="text-[8px] text-zinc-400 block">Organic</span>
+                </div>
+              </div>
+            </div>
+
             {/* Metrics List */}
-            <div className="space-y-3 font-mono text-xs border-y border-[#2A2926] py-4">
+            <div className="space-y-2.5 font-mono text-xs border-y border-[#2A2926] py-3.5">
               <div className="flex justify-between items-center">
                 <span className="text-[#8E887E]">Population</span>
                 <span className="font-bold text-[#F3F0E8]">
@@ -476,15 +550,6 @@ export default function GeographicIntelligencePage() {
                 <span className="text-[#8E887E]">Projects</span>
                 <span className="font-bold text-[#F3F0E8]">
                   {selectedDistrict.projectsCount}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#8E887E]">Beneficiaries</span>
-                <span className="font-bold text-[#F3F0E8]">
-                  {selectedDistrict.beneficiariesCount >= 1000000
-                    ? `${(selectedDistrict.beneficiariesCount / 1000000).toFixed(1)}M`
-                    : `${Math.round(selectedDistrict.beneficiariesCount / 1000)}K`}
                 </span>
               </div>
 
@@ -525,44 +590,35 @@ export default function GeographicIntelligencePage() {
               <div className="p-4 rounded bg-[#A66A62]/10 border border-[#A66A62]/40 space-y-3">
                 <div className="flex items-center space-x-2 text-[#A66A62] font-semibold text-xs font-mono">
                   <ShieldAlert className="w-4 h-4" />
-                  <span>POTENTIAL COVERAGE GAP</span>
+                  <span>CROSS-PROGRAMME CONVERGENCE GAP</span>
                 </div>
                 <p className="text-xs text-[#F3F0E8]">
-                  Deficit of{' '}
+                  Infrastructure divergence of{' '}
                   <strong className="text-[#A66A62] font-mono">
                     {selectedDistrict.gapPercentagePoints} percentage points
                   </strong>{' '}
-                  relative to regional benchmark.
+                  between PMAY-G dwelling completion (46.8%) and JJM functional tap connection (28.4%).
                 </p>
 
-                {/* Why Flagged factors */}
-                <div className="space-y-1.5 pt-1">
-                  <span className="text-[10px] font-mono uppercase text-[#8E887E] block">
-                    WHY FLAGGED?
-                  </span>
-                  {selectedDistrict.flagFactors.map((factor, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start space-x-2 text-[11px] text-[#C9C2B7]"
-                    >
-                      <span className="text-[#5E8B72] font-bold">✓</span>
-                      <span>{factor}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pt-2">
+                <div className="grid grid-cols-2 gap-2 pt-1">
                   <button
-                    onClick={() => openEvidence('#9281')}
-                    className="w-full py-2 px-3 rounded-sm bg-[#A66A62] text-white font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-[#8F554E] transition-colors"
+                    onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+                    className="py-2 px-3 rounded-sm bg-zinc-800 text-zinc-100 font-semibold text-[11px] font-mono flex items-center justify-center space-x-1.5 hover:bg-zinc-700 border border-zinc-700 transition-colors"
                   >
-                    <span>VIEW EVIDENCE (#9281)</span>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>WHY FLAGGED?</span>
+                  </button>
+                  <button
+                    onClick={() => openWorkspace('SUTRA-INV-2026-0001')}
+                    className="py-2 px-3 rounded-sm bg-[#A66A62] text-white font-semibold text-[11px] font-mono flex items-center justify-center space-x-1.5 hover:bg-[#8F554E] transition-colors"
+                  >
+                    <span>INVESTIGATE</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="p-4 rounded bg-[#5E8B72]/10 border border-[#5E8B72]/30 text-xs text-[#5E8B72] flex items-center space-x-2">
+              <div className="p-3.5 rounded bg-[#5E8B72]/10 border border-[#5E8B72]/30 text-xs text-[#5E8B72] flex items-center space-x-2">
                 <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                 <span>
                   Delivery metrics align with or exceed the 64% regional administrative benchmark.
@@ -570,31 +626,22 @@ export default function GeographicIntelligencePage() {
               </div>
             )}
 
-            <div className="pt-2">
-              <button
-                onClick={() =>
-                  openExplain({
-                    title: `District Coverage: ${selectedDistrict.name}`,
-                    subtitle: `Coverage: ${selectedDistrict.coverageRate}% vs Benchmark: ${selectedDistrict.regionalBenchmarkRate}%`,
-                    confidence: 87,
-                    factors: [
-                      { title: 'HIGH BENEFICIARY DEMAND', weight: 26 },
-                      { title: 'LOW FUND UTILIZATION', weight: 31 },
-                      { title: 'LOW PROJECT DENSITY', weight: 22 },
-                      { title: 'REGIONAL DEVIATION', weight: 21 },
-                    ],
-                    evidenceRecordNumber: '#9281',
-                  })
-                }
-                className="w-full py-2.5 px-4 rounded-sm bg-[#191917] border border-[#2A2926] text-xs text-[#F3F0E8] hover:border-[#B78A5A] transition-colors flex items-center justify-center space-x-2"
+            {/* Direct Multi-Action Navigators */}
+            <div className="space-y-2 pt-1">
+              <Link
+                href="/relationships"
+                className="w-full py-2.5 px-4 rounded-sm bg-[#191917] border border-[#2A2926] text-xs font-mono text-[#F3F0E8] hover:border-[#B78A5A] transition-colors flex items-center justify-between"
               >
-                <span>WHY THIS INSIGHT?</span>
+                <span className="flex items-center gap-2">
+                  <Network className="w-3.5 h-3.5 text-[#B78A5A]" />
+                  <span>TRACE IN GOVERNANCE GRAPH</span>
+                </span>
                 <ChevronRight className="w-3.5 h-3.5 text-[#B78A5A]" />
-              </button>
+              </Link>
 
               <button
                 onClick={() => openExecutiveBrief(selectedDistrict)}
-                className="w-full mt-2 py-2 px-4 rounded-sm bg-[#191917] border border-[#B78A5A]/50 text-xs text-[#B78A5A] hover:bg-[#B78A5A] hover:text-[#0D0D0C] font-semibold transition-all flex items-center justify-center space-x-2"
+                className="w-full py-2.5 px-4 rounded-sm bg-[#191917] border border-[#B78A5A]/50 text-xs font-mono text-[#B78A5A] hover:bg-[#B78A5A] hover:text-[#0D0D0C] font-semibold transition-all flex items-center justify-center space-x-2"
               >
                 <span>GENERATE APEX POLICY BRIEF</span>
                 <ArrowRight className="w-3.5 h-3.5" />

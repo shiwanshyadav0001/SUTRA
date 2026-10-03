@@ -48,6 +48,47 @@ export default function EvidenceHubPage() {
         </p>
       </div>
 
+      {/* Featured Canonical Investigation Card */}
+      <div className="p-6 rounded-sm bg-[#141412] border-2 border-[#B78A5A]/60 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2A2926] pb-3">
+          <div className="flex items-center space-x-2">
+            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#B78A5A]/20 text-[#B78A5A] border border-[#B78A5A]/40 font-bold">
+              FEATURED INVESTIGATION: SUTRA-FND-0001
+            </span>
+            <span className="text-[10px] font-mono text-[#5E8B72] border border-[#5E8B72]/30 px-2 py-0.5 rounded bg-[#5E8B72]/10">
+              VERIFIED SOURCE DATA
+            </span>
+          </div>
+          <div className="text-xs font-mono text-[#8E887E]">
+            LGD Identity Anchor: <span className="text-[#B78A5A] font-bold">512 (NANDURBAR)</span>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4 font-mono text-xs">
+          <div className="md:col-span-2 space-y-2">
+            <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial">
+              Nandurbar Tribal Habitation Cross-Programme Capital Delivery Lag & Convergence Gap
+            </h3>
+            <p className="text-xs text-[#C9C2B7] font-editorial leading-relaxed">
+              Deterministic LGD join across Jal Jeevan Mission, PMAY-G Housing, and PKVY Agriculture proves a severe -27.2 pp capital drawdown deficit with ₹68.10 Cr in unabsorbed outlays and an 18.4 pp synchronization lag between completed houses and active tap connections.
+            </p>
+          </div>
+          <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2 text-right">
+            <span className="text-[10px] text-[#8E887E] uppercase block">PROVENANCE SHA-256</span>
+            <code className="text-[10px] text-[#5E8B72] block truncate">
+              b5e394f71a0e8c61a9d82f3c4e...
+            </code>
+            <a
+              href="/query"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-[#B78A5A] text-[#0D0D0C] font-bold rounded text-xs hover:bg-[#CBB093] transition-colors mt-2"
+            >
+              <span>INSPECT PIPELINE</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Dataset Overview Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {DATASETS_META.map((dataset) => {

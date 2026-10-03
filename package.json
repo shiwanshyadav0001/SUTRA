@@ -17,7 +17,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "test": "npx tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "@types/d3": "^7.4.3",

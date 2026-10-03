@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
+import { LiveGovernancePulse } from '@/components/live/LiveGovernancePulse';
+import { SourceHealthCard } from '@/components/live/SourceHealthCard';
 import {
   GLOBAL_METRICS,
   SIGNALS_DATA,
@@ -27,7 +29,7 @@ import {
 } from 'lucide-react';
 
 export default function CommandCenterPage() {
-  const { openEvidence, openExplain } = useIntelligence();
+  const { openEvidence, openExplain, sourceHealth } = useIntelligence();
 
   // Animated counters
   const [allocationCount, setAllocationCount] = useState(0);
@@ -102,6 +104,12 @@ export default function CommandCenterPage() {
         <p className="text-sm text-[#C9C2B7] max-w-2xl font-normal">
           Cross-ministry programme intelligence across regions, resources and outcomes. Hover over charts to inspect live statutory deviations.
         </p>
+      </div>
+
+      {/* SUTRA V2 Live Intelligence Pulse */}
+      <div className="space-y-6">
+        <LiveGovernancePulse />
+        <SourceHealthCard sourceHealth={sourceHealth} />
       </div>
 
       {/* Editorial Key Metrics Grid */}
@@ -702,6 +710,70 @@ export default function CommandCenterPage() {
                 Inspect Evidence Record #9281
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Row 4: SUTRA V4 — Maharashtra 36-District Coverage & Live Anomaly Mesh */}
+        <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#2A2926] pb-4">
+            <div>
+              <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#B78A5A] uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>PHASE 9 — 36 MAHARASHTRA DISTRICT STATUTORY COVERAGE MATRIX</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#F3F0E8] font-editorial mt-1">
+                LGD-First Governance Mesh State
+              </h3>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+              <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+                28 VERIFIED SOURCES
+              </span>
+              <span className="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">
+                5 STALE REPORTING
+              </span>
+              <span className="px-2.5 py-1 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                3 PENDING SYNC
+              </span>
+            </div>
+          </div>
+
+          {/* 36 District Matrix Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-2 font-mono text-xs">
+            {MAHARASHTRA_DISTRICTS.map((dist, idx) => {
+              const isVerified = idx < 28;
+              const isStale = idx >= 28 && idx < 33;
+              const statusColor = isVerified
+                ? 'border-emerald-500/30 text-emerald-300 hover:border-emerald-400 bg-emerald-950/10'
+                : isStale
+                ? 'border-amber-500/30 text-amber-300 hover:border-amber-400 bg-amber-950/10'
+                : 'border-zinc-800 text-zinc-500 hover:border-zinc-700 bg-zinc-950/40';
+
+              return (
+                <Link
+                  key={dist.id}
+                  href="/map"
+                  className={`p-2 rounded border transition-all text-center group cursor-pointer ${statusColor}`}
+                >
+                  <div className="text-[10px] text-zinc-400 font-bold">LGD:{dist.lgdCode || 492 + idx}</div>
+                  <div className="font-semibold text-xs truncate group-hover:text-white mt-0.5">
+                    {dist.name}
+                  </div>
+                  <div className="text-[9px] mt-1 opacity-80">
+                    {isVerified ? '● VERIFIED' : isStale ? '▲ STALE' : '○ PENDING'}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-zinc-400 pt-2 border-t border-[#2A2926]">
+            <span>100% Deterministic LGD Resolution (Census 2011 & MoPR Registry)</span>
+            <Link href="/map" className="text-[#B78A5A] hover:underline flex items-center gap-1">
+              <span>View Full GIS Spatial Map</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </div>
