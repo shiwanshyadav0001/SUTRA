@@ -198,20 +198,20 @@ export default function InvestigateWorkspacePage() {
           {/* ======================================================== */}
           {/* PHASE 3: LAUNCH WORKSPACE (QUERY, DISTRICT & DATASETS)    */}
           {/* ======================================================== */}
-          <div className="rounded-sm border border-[#2A2926] bg-[#141412] p-6 md:p-8 shadow-2xl space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#2A2926]">
+          <div className="rounded-sm border border-[#38352F] bg-[#181816] p-6 md:p-8 shadow-2xl space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#302E2A]">
               <div>
-                <h2 className="text-xl font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
-                  <Search className="h-5 w-5 text-[#B78A5A]" />
+                <h2 className="text-xl font-bold text-white font-editorial tracking-tight flex items-center gap-2">
+                  <Search className="h-5 w-5 text-[#DFB88B]" />
                   Initiate Governance Investigation
                 </h2>
-                <p className="text-xs text-[#C9C2B7] mt-1">
+                <p className="text-xs text-[#DDD7CD] mt-1">
                   Query the deterministic multi-dataset pipeline across 36 Maharashtra LGD districts and central schemes.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-[#8E887E]">
-                <ShieldCheck className="h-4 w-4 text-[#5E8B72]" />
+              <div className="flex items-center gap-2 text-xs font-mono text-[#DDD7CD]">
+                <ShieldCheck className="h-4 w-4 text-[#7DC09C]" />
                 Zero-PII · LGD-100% Deterministic · Cryptographically Sealed
               </div>
             </div>
@@ -225,7 +225,7 @@ export default function InvestigateWorkspacePage() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Enter governance investigation question (e.g. Find convergence opportunities in Nandurbar)..."
-                    className="w-full pl-4 pr-4 py-3.5 rounded-sm bg-[#0D0D0C] border border-[#2A2926] text-[#F3F0E8] placeholder-[#8E887E] text-sm focus:outline-none focus:border-[#B78A5A] transition-all font-mono"
+                    className="w-full pl-4 pr-4 py-3.5 rounded-sm bg-[#111110] border border-[#33312D] text-white placeholder-[#A39D92] text-sm focus:outline-none focus:border-[#DFB88B] transition-all font-mono shadow-inner"
                   />
                 </div>
 
@@ -234,7 +234,7 @@ export default function InvestigateWorkspacePage() {
                   <select
                     value={selectedLgd}
                     onChange={(e) => setSelectedLgd(e.target.value)}
-                    className="w-full py-3.5 px-3 rounded-sm bg-[#0D0D0C] border border-[#2A2926] text-[#F3F0E8] text-sm focus:outline-none focus:border-[#B78A5A] transition-all font-mono"
+                    className="w-full py-3.5 px-3 rounded-sm bg-[#111110] border border-[#33312D] text-white text-sm focus:outline-none focus:border-[#DFB88B] transition-all font-mono"
                   >
                     {maharashtraDistricts.map((d) => (
                       <option key={d.lgdCode} value={d.lgdCode}>
@@ -248,16 +248,16 @@ export default function InvestigateWorkspacePage() {
                 <button
                   onClick={() => handleStartInvestigation(query, selectedLgd)}
                   disabled={isExecuting}
-                  className="px-6 py-3.5 rounded-sm bg-[#B78A5A] hover:bg-[#C99A6A] text-[#0D0D0C] font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50"
+                  className="px-6 py-3.5 rounded-sm bg-gradient-to-r from-[#DFB88B] via-[#C89B65] to-[#B78A5A] hover:brightness-110 text-[#0E0E0D] font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#C89B65]/20 transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isExecuting ? (
                     <>
-                      <div className="h-4 w-4 border-2 border-[#0D0D0C] border-t-transparent rounded-full animate-spin" />
+                      <div className="h-4 w-4 border-2 border-[#0E0E0D] border-t-transparent rounded-full animate-spin" />
                       Executing Pipeline...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-4 w-4" />
+                      <Sparkles className="h-4 w-4 text-[#0E0E0D]" />
                       Start Investigation
                     </>
                   )}
@@ -347,42 +347,42 @@ export default function InvestigateWorkspacePage() {
           {hasStarted && (
             <div className="space-y-12">
               {/* INVESTIGATION HEADER */}
-              <div className="rounded-sm border border-[#2A2926] bg-[#141412] p-6 md:p-8 shadow-2xl relative overflow-hidden">
+              <div className="rounded-sm border border-[#38352F] bg-[#181816] p-6 md:p-8 shadow-2xl relative overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div className="space-y-2 max-w-3xl">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#B78A5A] bg-[#B78A5A]/10 px-2.5 py-0.5 rounded-sm border border-[#B78A5A]/20">
+                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#DFB88B] bg-[#C89B65]/15 px-2.5 py-0.5 rounded-sm border border-[#C89B65]/30">
                         {investigationResult.investigation.id}
                       </span>
-                      <span className="font-mono text-xs text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700">
+                      <span className="font-mono text-xs text-[#DDD7CD] bg-[#22211D] px-2.5 py-0.5 rounded border border-[#38352F]">
                         LGD: {investigationResult.interpretation.targetDistrictLgd}
                       </span>
-                      <span className="text-xs text-zinc-400 font-mono flex items-center gap-1">
-                        <Calendar className="h-3 w-3" /> FY 2025-26 Q2
+                      <span className="text-xs text-[#A39D92] font-mono flex items-center gap-1">
+                        <Calendar className="h-3 w-3 text-[#DFB88B]" /> FY 2025-26 Q2
                       </span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-zinc-100 tracking-tight">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                       {investigationResult.investigation.title}
                     </h2>
-                    <p className="text-sm text-zinc-300 leading-relaxed">
+                    <p className="text-sm text-[#DDD7CD] leading-relaxed">
                       {investigationResult.investigation.question}
                     </p>
                   </div>
 
                   {/* Multi-Component Confidence Widget */}
-                  <div className="p-4 rounded-sm bg-[#0D0D0C] border border-[#2A2926] flex flex-col items-end gap-1 shadow-inner">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[#8E887E] font-mono">
+                  <div className="p-4 rounded-sm bg-[#121210] border border-[#33312D] flex flex-col items-end gap-1 shadow-inner">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[#A39D92] font-mono">
                       Multi-Component Audit Confidence
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-2xl font-mono font-bold text-[#F3F0E8]">
+                      <span className="text-2xl font-mono font-bold text-white">
                         {investigationResult.finding.confidenceAssessment?.overallScore || 93.5}%
                       </span>
-                      <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded-sm bg-[#5E8B72]/15 text-[#5E8B72] border border-[#5E8B72]/30">
+                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-sm bg-[#6DAA8A]/20 text-[#7DC09C] border border-[#6DAA8A]/35">
                         {investigationResult.finding.confidenceAssessment?.rating || 'HIGH'}
                       </span>
                     </div>
-                    <div className="text-[10px] font-mono text-[#8E887E] mt-1">
+                    <div className="text-[10px] font-mono text-[#A39D92] mt-1">
                       5-Component Weighted Assessment
                     </div>
                   </div>

@@ -113,75 +113,75 @@ export default function CommandCenterPage() {
       </div>
 
       {/* Editorial Key Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b border-[#2A2926] pb-8">
-        <div className="p-4 bg-[#141412] border-l-2 border-[#B78A5A] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b border-[#33312D] pb-8">
+        <div className="p-4 bg-[#181816] hover:bg-[#1E1E1B] border border-[#2E2C28] hover:border-[#3D3A34] border-l-2 border-l-[#DFB88B] rounded-r-sm transition-all shadow-sm">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#A39D92] block font-semibold">
             TOTAL ALLOCATION
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl lg:text-3xl font-bold font-mono text-white mt-1">
             ₹{allocationCount}B
           </div>
-          <span className="text-[10px] text-[#5E8B72] block mt-1 font-mono">
+          <span className="text-[10px] text-[#7DC09C] block mt-1 font-mono font-medium">
             +8.4% vs FY25
           </span>
         </div>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#5E8B72] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <div className="p-4 bg-[#181816] hover:bg-[#1E1E1B] border border-[#2E2C28] hover:border-[#3D3A34] border-l-2 border-l-[#6DAA8A] rounded-r-sm transition-all shadow-sm">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#A39D92] block font-semibold">
             FUND UTILIZATION
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl lg:text-3xl font-bold font-mono text-white mt-1">
             {utilizationCount}%
           </div>
-          <span className="text-[10px] text-[#8E887E] block mt-1 font-mono">
+          <span className="text-[10px] text-[#A39D92] block mt-1 font-mono">
             Target: 80%
           </span>
         </div>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#B78A5A] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <div className="p-4 bg-[#181816] hover:bg-[#1E1E1B] border border-[#2E2C28] hover:border-[#3D3A34] border-l-2 border-l-[#DFB88B] rounded-r-sm transition-all shadow-sm">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#A39D92] block font-semibold">
             BENEFICIARIES
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl lg:text-3xl font-bold font-mono text-white mt-1">
             {beneficiariesCount}M
           </div>
-          <span className="text-[10px] text-[#8E887E] block mt-1 font-mono">
+          <span className="text-[10px] text-[#DDD7CD] block mt-1 font-mono">
             Direct DBT Verified
           </span>
         </div>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#7E7A72] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <div className="p-4 bg-[#181816] hover:bg-[#1E1E1B] border border-[#2E2C28] hover:border-[#3D3A34] border-l-2 border-l-[#9A9488] rounded-r-sm transition-all shadow-sm">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#A39D92] block font-semibold">
             ACTIVE PROJECTS
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl lg:text-3xl font-bold font-mono text-white mt-1">
             {projectsCount}
           </div>
-          <span className="text-[10px] text-[#8E887E] block mt-1 font-mono">
+          <span className="text-[10px] text-[#A39D92] block mt-1 font-mono">
             Across 36 Districts
           </span>
         </div>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#B59A63] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <div className="p-4 bg-[#181816] hover:bg-[#1E1E1B] border border-[#2E2C28] hover:border-[#3D3A34] border-l-2 border-l-[#C9A86A] rounded-r-sm transition-all shadow-sm">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#A39D92] block font-semibold">
             COVERAGE
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl lg:text-3xl font-bold font-mono text-white mt-1">
             {coverageCount}%
           </div>
-          <span className="text-[10px] text-[#A66A62] block mt-1 font-mono">
+          <span className="text-[10px] text-[#E08A80] block mt-1 font-mono font-medium">
             5 Critical Gaps
           </span>
         </div>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#5E8B72] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <div className="p-4 bg-[#181816] hover:bg-[#1E1E1B] border border-[#2E2C28] hover:border-[#3D3A34] border-l-2 border-l-[#6DAA8A] rounded-r-sm transition-all shadow-sm">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#A39D92] block font-semibold">
             OUTCOME INDEX
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl lg:text-3xl font-bold font-mono text-white mt-1">
             {outcomeCount}
           </div>
-          <span className="text-[10px] text-[#5E8B72] block mt-1 font-mono">
+          <span className="text-[10px] text-[#7DC09C] block mt-1 font-mono font-medium">
             Scale: 0–100
           </span>
         </div>

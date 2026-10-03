@@ -2,24 +2,24 @@
 
 @layer base {
   :root {
-    --bg-primary: #0D0D0C;
-    --bg-surface: #191917;
-    --bg-surface-elevated: #22221F;
-    --bg-surface-subtle: #141412;
-    --border-primary: #2A2926;
-    --border-subtle: #1F1E1B;
-    --copper: #B78A5A;
-    --copper-light: #CBB093;
-    --copper-dark: #8C653C;
-    --stone: #C9C2B7;
-    --stone-dim: #8E887E;
-    --stone-faint: #4E4A43;
-    --text-primary: #F3F0E8;
-    --text-secondary: #C9C2B7;
-    --text-muted: #8E887E;
-    --signal-red: #A66A62;
-    --signal-amber: #B59A63;
-    --signal-green: #5E8B72;
+    --bg-primary: #0E0E0D;
+    --bg-surface: #1B1B19;
+    --bg-surface-elevated: #262622;
+    --bg-surface-subtle: #161614;
+    --border-primary: #33312D;
+    --border-subtle: #262522;
+    --copper: #C89B65;
+    --copper-light: #DFB88B;
+    --copper-dark: #9A7246;
+    --stone: #DDD7CD;
+    --stone-dim: #A8A196;
+    --stone-faint: #605B53;
+    --text-primary: #FAF8F5;
+    --text-secondary: #D8D2C7;
+    --text-muted: #A39D92;
+    --signal-red: #D9776E;
+    --signal-amber: #C9A86A;
+    --signal-green: #6DAA8A;
   }
 
   body {
