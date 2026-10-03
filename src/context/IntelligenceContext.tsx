@@ -56,10 +56,6 @@ export interface IntelligenceContextType {
   sourceHealth: SourceHealthStatus[];
   telemetrySummary: LiveTelemetrySummary;
   resetLiveEvents: () => void;
-  // Governance Desk Theme Engine
-  theme: 'dark' | 'light';
-  setTheme: (theme: 'dark' | 'light') => void;
-  toggleTheme: () => void;
 }
 
 const IntelligenceContext = createContext<IntelligenceContextType | undefined>(undefined);
@@ -89,43 +85,6 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
   const [liveMode, setLiveMode] = useState<EventProcessingMode>('VERIFIED_SOURCE');
   const [isLiveStreaming, setIsLiveStreaming] = useState<boolean>(true);
   const [sourceHealth, setSourceHealth] = useState<SourceHealthStatus[]>(INITIAL_SOURCE_HEALTH);
-
-  // Theme State: 'dark' (Command War-Room) | 'light' (Statutory Administrative)
-  const [theme, setThemeState] = useState<'dark' | 'light'>('dark');
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('sutra_theme') as 'dark' | 'light' | null;
-      if (saved === 'light' || saved === 'dark') {
-        setThemeState(saved);
-        if (saved === 'light') {
-          document.documentElement.classList.add('theme-light');
-        } else {
-          document.documentElement.classList.remove('theme-light');
-        }
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const setTheme = useCallback((newTheme: 'dark' | 'light') => {
-    setThemeState(newTheme);
-    try {
-      localStorage.setItem('sutra_theme', newTheme);
-      if (newTheme === 'light') {
-        document.documentElement.classList.add('theme-light');
-      } else {
-        document.documentElement.classList.remove('theme-light');
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  }, [theme, setTheme]);
 
   const nandurbar =
     MAHARASHTRA_DISTRICTS.find((d) => d.name === 'Nandurbar') || MAHARASHTRA_DISTRICTS[0];
@@ -324,9 +283,6 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
         sourceHealth,
         telemetrySummary,
         resetLiveEvents,
-        theme,
-        setTheme,
-        toggleTheme,
       }}
     >
       {children}

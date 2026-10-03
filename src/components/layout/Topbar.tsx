@@ -3,13 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Shield, Bell, CheckCircle2, Cpu, Sun, Moon } from 'lucide-react';
+import { Search, Shield, Bell, CheckCircle2, Cpu } from 'lucide-react';
 import { useIntelligence } from '@/context/IntelligenceContext';
 
 export function Topbar() {
   const pathname = usePathname();
 
-  const { openEngineSpec, theme, toggleTheme } = useIntelligence();
+  const { openEngineSpec } = useIntelligence();
 
   const getSectionTitle = () => {
     if (!pathname || pathname === '/command') return 'Command Center';
@@ -56,29 +56,6 @@ export function Topbar() {
 
       {/* Right Telemetry & Profile */}
       <div className="flex items-center space-x-5 text-xs">
-        {/* Dual-Mode Governance Desk Theme Switcher (Statutory Light vs Command War-Room) */}
-        <button
-          onClick={toggleTheme}
-          className={`flex items-center space-x-1.5 px-3 py-1 rounded font-mono text-[10px] font-bold transition-all shadow-sm border cursor-pointer ${
-            theme === 'light'
-              ? 'bg-[#002147] text-white border-[#002147] hover:bg-[#0A2540]'
-              : 'bg-[#1E1E1B] text-[#DFB88B] border-[#38352F] hover:border-[#DFB88B]'
-          }`}
-          title="Toggle between Statutory PMO Light Mode and Command War-Room Dark Mode"
-        >
-          {theme === 'light' ? (
-            <>
-              <Moon className="w-3.5 h-3.5 text-[#93C5FD]" />
-              <span>COMMAND MODE (DARK)</span>
-            </>
-          ) : (
-            <>
-              <Sun className="w-3.5 h-3.5 text-[#F59E0B]" />
-              <span>STATUTORY MODE (LIGHT)</span>
-            </>
-          )}
-        </button>
-
         {/* Algorithmic Rigor & Engine Spec Modal Button (For Judges) */}
         <button
           onClick={openEngineSpec}
