@@ -475,64 +475,80 @@ export default function GovernanceGraphPage() {
               })}
             </svg>
 
-            {/* Rich Floating Glassmorphic Tooltip on Node Hover (Anchored to node with zero jitter) */}
-            {hoveredNode && tooltipPos && (
-              <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded bg-[#141412]/95 border border-[#B78A5A] text-[#F3F0E8] font-mono text-xs shadow-2xl backdrop-blur-md max-w-xs transition-all duration-150"
-                style={{
-                  left: `${(tooltipPos.x / 820) * 100}%`,
-                  top: `${Math.max((tooltipPos.y / 520) * 100 - 4, 6)}%`,
-                }}
-              >
-                <div className="flex items-center justify-between gap-3 border-b border-[#2A2926] pb-1.5 mb-1.5">
-                  <span
-                    className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold"
-                    style={{
-                      backgroundColor: `${getNodeColor(hoveredNode.type)}25`,
-                      color: getNodeColor(hoveredNode.type),
-                      border: `1px solid ${getNodeColor(hoveredNode.type)}50`,
-                    }}
-                  >
-                    {hoveredNode.type}
-                  </span>
-                  <span className="text-[10px] text-[#8E887E]">
-                    {activeConnectedNodeIds.size - 1} Links Connected
-                  </span>
-                </div>
-                <div className="font-bold text-sm text-[#F3F0E8]">{hoveredNode.label}</div>
-                {hoveredNode.subtext && (
-                  <div className="text-[11px] text-[#C9C2B7] mt-0.5">{hoveredNode.subtext}</div>
-                )}
-                <div className="mt-2 pt-1.5 border-t border-[#2A2926] flex items-center justify-between text-[9px] text-[#B78A5A]">
-                  <span>Click to lock & view dossier</span>
-                  <span>ID: {hoveredNode.id}</span>
-                </div>
-              </div>
-            )}
+            {/* Rich Floating Glassmorphic Tooltip on Node Hover (Anchored to node with smart boundary flipping) */}
+            {hoveredNode && tooltipPos && (() => {
+              const isNearTop = tooltipPos.y < 160;
+              const safeX = Math.max(150, Math.min(tooltipPos.x, 670));
+              const safeXPercent = (safeX / 820) * 100;
+              const safeYPercent = (tooltipPos.y / 520) * 100;
 
-            {/* Floating Tooltip on Link Hover */}
-            {hoveredLink && tooltipPos && !hoveredNode && (
-              <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-2 px-3 py-2 rounded bg-[#141412]/95 border border-[#5E8B72] text-[#F3F0E8] font-mono text-xs shadow-xl backdrop-blur-md transition-opacity duration-150"
-                style={{
-                  left: Math.min(Math.max(tooltipPos.x, 90), 730),
-                  top: Math.max(tooltipPos.y - 10, 10),
-                }}
-              >
-                <div className="text-[9px] text-[#5E8B72] uppercase font-bold tracking-wider">
-                  RELATIONSHIP EDGE
-                </div>
-                <div className="text-[11px] font-bold text-[#F3F0E8] mt-0.5">
-                  {nodes.find((n) => n.id === hoveredLink.source)?.label} ──[{hoveredLink.type}]──▶{' '}
-                  {nodes.find((n) => n.id === hoveredLink.target)?.label}
-                </div>
-                {hoveredLink.label && (
-                  <div className="text-[10px] text-[#B78A5A] mt-1 font-bold">
-                    {hoveredLink.label}
+              return (
+                <div
+                  className={`absolute z-30 pointer-events-none transform -translate-x-1/2 ${
+                    isNearTop ? 'mt-8' : '-translate-y-full mb-3'
+                  } px-3.5 py-2.5 rounded bg-[#181816]/98 border border-[#DFB88B] text-white font-mono text-xs shadow-2xl backdrop-blur-md max-w-xs transition-all duration-150`}
+                  style={{
+                    left: `${safeXPercent}%`,
+                    top: `${safeYPercent}%`,
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-3 border-b border-[#33312D] pb-1.5 mb-1.5">
+                    <span
+                      className="text-[9px] uppercase px-2 py-0.5 rounded font-bold"
+                      style={{
+                        backgroundColor: `${getNodeColor(hoveredNode.type)}25`,
+                        color: getNodeColor(hoveredNode.type),
+                        border: `1px solid ${getNodeColor(hoveredNode.type)}50`,
+                      }}
+                    >
+                      {hoveredNode.type}
+                    </span>
+                    <span className="text-[10px] text-[#A39D92]">
+                      {activeConnectedNodeIds.size - 1} Links Connected
+                    </span>
                   </div>
-                )}
-              </div>
-            )}
+                  <div className="font-bold text-sm text-white">{hoveredNode.label}</div>
+                  {hoveredNode.subtext && (
+                    <div className="text-[11px] text-[#DDD7CD] mt-1 leading-snug">{hoveredNode.subtext}</div>
+                  )}
+                  <div className="mt-2 pt-1.5 border-t border-[#33312D] flex items-center justify-between text-[9px] text-[#DFB88B] font-semibold">
+                    <span>Click to lock & view dossier</span>
+                    <span>ID: {hoveredNode.id}</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Floating Tooltip on Link Hover (with smart boundary flipping) */}
+            {hoveredLink && tooltipPos && !hoveredNode && (() => {
+              const isNearTop = tooltipPos.y < 140;
+              const safeX = Math.max(130, Math.min(tooltipPos.x, 690));
+
+              return (
+                <div
+                  className={`absolute z-30 pointer-events-none transform -translate-x-1/2 ${
+                    isNearTop ? 'mt-6' : '-translate-y-full mb-2'
+                  } px-3.5 py-2 rounded bg-[#181816]/98 border border-[#7DC09C] text-white font-mono text-xs shadow-xl backdrop-blur-md transition-opacity duration-150`}
+                  style={{
+                    left: `${(safeX / 820) * 100}%`,
+                    top: `${(tooltipPos.y / 520) * 100}%`,
+                  }}
+                >
+                  <div className="text-[9px] text-[#7DC09C] uppercase font-bold tracking-wider">
+                    RELATIONSHIP EDGE
+                  </div>
+                  <div className="text-[11px] font-bold text-white mt-0.5">
+                    {nodes.find((n) => n.id === hoveredLink.source)?.label} ──[{hoveredLink.type}]──▶{' '}
+                    {nodes.find((n) => n.id === hoveredLink.target)?.label}
+                  </div>
+                  {hoveredLink.label && (
+                    <div className="text-[10px] text-[#DFB88B] mt-1 font-bold">
+                      {hoveredLink.label}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Edge Type Legend */}
             <div className="absolute bottom-3 left-3 text-[10px] font-mono text-[#DDD7CD] flex flex-wrap gap-3 bg-[#181816]/90 px-3.5 py-1.5 border border-[#33312D] rounded backdrop-blur-sm shadow-md font-medium">
