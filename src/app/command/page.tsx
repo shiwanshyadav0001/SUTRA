@@ -718,7 +718,7 @@ export default function CommandCenterPage() {
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#2A2926] pb-4">
             <div>
               <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#B78A5A] uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5E8B72] animate-pulse" />
                 <span>PHASE 9 — 36 MAHARASHTRA DISTRICT STATUTORY COVERAGE MATRIX</span>
               </div>
               <h3 className="text-xl font-bold text-[#F3F0E8] font-editorial mt-1">
@@ -727,13 +727,13 @@ export default function CommandCenterPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-              <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+              <span className="px-2.5 py-1 rounded-sm bg-[#5E8B72]/15 text-[#5E8B72] border border-[#5E8B72]/30 font-bold">
                 28 VERIFIED SOURCES
               </span>
-              <span className="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">
+              <span className="px-2.5 py-1 rounded-sm bg-[#B78A5A]/15 text-[#B78A5A] border border-[#B78A5A]/30 font-bold">
                 5 STALE REPORTING
               </span>
-              <span className="px-2.5 py-1 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+              <span className="px-2.5 py-1 rounded-sm bg-[#1C1B18] text-[#8E887E] border border-[#2A2926]">
                 3 PENDING SYNC
               </span>
             </div>
@@ -745,19 +745,19 @@ export default function CommandCenterPage() {
               const isVerified = idx < 28;
               const isStale = idx >= 28 && idx < 33;
               const statusColor = isVerified
-                ? 'border-emerald-500/30 text-emerald-300 hover:border-emerald-400 bg-emerald-950/10'
+                ? 'border-[#5E8B72]/30 text-[#5E8B72] hover:border-[#5E8B72] bg-[#5E8B72]/5'
                 : isStale
-                ? 'border-amber-500/30 text-amber-300 hover:border-amber-400 bg-amber-950/10'
-                : 'border-zinc-800 text-zinc-500 hover:border-zinc-700 bg-zinc-950/40';
+                ? 'border-[#B78A5A]/30 text-[#B78A5A] hover:border-[#B78A5A] bg-[#B78A5A]/5'
+                : 'border-[#2A2926] text-[#8E887E] hover:border-[#3A3834] bg-[#141412]';
 
               return (
                 <Link
                   key={dist.id}
                   href="/map"
-                  className={`p-2 rounded border transition-all text-center group cursor-pointer ${statusColor}`}
+                  className={`p-2 rounded-sm border transition-all text-center group cursor-pointer ${statusColor}`}
                 >
-                  <div className="text-[10px] text-zinc-400 font-bold">LGD:{dist.lgdCode || 492 + idx}</div>
-                  <div className="font-semibold text-xs truncate group-hover:text-white mt-0.5">
+                  <div className="text-[10px] text-[#8E887E] font-bold">LGD:{dist.lgdCode || 492 + idx}</div>
+                  <div className="font-semibold text-xs truncate group-hover:text-[#F3F0E8] mt-0.5">
                     {dist.name}
                   </div>
                   <div className="text-[9px] mt-1 opacity-80">
