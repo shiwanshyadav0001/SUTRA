@@ -461,10 +461,10 @@ export default function GeographicIntelligencePage() {
             <div>
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A] flex items-center gap-1.5">
-                  <Activity className="w-3 h-3 text-emerald-400" />
+                  <Activity className="w-3 h-3 text-[#B78A5A]" />
                   DISTRICT LIVE INTELLIGENCE
                 </span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+                <span className="text-xs font-mono px-2 py-0.5 rounded-sm bg-[#1C1B18] text-[#C9C2B7] border border-[#2A2926]">
                   LGD {selectedDistrict.name === 'Nandurbar' ? '512' : selectedDistrict.code}
                 </span>
               </div>
@@ -476,28 +476,28 @@ export default function GeographicIntelligencePage() {
 
             {/* Real-time Event Telemetry Banner if active */}
             {activeDistrictLiveState[selectedDistrict.name] || (latestEvent && latestEvent.districtId === selectedDistrict.name) ? (
-              <div className="p-3.5 rounded bg-emerald-500/10 border border-emerald-500/30 font-mono text-xs space-y-2">
+              <div className="p-3.5 rounded-sm bg-[#171614] border border-[#2A2926] font-mono text-xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-[#5E8B72]">
                     <Radio className="w-3 h-3 animate-pulse" />
                     LIVE TELEMETRY STREAM
                   </span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-sm bg-[#B78A5A]/15 text-[#B78A5A] border border-[#B78A5A]/30">
                     MODE B • SIMULATED LIVE
                   </span>
                 </div>
-                <div className="text-zinc-200 text-xs">
+                <div className="text-[#F3F0E8] text-xs">
                   {latestEvent?.districtId === selectedDistrict.name ? (
                     <>
-                      <div className="font-semibold text-emerald-300">{latestEvent.schemeId}: {latestEvent.eventType.replace(/_/g, ' ')}</div>
-                      <div className="text-[11px] text-zinc-400 mt-0.5">
+                      <div className="font-semibold text-[#F3F0E8]">{latestEvent.schemeId}: {latestEvent.eventType.replace(/_/g, ' ')}</div>
+                      <div className="text-[11px] text-[#8E887E] mt-0.5">
                         ₹{latestEvent.previousValue} Cr → ₹{latestEvent.currentValue} Cr ({latestEvent.deltaPercent > 0 ? '+' : ''}{latestEvent.deltaPercent.toFixed(1)}%)
                       </div>
                     </>
                   ) : (
                     <>
-                      <div className="font-semibold text-emerald-300">JJM DRAWDOWN TELEMETRY</div>
-                      <div className="text-[11px] text-zinc-400 mt-0.5">
+                      <div className="font-semibold text-[#F3F0E8]">JJM DRAWDOWN TELEMETRY</div>
+                      <div className="text-[11px] text-[#8E887E] mt-0.5">
                         ₹22.10 Cr → ₹24.70 Cr (+11.8%)
                       </div>
                     </>
@@ -508,19 +508,19 @@ export default function GeographicIntelligencePage() {
 
             {/* Cross-Programme Triangulation Status */}
             <div className="space-y-2 font-mono text-xs">
-              <span className="text-[10px] uppercase tracking-wider text-zinc-400 block font-semibold">
+              <span className="text-[10px] uppercase tracking-wider text-[#8E887E] block font-semibold">
                 CROSS-PROGRAMME TRIANGULATION
               </span>
               <div className="grid grid-cols-3 gap-2">
-                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-                  <span className="text-[9px] text-zinc-400 block">JJM FHTC</span>
-                  <span className="text-xs font-bold text-zinc-100">28.4%</span>
-                  <span className="text-[8px] text-zinc-400 block">Verified</span>
+                <div className="p-2 rounded-sm bg-[#1C1B18] border border-[#2A2926]">
+                  <span className="text-[9px] text-[#8E887E] block">JJM FHTC</span>
+                  <span className="text-xs font-bold text-[#F3F0E8]">28.4%</span>
+                  <span className="text-[8px] text-[#8E887E] block">Verified</span>
                 </div>
-                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-                  <span className="text-[9px] text-zinc-400 block">PMAY-G</span>
-                  <span className="text-xs font-bold text-emerald-400">46.8%</span>
-                  <span className="text-[8px] text-zinc-400 block">Physical</span>
+                <div className="p-2 rounded-sm bg-[#1C1B18] border border-[#2A2926]">
+                  <span className="text-[9px] text-[#8E887E] block">PMAY-G</span>
+                  <span className="text-xs font-bold text-[#5E8B72]">46.8%</span>
+                  <span className="text-[8px] text-[#8E887E] block">Physical</span>
                 </div>
                 <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
                   <span className="text-[9px] text-zinc-400 block">PKVY</span>

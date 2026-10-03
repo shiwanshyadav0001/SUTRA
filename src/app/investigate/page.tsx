@@ -151,19 +151,19 @@ export default function InvestigateWorkspacePage() {
         <div className="border-b border-zinc-800/80 bg-zinc-900/40 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-inner">
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#B78A5A]/10 border border-[#B78A5A]/20 text-[#B78A5A] shadow-inner">
                 <Compass className="h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#B78A5A] bg-[#B78A5A]/10 px-2 py-0.5 rounded-sm border border-[#B78A5A]/20">
                     SUTRA V2.0
                   </span>
-                  <span className="text-xs font-mono text-zinc-400">
+                  <span className="text-xs font-mono text-[#8E887E]">
                     Governance Intelligence Workspace
                   </span>
                 </div>
-                <h1 className="text-lg font-bold text-zinc-100 tracking-tight">
+                <h1 className="text-lg font-bold text-[#F3F0E8] font-editorial tracking-tight">
                   Forensic Multi-Programme Investigation Engine
                 </h1>
               </div>
@@ -173,18 +173,19 @@ export default function InvestigateWorkspacePage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setHasStarted(false)}
-                  className="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-700 flex items-center gap-1.5 transition-all"
+                  className="px-3.5 py-1.5 rounded-sm bg-[#1C1B18] hover:bg-[#252420] text-[#C9C2B7] text-xs font-medium border border-[#2A2926] flex items-center gap-1.5 transition-all"
                 >
-                  <RotateCcw className="h-3.5 w-3.5 text-zinc-400" />
+                  <RotateCcw className="h-3.5 w-3.5 text-[#8E887E]" />
                   New Query
                 </button>
-                <div className="flex items-center gap-2 bg-emerald-950/40 border border-emerald-500/30 rounded-xl px-3.5 py-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-mono text-xs font-bold text-emerald-400">
+
+                <div className="flex items-center gap-2 bg-[#1C1B18] border border-[#2A2926] rounded-sm px-3.5 py-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[#5E8B72] animate-pulse" />
+                  <span className="font-mono text-xs font-bold text-[#5E8B72]">
                     {investigationResult.investigation.status}
                   </span>
-                  <span className="text-zinc-400 text-xs">·</span>
-                  <span className="font-mono text-xs text-zinc-300">
+                  <span className="text-[#8E887E] text-xs">·</span>
+                  <span className="font-mono text-xs text-[#C9C2B7]">
                     {investigationResult.investigation.confidence}% Confidence
                   </span>
                 </div>
@@ -197,20 +198,20 @@ export default function InvestigateWorkspacePage() {
           {/* ======================================================== */}
           {/* PHASE 3: LAUNCH WORKSPACE (QUERY, DISTRICT & DATASETS)    */}
           {/* ======================================================== */}
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 md:p-8 backdrop-blur-md shadow-2xl space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-zinc-800/80">
+          <div className="rounded-sm border border-[#2A2926] bg-[#141412] p-6 md:p-8 shadow-2xl space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#2A2926]">
               <div>
-                <h2 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-2">
-                  <Search className="h-5 w-5 text-emerald-400" />
+                <h2 className="text-xl font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
+                  <Search className="h-5 w-5 text-[#B78A5A]" />
                   Initiate Governance Investigation
                 </h2>
-                <p className="text-xs text-zinc-400 mt-1">
+                <p className="text-xs text-[#C9C2B7] mt-1">
                   Query the deterministic multi-dataset pipeline across 36 Maharashtra LGD districts and central schemes.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+              <div className="flex items-center gap-2 text-xs font-mono text-[#8E887E]">
+                <ShieldCheck className="h-4 w-4 text-[#5E8B72]" />
                 Zero-PII · LGD-100% Deterministic · Cryptographically Sealed
               </div>
             </div>
@@ -224,7 +225,7 @@ export default function InvestigateWorkspacePage() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Enter governance investigation question (e.g. Find convergence opportunities in Nandurbar)..."
-                    className="w-full pl-4 pr-4 py-3.5 rounded-xl bg-zinc-950/80 border border-zinc-700/80 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                    className="w-full pl-4 pr-4 py-3.5 rounded-sm bg-[#0D0D0C] border border-[#2A2926] text-[#F3F0E8] placeholder-[#8E887E] text-sm focus:outline-none focus:border-[#B78A5A] transition-all font-mono"
                   />
                 </div>
 
@@ -233,7 +234,7 @@ export default function InvestigateWorkspacePage() {
                   <select
                     value={selectedLgd}
                     onChange={(e) => setSelectedLgd(e.target.value)}
-                    className="w-full py-3.5 px-3 rounded-xl bg-zinc-950/80 border border-zinc-700/80 text-zinc-100 text-sm focus:outline-none focus:border-emerald-500 transition-all font-mono"
+                    className="w-full py-3.5 px-3 rounded-sm bg-[#0D0D0C] border border-[#2A2926] text-[#F3F0E8] text-sm focus:outline-none focus:border-[#B78A5A] transition-all font-mono"
                   >
                     {maharashtraDistricts.map((d) => (
                       <option key={d.lgdCode} value={d.lgdCode}>
@@ -247,11 +248,11 @@ export default function InvestigateWorkspacePage() {
                 <button
                   onClick={() => handleStartInvestigation(query, selectedLgd)}
                   disabled={isExecuting}
-                  className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-zinc-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 transition-all disabled:opacity-50"
+                  className="px-6 py-3.5 rounded-sm bg-[#B78A5A] hover:bg-[#C99A6A] text-[#0D0D0C] font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50"
                 >
                   {isExecuting ? (
                     <>
-                      <div className="h-4 w-4 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />
+                      <div className="h-4 w-4 border-2 border-[#0D0D0C] border-t-transparent rounded-full animate-spin" />
                       Executing Pipeline...
                     </>
                   ) : (
@@ -265,7 +266,7 @@ export default function InvestigateWorkspacePage() {
 
               {/* Dataset Selectors */}
               <div className="pt-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-[#8E887E] mb-2 font-mono">
                   Active Central Dataset Connectors (Data Fabric v1.5/v1.6)
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -275,29 +276,29 @@ export default function InvestigateWorkspacePage() {
                       <div
                         key={ds.id}
                         onClick={() => toggleDataset(ds.id)}
-                        className={`cursor-pointer p-3 rounded-xl border transition-all flex items-start justify-between ${
+                        className={`cursor-pointer p-3 rounded-sm border transition-all flex items-start justify-between ${
                           isSelected
-                            ? 'bg-zinc-900/80 border-emerald-500/40 shadow-sm'
-                            : 'bg-zinc-950/40 border-zinc-800 opacity-60'
+                            ? 'bg-[#1C1B18] border-[#B78A5A]/50 shadow-sm'
+                            : 'bg-[#0D0D0C] border-[#2A2926] opacity-60'
                         }`}
                       >
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-mono text-xs font-bold text-zinc-200">
+                            <span className="font-mono text-xs font-bold text-[#F3F0E8]">
                               {ds.id}
                             </span>
-                            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 rounded">
+                            <span className="text-[10px] font-mono text-[#B78A5A] bg-[#B78A5A]/10 px-1.5 rounded-sm">
                               {ds.frequency}
                             </span>
                           </div>
-                          <div className="text-xs text-zinc-300 font-medium">{ds.name}</div>
-                          <div className="text-[10px] text-zinc-400">{ds.ministry}</div>
+                          <div className="text-xs text-[#C9C2B7] font-medium">{ds.name}</div>
+                          <div className="text-[10px] text-[#8E887E]">{ds.ministry}</div>
                         </div>
                         <input
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => {}}
-                          className="mt-1 accent-emerald-500"
+                          className="mt-1 accent-[#B78A5A]"
                         />
                       </div>
                     );
@@ -307,7 +308,7 @@ export default function InvestigateWorkspacePage() {
 
               {/* Suggested Investigations */}
               <div className="pt-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-[#8E887E] mb-2 font-mono">
                   Preset Governance Investigations
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -315,22 +316,22 @@ export default function InvestigateWorkspacePage() {
                     <button
                       key={preset.title}
                       onClick={() => handleStartInvestigation(preset.query, preset.districtLgd)}
-                      className="text-left p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 hover:bg-zinc-900/80 transition-all flex flex-col justify-between group"
+                      className="text-left p-3.5 rounded-sm bg-[#171614] border border-[#2A2926] hover:border-[#B78A5A]/40 transition-all flex flex-col justify-between group"
                     >
                       <div>
                         <div className="flex items-center justify-between text-xs mb-1">
-                          <span className="font-semibold text-zinc-200 group-hover:text-emerald-400 transition-colors">
+                          <span className="font-semibold text-[#F3F0E8] group-hover:text-[#B78A5A] transition-colors">
                             {preset.title}
                           </span>
-                          <span className="font-mono text-[10px] text-zinc-400">
+                          <span className="font-mono text-[10px] text-[#8E887E]">
                             LGD: {preset.districtLgd}
                           </span>
                         </div>
-                        <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
+                        <p className="text-xs text-[#C9C2B7] leading-relaxed line-clamp-2">
                           {preset.description}
                         </p>
                       </div>
-                      <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-400 mt-2.5 pt-2 border-t border-zinc-850">
+                      <div className="flex items-center gap-1 text-[11px] font-medium text-[#B78A5A] mt-2.5 pt-2 border-t border-[#2A2926]">
                         Launch <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </button>
@@ -346,11 +347,11 @@ export default function InvestigateWorkspacePage() {
           {hasStarted && (
             <div className="space-y-12">
               {/* INVESTIGATION HEADER */}
-              <div className="rounded-2xl border border-zinc-800 bg-gradient-to-r from-zinc-900/90 via-zinc-900/60 to-zinc-950 p-6 md:p-8 backdrop-blur-md shadow-2xl relative overflow-hidden">
+              <div className="rounded-sm border border-[#2A2926] bg-[#141412] p-6 md:p-8 shadow-2xl relative overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div className="space-y-2 max-w-3xl">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#B78A5A] bg-[#B78A5A]/10 px-2.5 py-0.5 rounded-sm border border-[#B78A5A]/20">
                         {investigationResult.investigation.id}
                       </span>
                       <span className="font-mono text-xs text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700">
@@ -369,19 +370,19 @@ export default function InvestigateWorkspacePage() {
                   </div>
 
                   {/* Multi-Component Confidence Widget */}
-                  <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col items-end gap-1 shadow-inner">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+                  <div className="p-4 rounded-sm bg-[#0D0D0C] border border-[#2A2926] flex flex-col items-end gap-1 shadow-inner">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[#8E887E] font-mono">
                       Multi-Component Audit Confidence
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-2xl font-mono font-bold text-emerald-400">
+                      <span className="text-2xl font-mono font-bold text-[#F3F0E8]">
                         {investigationResult.finding.confidenceAssessment?.overallScore || 93.5}%
                       </span>
-                      <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded-sm bg-[#5E8B72]/15 text-[#5E8B72] border border-[#5E8B72]/30">
                         {investigationResult.finding.confidenceAssessment?.rating || 'HIGH'}
                       </span>
                     </div>
-                    <div className="text-[10px] font-mono text-zinc-400 mt-1">
+                    <div className="text-[10px] font-mono text-[#8E887E] mt-1">
                       5-Component Weighted Assessment
                     </div>
                   </div>
@@ -391,11 +392,11 @@ export default function InvestigateWorkspacePage() {
               {/* SECTION 1: INVESTIGATION PIPELINE (8-STAGE INSPECTOR) */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-zinc-100 tracking-tight flex items-center gap-2">
-                    <Layers className="h-5 w-5 text-emerald-400" />
+                  <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
+                    <Layers className="h-5 w-5 text-[#B78A5A]" />
                     Section 1: 8-Stage Deterministic Pipeline Inspector
                   </h3>
-                  <span className="text-xs font-mono text-zinc-400">
+                  <span className="text-xs font-mono text-[#8E887E]">
                     Step-by-step cryptographic audit trail
                   </span>
                 </div>
@@ -405,11 +406,11 @@ export default function InvestigateWorkspacePage() {
               {/* SECTION 2: RELEVANT DATASETS */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-zinc-100 tracking-tight flex items-center gap-2">
-                    <Database className="h-5 w-5 text-purple-400" />
+                  <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
+                    <Database className="h-5 w-5 text-[#B78A5A]" />
                     Section 2: Triangulated Canonical Datasets
                   </h3>
-                  <span className="text-xs font-mono text-zinc-400">
+                  <span className="text-xs font-mono text-[#8E887E]">
                     Official ministerial source repositories
                   </span>
                 </div>
@@ -417,25 +418,25 @@ export default function InvestigateWorkspacePage() {
                   {investigationResult.datasets.map((ds) => (
                     <div
                       key={ds.id}
-                      className="p-5 rounded-2xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-md space-y-3"
+                      className="p-5 rounded-sm border border-[#2A2926] bg-[#141412] space-y-3"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-xs font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                        <span className="font-mono text-xs font-bold text-[#B78A5A] bg-[#B78A5A]/10 px-2 py-0.5 rounded-sm border border-[#B78A5A]/20">
                           {ds.id}
                         </span>
-                        <span className="text-[10px] font-mono text-zinc-400">
+                        <span className="text-[10px] font-mono text-[#8E887E]">
                           {ds.recordCount} Records Ingested
                         </span>
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-zinc-100">{ds.name}</h4>
-                        <div className="text-xs text-zinc-400 font-medium mt-0.5">
+                        <h4 className="text-sm font-bold text-[#F3F0E8]">{ds.name}</h4>
+                        <div className="text-xs text-[#8E887E] font-medium mt-0.5">
                           {ds.publisher}
                         </div>
                       </div>
-                      <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400 font-mono flex items-center justify-between">
+                      <div className="pt-2 border-t border-[#2A2926] text-[11px] text-[#8E887E] font-mono flex items-center justify-between">
                         <span>Frequency: {ds.reportingFrequency}</span>
-                        <span className="text-emerald-400">STATUS: VERIFIED</span>
+                        <span className="text-[#5E8B72]">STATUS: VERIFIED</span>
                       </div>
                     </div>
                   ))}
@@ -445,11 +446,11 @@ export default function InvestigateWorkspacePage() {
               {/* SECTION 3: GOVERNANCE RELATIONSHIPS GRAPH */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-zinc-100 tracking-tight flex items-center gap-2">
-                    <GitMerge className="h-5 w-5 text-blue-400" />
+                  <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
+                    <GitMerge className="h-5 w-5 text-[#5C7C8A]" />
                     Section 3: Governance Relationships & Entity Graph
                   </h3>
-                  <span className="text-xs font-mono text-zinc-400">
+                  <span className="text-xs font-mono text-[#8E887E]">
                     Interactive multi-tier knowledge graph
                   </span>
                 </div>
@@ -471,11 +472,11 @@ export default function InvestigateWorkspacePage() {
               <div id="section-findings" className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-bold text-zinc-100 tracking-tight flex items-center gap-2">
-                      <Target className="h-5 w-5 text-rose-400" />
+                    <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
+                      <Target className="h-5 w-5 text-[#A66A62]" />
                       Section 4: Multi-Finding Intelligence Portfolio ({investigationResult.findings.length} Findings)
                     </h3>
-                    <p className="text-xs text-zinc-400 mt-0.5">
+                    <p className="text-xs text-[#8E887E] mt-0.5">
                       Empirically derived findings produced from cross-dataset LGD joins.
                     </p>
                   </div>
@@ -486,10 +487,10 @@ export default function InvestigateWorkspacePage() {
                       <button
                         key={fnd.id}
                         onClick={() => setActiveFindingTab(fnd.id)}
-                        className={`px-3 py-1.5 rounded-xl font-mono text-xs font-bold transition-all ${
+                        className={`px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all ${
                           activeFindingTab === fnd.id
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm'
-                            : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
+                            ? 'bg-[#B78A5A]/20 text-[#B78A5A] border border-[#B78A5A]/40 shadow-sm'
+                            : 'bg-[#1C1B18] text-[#8E887E] hover:text-[#C9C2B7] border border-[#2A2926]'
                         }`}
                       >
                         {fnd.id}
@@ -500,18 +501,18 @@ export default function InvestigateWorkspacePage() {
 
                 {/* Selected Finding Card */}
                 {currentFinding && (
-                  <div className="rounded-2xl border border-rose-500/30 bg-gradient-to-br from-rose-950/10 via-zinc-900/90 to-zinc-950 p-6 md:p-8 backdrop-blur-md shadow-2xl space-y-6">
-                    <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+                  <div className="rounded-sm border border-[#2A2926] bg-[#141412] p-6 md:p-8 shadow-2xl space-y-6">
+                    <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#2A2926]">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-semibold text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded border border-rose-500/20">
+                          <span className="font-mono text-xs font-semibold text-[#B78A5A] bg-[#B78A5A]/10 px-2.5 py-0.5 rounded-sm border border-[#B78A5A]/20">
                             {currentFinding.id}
                           </span>
-                          <span className="font-mono text-xs text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded">
+                          <span className="font-mono text-xs text-[#C9C2B7] bg-[#1C1B18] px-2 py-0.5 rounded-sm border border-[#2A2926]">
                             {currentFinding.findingType.replace(/_/g, ' ')}
                           </span>
                         </div>
-                        <h4 className="text-xl font-bold text-zinc-100 tracking-tight">
+                        <h4 className="text-xl font-bold text-[#F3F0E8] font-editorial tracking-tight">
                           {currentFinding.title}
                         </h4>
                       </div>
@@ -519,7 +520,7 @@ export default function InvestigateWorkspacePage() {
                       {/* Why Flagged Forensic Chain Action */}
                       <button
                         onClick={() => handleOpenWhyFlagged(currentFinding.id)}
-                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-2 shadow-lg transition-all"
+                        className="px-4 py-2.5 rounded-sm bg-[#B78A5A]/10 hover:bg-[#B78A5A]/20 text-[#B78A5A] border border-[#B78A5A]/30 text-xs font-bold flex items-center gap-2 transition-all"
                       >
                         <Sparkles className="h-4 w-4" />
                         Why is this Flagged? (Forensic Chain)
@@ -528,52 +529,52 @@ export default function InvestigateWorkspacePage() {
 
                     {/* Summary & Detailed Analysis */}
                     <div className="space-y-3">
-                      <p className="text-sm text-zinc-200 leading-relaxed font-medium">
+                      <p className="text-sm text-[#F3F0E8] leading-relaxed font-normal">
                         {currentFinding.summary}
                       </p>
-                      <p className="text-xs text-zinc-400 leading-relaxed">
+                      <p className="text-xs text-[#C9C2B7] leading-relaxed">
                         {currentFinding.detailedAnalysis}
                       </p>
                     </div>
 
                     {/* Mathematical Formulation & Output */}
-                    <div className="p-5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 space-y-3">
+                    <div className="p-5 rounded-sm bg-[#0D0D0C] border border-[#2A2926] space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono font-semibold uppercase text-zinc-400">
+                        <span className="text-xs font-mono font-semibold uppercase text-[#8E887E]">
                           {currentFinding.calculation.formulaName}
                         </span>
-                        <span className="font-mono text-xs font-bold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20">
+                        <span className="font-mono text-xs font-bold text-[#B78A5A] bg-[#B78A5A]/10 px-2.5 py-1 rounded-sm border border-[#B78A5A]/20">
                           Result: {currentFinding.calculation.outputValue}
                         </span>
                       </div>
-                      <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 font-mono text-xs text-emerald-300 overflow-x-auto">
+                      <div className="p-3 rounded-sm bg-[#141412] border border-[#2A2926] font-mono text-xs text-[#B78A5A] overflow-x-auto">
                         {currentFinding.calculation.formulaText}
                       </div>
-                      <div className="text-xs text-zinc-400 italic">
+                      <div className="text-xs text-[#8E887E] italic">
                         {currentFinding.calculation.interpretation}
                       </div>
                     </div>
 
                     {/* Source Facts vs Derived Metrics Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                      <div className="p-4 rounded-sm bg-[#171614] border border-[#2A2926] space-y-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#5E8B72] flex items-center gap-1.5 font-mono">
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Source Facts (Directly Ingested)
                         </span>
-                        <ul className="text-xs text-zinc-300 space-y-1.5 list-disc pl-4">
+                        <ul className="text-xs text-[#C9C2B7] space-y-1.5 list-disc pl-4">
                           {currentFinding.factBreakdown.sourceFacts.map((fact, idx) => (
                             <li key={idx}>{fact}</li>
                           ))}
                         </ul>
                       </div>
 
-                      <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+                      <div className="p-4 rounded-sm bg-[#171614] border border-[#2A2926] space-y-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#5C7C8A] flex items-center gap-1.5 font-mono">
                           <TrendingDown className="h-3.5 w-3.5" />
                           Derived Metrics (Calculated)
                         </span>
-                        <ul className="text-xs text-zinc-300 space-y-1.5 list-disc pl-4">
+                        <ul className="text-xs text-[#C9C2B7] space-y-1.5 list-disc pl-4">
                           {currentFinding.factBreakdown.derivedMetrics.map((met, idx) => (
                             <li key={idx}>{met}</li>
                           ))}
@@ -584,16 +585,16 @@ export default function InvestigateWorkspacePage() {
                     {/* Policy Recommendations */}
                     {currentFinding.policyRecommendations && (
                       <div className="space-y-2">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#8E887E] font-mono">
                           Actionable Policy Interventions
                         </span>
                         <div className="space-y-1.5">
                           {currentFinding.policyRecommendations.map((rec, idx) => (
                             <div
                               key={idx}
-                              className="p-3 rounded-lg bg-zinc-900/40 border border-zinc-800 text-xs text-zinc-300 flex items-start gap-2.5"
+                              className="p-3 rounded-sm bg-[#171614] border border-[#2A2926] text-xs text-[#C9C2B7] flex items-start gap-2.5"
                             >
-                              <span className="font-mono text-emerald-400 font-bold">{idx + 1}.</span>
+                              <span className="font-mono text-[#B78A5A] font-bold">{idx + 1}.</span>
                               <span>{rec}</span>
                             </div>
                           ))}
@@ -607,11 +608,11 @@ export default function InvestigateWorkspacePage() {
               {/* SECTION 5: CONVERGENCE OPPORTUNITIES */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-zinc-100 tracking-tight flex items-center gap-2">
-                    <GitMerge className="h-5 w-5 text-emerald-400" />
+                  <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
+                    <GitMerge className="h-5 w-5 text-[#B78A5A]" />
                     Section 5: Derived Intelligence — Convergence Opportunities
                   </h3>
-                  <span className="text-xs font-mono text-zinc-400">
+                  <span className="text-xs font-mono text-[#8E887E]">
                     Actionable cross-programme synergies
                   </span>
                 </div>
@@ -629,18 +630,18 @@ export default function InvestigateWorkspacePage() {
               {/* SECTION 6: EVIDENCE LINEAGE TABLE */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-zinc-100 tracking-tight flex items-center gap-2">
-                    <FileCheck2 className="h-5 w-5 text-cyan-400" />
+                  <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial tracking-tight flex items-center gap-2">
+                    <FileCheck2 className="h-5 w-5 text-[#5C7C8A]" />
                     Section 6: Source Facts & Metric Lineage Audit
                   </h3>
-                  <span className="text-xs font-mono text-zinc-400">
+                  <span className="text-xs font-mono text-[#8E887E]">
                     End-to-end provenance traceability
                   </span>
                 </div>
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 overflow-hidden backdrop-blur-md">
+                <div className="rounded-sm border border-[#2A2926] bg-[#141412] overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-zinc-950/80 border-b border-zinc-800 text-zinc-400 font-mono uppercase text-[10px]">
+                      <thead className="bg-[#0D0D0C] border-b border-[#2A2926] text-[#8E887E] font-mono uppercase text-[10px]">
                         <tr>
                           <th className="p-3.5">Metric Label</th>
                           <th className="p-3.5">Type</th>
@@ -651,40 +652,40 @@ export default function InvestigateWorkspacePage() {
                           <th className="p-3.5 text-right">Action</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-zinc-800/60">
+                      <tbody className="divide-y divide-[#2A2926]">
                         {currentFinding.metricLineage.map((m) => (
-                          <tr key={m.metricId} className="hover:bg-zinc-800/30 transition-colors">
-                            <td className="p-3.5 font-semibold text-zinc-200">{m.uiLabel}</td>
+                          <tr key={m.metricId} className="hover:bg-[#1C1B18] transition-colors">
+                            <td className="p-3.5 font-semibold text-[#F3F0E8]">{m.uiLabel}</td>
                             <td className="p-3.5 font-mono">
                               <span
-                                className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                className={`px-2 py-0.5 rounded-sm text-[10px] font-bold ${
                                   m.classification === 'SOURCE_FACT'
-                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                    : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                    ? 'bg-[#5E8B72]/15 text-[#5E8B72] border border-[#5E8B72]/30'
+                                    : 'bg-[#5C7C8A]/15 text-[#5C7C8A] border border-[#5C7C8A]/30'
                                 }`}
                               >
                                 {m.classification}
                               </span>
                             </td>
-                            <td className="p-3.5 font-mono font-bold text-zinc-100">
+                            <td className="p-3.5 font-mono font-bold text-[#F3F0E8]">
                               {m.displayValue}
                             </td>
-                            <td className="p-3.5 text-zinc-400 font-mono">{m.unit}</td>
-                            <td className="p-3.5 font-mono text-zinc-300">
+                            <td className="p-3.5 text-[#8E887E] font-mono">{m.unit}</td>
+                            <td className="p-3.5 font-mono text-[#C9C2B7]">
                               {m.sourceDatasetId ? (
                                 <span>
-                                  {m.sourceDatasetId} / <span className="text-zinc-400">{m.sourceField}</span>
+                                  {m.sourceDatasetId} / <span className="text-[#8E887E]">{m.sourceField}</span>
                                 </span>
                               ) : (
-                                <span className="text-zinc-400 italic">{m.formula}</span>
+                                <span className="text-[#8E887E] italic">{m.formula}</span>
                               )}
                             </td>
-                            <td className="p-3.5 text-zinc-400 font-mono">{m.reportingPeriod || 'FY 2025-26'}</td>
+                            <td className="p-3.5 text-[#8E887E] font-mono">{m.reportingPeriod || 'FY 2025-26'}</td>
                             <td className="p-3.5 text-right">
                               {m.sourceRecordNumber && (
                                 <button
                                   onClick={() => openEvidence(m.sourceRecordNumber ? `EV-${m.sourceRecordNumber}` : '')}
-                                  className="text-[11px] font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1 ml-auto"
+                                  className="text-[11px] font-medium text-[#B78A5A] hover:underline flex items-center gap-1 ml-auto"
                                 >
                                   Trace Evidence <ExternalLink className="h-3 w-3" />
                                 </button>

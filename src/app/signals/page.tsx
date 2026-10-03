@@ -31,19 +31,19 @@ export default function SignalsPage() {
       </div>
 
       {/* Live Signals Stream Banner */}
-      <div className="flex items-center justify-between p-4 rounded-lg bg-zinc-900/80 border border-zinc-800">
+      <div className="flex items-center justify-between p-4 rounded-sm bg-[#171614] border border-[#2A2926]">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+          <div className="p-2 rounded-sm bg-[#B78A5A]/10 border border-[#B78A5A]/20 text-[#B78A5A]">
             <Radio className="w-4 h-4 animate-pulse" />
           </div>
           <div>
-            <div className="text-xs font-semibold text-zinc-100 flex items-center gap-2 font-mono">
+            <div className="text-xs font-semibold text-[#F3F0E8] flex items-center gap-2 font-mono">
               REAL-TIME ANOMALY & EVENT RADAR
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+              <span className="text-[10px] px-2 py-0.5 rounded-sm bg-[#5E8B72]/20 text-[#5E8B72]">
                 {activeEvents.length} Active Events
               </span>
             </div>
-            <p className="text-[11px] text-zinc-400">
+            <p className="text-[11px] text-[#8E887E]">
               Deterministic threshold crossing triggers correlated across Ministry of Jal Shakti, MoRD, and MoA&FW.
             </p>
           </div>
@@ -59,30 +59,30 @@ export default function SignalsPage() {
           {activeEvents.slice(0, 3).map((evt: GovernanceEvent) => (
             <div
               key={evt.id}
-              className="p-6 rounded-sm bg-[#141412] border border-emerald-500/30 hover:border-emerald-500/60 transition-all space-y-4 relative overflow-hidden"
+              className="p-6 rounded-sm bg-[#141412] border border-[#2A2926] hover:border-[#B78A5A]/40 transition-all space-y-4 relative overflow-hidden"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2A2926] pb-4">
                 <div>
                   <div className="flex items-center gap-2 font-mono">
-                    <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+                    <span className="text-[10px] uppercase px-2 py-0.5 rounded-sm bg-[#B78A5A]/10 text-[#B78A5A] border border-[#B78A5A]/20 font-bold">
                       {evt.eventType.replace(/_/g, ' ')}
                     </span>
-                    <span className="text-xs text-zinc-400">{evt.id}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                    <span className="text-xs text-[#8E887E]">{evt.id}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-[#1C1B18] text-[#C9C2B7]">
                       {evt.mode === 'LIVE_SIMULATION' ? 'DEMO STREAM' : 'VERIFIED BASELINE'}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-zinc-100 font-editorial mt-1">
+                  <h3 className="text-lg font-bold text-[#F3F0E8] font-editorial mt-1">
                     {evt.schemeId} • {evt.districtId} (LGD: {evt.lgdCode})
                   </h3>
                 </div>
 
                 <div className="text-left sm:text-right font-mono">
-                  <span className="text-[10px] text-zinc-400 uppercase block">DELTA / VARIANCE</span>
-                  <div className={`text-2xl font-bold ${evt.deltaPercent > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <span className="text-[10px] text-[#8E887E] uppercase block">DELTA / VARIANCE</span>
+                  <div className={`text-2xl font-bold ${evt.deltaPercent > 0 ? 'text-[#5E8B72]' : 'text-rose-400'}`}>
                     {evt.deltaPercent > 0 ? '+' : ''}{evt.deltaPercent.toFixed(1)}%
                   </div>
-                  <span className="text-[10px] text-zinc-400">
+                  <span className="text-[10px] text-[#8E887E]">
                     {evt.previousValue} {evt.unit || 'Cr'} → {evt.currentValue} {evt.unit || 'Cr'}
                   </span>
                 </div>

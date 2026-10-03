@@ -203,7 +203,7 @@ export default function GovernanceGraphPage() {
       case 'finding':
         return '#F87171'; // Rose/Red for findings
       case 'evidence':
-        return '#34D399'; // Emerald for verified evidence
+        return '#5E8B72'; // Sage green for verified evidence
       case 'project':
         return '#7E7A72';
       case 'beneficiary':
@@ -619,7 +619,7 @@ export default function GovernanceGraphPage() {
             {selectedNode.type === 'evidence' && (
               <button
                 onClick={() => openEvidence('#7201')}
-                className="w-full py-2.5 px-3 rounded-sm bg-emerald-600 text-white font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-emerald-500 transition-colors"
+                className="w-full py-2.5 px-3 rounded-sm bg-[#B78A5A] text-[#0D0D0C] font-semibold text-xs flex items-center justify-center space-x-2 hover:bg-[#C99A6A] transition-colors"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>VERIFY CRYPTOGRAPHIC PROVENANCE</span>

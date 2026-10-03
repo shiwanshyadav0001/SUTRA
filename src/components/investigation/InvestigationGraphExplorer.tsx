@@ -100,10 +100,10 @@ export const InvestigationGraphExplorer: React.FC<InvestigationGraphExplorerProp
         };
       case 'scheme':
         return {
-          fill: 'rgba(16, 185, 129, 0.15)',
-          stroke: '#10b981',
-          text: '#6ee7b7',
-          badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+          fill: 'rgba(183, 138, 90, 0.15)',
+          stroke: '#B78A5A',
+          text: '#CBB093',
+          badge: 'bg-[#B78A5A]/10 text-[#B78A5A] border-[#B78A5A]/20',
         };
       case 'district':
         return {
@@ -184,19 +184,19 @@ export const InvestigationGraphExplorer: React.FC<InvestigationGraphExplorerProp
       {/* Graph Control Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 md:p-6 border-b border-zinc-800/80 bg-zinc-900/40">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800/80 border border-zinc-700/60 text-emerald-400">
+          <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#1C1B18] border border-[#2A2926] text-[#B78A5A]">
             <Network className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#B78A5A] bg-[#B78A5A]/10 px-2 py-0.5 rounded-sm border border-[#B78A5A]/20">
                 GOVERNANCE GRAPH
               </span>
-              <span className="font-mono text-xs text-zinc-400">
+              <span className="font-mono text-xs text-[#8E887E]">
                 {nodes.length} Nodes · {links.length} Relations
               </span>
             </div>
-            <h3 className="text-base font-bold text-zinc-100 tracking-tight mt-0.5">
+            <h3 className="text-base font-bold text-[#F3F0E8] font-editorial tracking-tight mt-0.5">
               Multi-Tier Cross-Programme Relational Graph
             </h3>
           </div>
@@ -436,7 +436,7 @@ export const InvestigationGraphExplorer: React.FC<InvestigationGraphExplorerProp
                 )}
                 <div className="flex justify-between text-zinc-400">
                   <span>Connected Neighbours:</span>
-                  <span className="font-mono text-emerald-400">
+                  <span className="font-mono text-[#B78A5A]">
                     {activeConnectedNodeIds.size - 1} Entities
                   </span>
                 </div>

@@ -70,10 +70,10 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                 CANONICAL INVESTIGATION WORKSPACE
               </span>
               <span className="text-zinc-400">ID: {investigationId}</span>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="px-2 py-0.5 rounded-sm bg-[#5E8B72]/15 text-[#5E8B72] border border-[#5E8B72]/30">
                 STATUS: {investigation.status}
               </span>
-              <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+              <span className="px-2 py-0.5 rounded-sm bg-[#1C1B18] text-[#C9C2B7] border border-[#2A2926]">
                 LGD: {investigation.targetDistrictLgd} ({investigation.targetDistrict})
               </span>
             </div>
@@ -89,15 +89,15 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
             <button
               onClick={() => openWhyFlagged(currentFinding.id)}
-              className="px-4 py-2.5 rounded-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2.5 rounded-sm bg-[#1C1B18] hover:bg-[#252420] border border-[#2A2926] text-[#C9C2B7] font-semibold flex items-center gap-1.5 transition-colors"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-[#B78A5A]" />
               <span>WHY FLAGGED?</span>
             </button>
 
             <button
               onClick={() => openExecutiveBrief()}
-              className="px-4 py-2.5 rounded-sm bg-[#B78A5A] hover:bg-[#CBB093] text-[#0D0D0C] font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2.5 rounded-sm bg-[#B78A5A] hover:bg-[#C99A6A] text-[#0D0D0C] font-semibold flex items-center gap-1.5 transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
               <span>APEX BRIEF</span>
@@ -115,7 +115,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
 
           <div className="p-3 bg-[#191917] rounded border border-[#2A2926]">
             <span className="text-[10px] text-zinc-400 block uppercase">ANALYTICAL CONFIDENCE</span>
-            <span className="text-xl font-bold text-emerald-400 mt-0.5 block">{investigation.confidence}%</span>
+            <span className="text-xl font-bold text-[#5E8B72] mt-0.5 block">{investigation.confidence}%</span>
             <span className="text-[10px] text-zinc-400">Deterministic Component Model</span>
           </div>
 
@@ -127,7 +127,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
 
           <div className="p-3 bg-[#191917] rounded border border-[#2A2926]">
             <span className="text-[10px] text-zinc-400 block uppercase">DATA TRUTH CLASSIFICATION</span>
-            <span className="text-xs font-bold text-emerald-400 mt-1 block flex items-center gap-1">
+            <span className="text-xs font-bold text-[#5E8B72] mt-1 block flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5" />
               STATUTORY VERIFIED
             </span>
@@ -235,7 +235,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
 
                 <div className="p-3 rounded bg-[#191917] border border-[#2A2926]">
                   <span className="text-[10px] text-zinc-400 block">JOIN QUALITY</span>
-                  <span className="text-xl font-bold text-emerald-400 mt-1 block">100% EXACT</span>
+                  <span className="text-xl font-bold text-[#5E8B72] mt-1 block">100% EXACT</span>
                   <span className="text-[9px] text-zinc-400">LGD: 512 Exact Key Match</span>
                 </div>
 
@@ -266,7 +266,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
               <div className="space-y-1.5 pt-2 border-t border-[#2A2926] font-mono text-[11px]">
                 <div className="flex items-center justify-between text-zinc-400">
                   <span>Finding Provenance Hash:</span>
-                  <code className="text-emerald-400 truncate max-w-xs">{currentFinding.provenanceHashes.findingHash}</code>
+                  <code className="text-[#B78A5A] truncate max-w-xs">{currentFinding.provenanceHashes.findingHash}</code>
                 </div>
                 <div className="flex items-center justify-between text-zinc-400">
                   <span>Join Provenance Hash:</span>
@@ -292,7 +292,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                   <div className="grid grid-cols-2 gap-2 text-[10px] pt-1">
                     <div className="p-2 rounded bg-zinc-900 border border-zinc-800">
                       <span className="text-zinc-400 block">CONFIDENCE</span>
-                      <span className="font-bold text-emerald-400">{opp.confidenceAssessment?.overallScore || opp.confidence || 88}% HIGH</span>
+                      <span className="font-bold text-[#5E8B72]">{opp.confidenceAssessment?.overallScore || opp.confidence || 88}% HIGH</span>
                     </div>
                     <div className="p-2 rounded bg-zinc-900 border border-zinc-800">
                       <span className="text-zinc-400 block">ACTION STATUS</span>
@@ -363,7 +363,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
               <div key={fnd.id} className="p-5 rounded bg-[#191917] border border-[#2A2926] space-y-3 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-zinc-100">{fnd.id}: {fnd.title}</span>
-                  <span className="text-emerald-400 font-bold">{fnd.calculation.outputValue} {fnd.calculation.outputUnit}</span>
+                  <span className="text-[#B78A5A] font-bold">{fnd.calculation.outputValue} {fnd.calculation.outputUnit}</span>
                 </div>
 
                 <div className="p-3 rounded bg-black/60 border border-zinc-800 text-zinc-200">
@@ -377,7 +377,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
 
                 <div className="pt-2 border-t border-zinc-800 flex items-center justify-between text-[10px] text-zinc-400">
                   <span>Calculation SHA-256:</span>
-                  <code className="text-emerald-400">{fnd.provenanceHashes.calculationHash}</code>
+                  <code className="text-[#B78A5A]">{fnd.provenanceHashes.calculationHash}</code>
                 </div>
               </div>
             ))}
@@ -404,7 +404,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-[#B78A5A] font-bold">
                     {ds.id}
                   </span>
-                  <span className="text-[10px] text-emerald-400 font-bold">VERIFIED</span>
+                  <span className="text-[10px] text-[#5E8B72] font-bold">VERIFIED</span>
                 </div>
 
                 <h3 className="font-bold text-zinc-100 truncate">{ds.name}</h3>
