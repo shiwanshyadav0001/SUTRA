@@ -59,63 +59,63 @@ export function InvestigationPipelineInspector({ data }: Props) {
   ];
 
   return (
-    <div className="rounded-sm bg-[#141412] border border-[#B78A5A]/50 shadow-2xl overflow-hidden space-y-0">
+    <div className="rounded-lg bg-white border border-slate-200 shadow-sm overflow-hidden space-y-0">
       {/* Header Banner */}
-      <div className="bg-[#191917] p-5 border-b border-[#2A2926] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-slate-50 p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2">
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#B78A5A]/20 text-[#B78A5A] border border-[#B78A5A]/40 uppercase tracking-widest font-bold">
-              INVESTIGATION ENGINE v1.6 AUDITED
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 uppercase tracking-wider font-semibold">
+              Investigation Engine v1.6 Audited
             </span>
-            <span className="text-[10px] font-mono text-[#5E8B72] border border-[#5E8B72]/30 px-2 py-0.5 rounded bg-[#5E8B72]/10">
+            <span className="text-[10px] font-mono text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded bg-emerald-50 font-medium">
               {finding.dataClassification}
             </span>
-            <span className="text-[10px] font-mono text-[#8E887E] border border-[#2A2926] px-2 py-0.5 rounded bg-[#141412] flex items-center space-x-1">
-              <Clock className="w-3 h-3 text-[#B78A5A]" />
+            <span className="text-[10px] font-mono text-slate-600 border border-slate-200 px-2 py-0.5 rounded bg-white flex items-center space-x-1">
+              <Clock className="w-3 h-3 text-blue-600" />
               <span>{finding.temporalAlignment}</span>
             </span>
           </div>
-          <h2 className="text-xl font-bold text-[#F3F0E8] font-editorial mt-2">
+          <h2 className="text-lg font-bold text-slate-900 mt-2">
             {finding.title}
           </h2>
-          <p className="text-xs text-[#8E887E]">
-            Target: <span className="text-[#C9C2B7] font-bold">{finding.districtName}</span> • LGD Key: <span className="font-mono text-[#B78A5A]">{finding.districtLgdCode}</span> • State: {finding.state}
+          <p className="text-xs text-slate-500 mt-0.5">
+            Target: <span className="text-slate-800 font-semibold">{finding.districtName}</span> &bull; LGD Key: <span className="font-mono text-blue-700 font-semibold">{finding.districtLgdCode}</span> &bull; State: {finding.state}
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 font-mono text-xs">
+        <div className="flex items-center space-x-3 font-mono text-xs">
           <div className="text-right">
-            <span className="text-[10px] text-[#8E887E] block uppercase">COMPOSITE CONFIDENCE</span>
-            <span className="text-lg font-bold text-[#5E8B72]">{finding.confidence}% ({finding.confidenceAssessment.rating})</span>
+            <span className="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Composite Confidence</span>
+            <span className="text-lg font-bold text-emerald-700">{finding.confidence}% ({finding.confidenceAssessment.rating})</span>
           </div>
-          <div className="h-8 w-[1px] bg-[#2A2926] mx-2" />
+          <div className="h-8 w-[1px] bg-slate-200 mx-1" />
           <div className="text-right">
-            <span className="text-[10px] text-[#8E887E] block uppercase">FINDING ID</span>
-            <span className="font-bold text-[#B78A5A]">{finding.id}</span>
+            <span className="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Finding ID</span>
+            <span className="font-bold text-blue-700">{finding.id}</span>
           </div>
         </div>
       </div>
 
       {/* Visual Pipeline Navigator */}
-      <div className="bg-[#0D0D0C] p-3 border-b border-[#2A2926] overflow-x-auto">
-        <div className="flex items-center justify-between min-w-[780px] gap-1 font-mono text-[11px]">
+      <div className="bg-slate-50/50 p-2.5 border-b border-slate-200 overflow-x-auto">
+        <div className="flex items-center justify-between min-w-[780px] gap-1.5 font-mono text-xs">
           {stages.map((st, idx) => {
             const isActive = activeStage === st.key;
             return (
               <React.Fragment key={st.key}>
                 <button
                   onClick={() => setActiveStage(st.key)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded transition-all ${
+                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md transition-all ${
                     isActive
-                      ? 'bg-[#B78A5A] text-[#0D0D0C] font-bold shadow-md'
-                      : 'bg-[#191917] text-[#8E887E] hover:text-[#F3F0E8] border border-[#2A2926]'
+                      ? 'bg-blue-600 text-white font-semibold shadow-xs'
+                      : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
                   <span>{st.icon}</span>
-                  <span>{st.label}</span>
+                  <span className="font-sans font-medium text-xs">{st.label}</span>
                 </button>
                 {idx < stages.length - 1 && (
-                  <ArrowRight className="w-3 h-3 text-[#2A2926] shrink-0" />
+                  <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
                 )}
               </React.Fragment>
             );
@@ -127,28 +127,28 @@ export function InvestigationPipelineInspector({ data }: Props) {
       <div className="p-6 space-y-6">
         {/* STAGE 1: INTENT */}
         {activeStage === 'QUERY' && (
-          <div className="space-y-4 font-mono text-xs animate-in fade-in">
-            <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
+          <div className="space-y-4 text-xs animate-in fade-in">
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
               1. Query Interpretation & Target Normalization
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2">
-                <span className="text-[10px] text-[#8E887E] uppercase block">ORIGINAL INPUT QUERY</span>
-                <p className="text-sm text-[#F3F0E8] font-editorial">&quot;{data.query}&quot;</p>
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+                <span className="text-[10px] text-slate-500 uppercase block font-semibold">Original Input Query</span>
+                <p className="text-sm font-medium text-slate-900">&quot;{data.query}&quot;</p>
               </div>
-              <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2">
-                <span className="text-[10px] text-[#8E887E] uppercase block">PARSED GOVERNANCE INTENT</span>
-                <p className="text-[#5E8B72] font-bold">{data.interpretation.intent}</p>
-                <span className="text-[10px] text-[#8E887E] block mt-1">
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+                <span className="text-[10px] text-slate-500 uppercase block font-semibold">Parsed Governance Intent</span>
+                <p className="text-emerald-700 font-bold">{data.interpretation.intent}</p>
+                <span className="text-[11px] text-slate-500 block">
                   Objective: {data.interpretation.analysisObjective}
                 </span>
               </div>
             </div>
-            <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2">
-              <span className="text-[10px] text-[#B78A5A] uppercase block">INVOLVED STATUTORY SCHEMES</span>
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+              <span className="text-[10px] text-blue-700 uppercase block font-semibold">Involved Statutory Schemes</span>
               <div className="flex flex-wrap gap-2">
                 {data.interpretation.programmesInvolved.map((p, i) => (
-                  <span key={i} className="px-2.5 py-1 rounded bg-[#141412] border border-[#2A2926] text-[#C9C2B7]">
+                  <span key={i} className="px-2.5 py-1 rounded bg-white border border-slate-200 text-slate-700 font-medium">
                     {p}
                   </span>
                 ))}
@@ -159,32 +159,34 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         {/* STAGE 2: DATASETS */}
         {activeStage === 'DATASETS' && (
-          <div className="space-y-4 font-mono text-xs animate-in fade-in">
-            <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
-              2. Verified Government Open Datasets Ingested
-            </h3>
-            <p className="text-xs text-[#8E887E]">
-              Zero scraped or fabricated tables. Ingested strictly via official government endpoints.
-            </p>
+          <div className="space-y-4 text-xs animate-in fade-in">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                2. Verified Government Open Datasets Ingested
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Zero scraped or fabricated tables. Ingested strictly via official government endpoints.
+              </p>
+            </div>
             <div className="grid md:grid-cols-3 gap-4">
               {datasets.map((ds) => (
-                <div key={ds.id} className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-3">
+                <div key={ds.id} className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-[#B78A5A] font-bold">{ds.id}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#5E8B72]/15 text-[#5E8B72] border border-[#5E8B72]/30">
+                    <span className="text-[10px] font-mono font-bold text-blue-700">{ds.id}</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
                       {ds.status}
                     </span>
                   </div>
-                  <h4 className="font-bold text-[#F3F0E8] font-editorial text-sm">{ds.name}</h4>
-                  <p className="text-[11px] text-[#8E887E]">{ds.publisher}</p>
-                  <div className="pt-2 border-t border-[#2A2926] space-y-1 text-[10px] text-[#7E7A72]">
-                    <div>Records: <span className="text-[#F3F0E8]">{ds.recordCount}</span></div>
-                    <div>Period: <span className="text-[#C9C2B7]">{ds.temporalCoverage}</span></div>
+                  <h4 className="font-bold text-slate-900 text-sm">{ds.name}</h4>
+                  <p className="text-xs text-slate-500">{ds.publisher}</p>
+                  <div className="pt-2 border-t border-slate-200 space-y-1 text-xs text-slate-600">
+                    <div>Records: <span className="font-mono font-semibold text-slate-800">{ds.recordCount}</span></div>
+                    <div>Period: <span className="font-medium text-slate-700">{ds.temporalCoverage}</span></div>
                     <a
                       href={ds.sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#B78A5A] hover:underline flex items-center space-x-1 mt-2 inline-flex"
+                      className="text-blue-600 hover:text-blue-800 hover:underline flex items-center space-x-1 mt-2 inline-flex font-medium"
                     >
                       <span>Official Source Portal</span>
                       <ExternalLink className="w-3 h-3" />
@@ -198,28 +200,30 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         {/* STAGE 3: RESOLUTION */}
         {activeStage === 'RESOLUTION' && (
-          <div className="space-y-4 font-mono text-xs animate-in fade-in">
-            <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
-              3. Deterministic LGD Entity Resolution
-            </h3>
-            <p className="text-xs text-[#8E887E]">
-              Local Government Directory (LGD) spatial backbone prevents hallucinated geographic entity assignment.
-            </p>
-            <div className="space-y-2">
+          <div className="space-y-4 text-xs animate-in fade-in">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                3. Deterministic LGD Entity Resolution
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Local Government Directory (LGD) spatial backbone prevents hallucinated geographic entity assignment.
+              </p>
+            </div>
+            <div className="space-y-2.5">
               {entityResolutionSteps.map((step, idx) => (
-                <div key={idx} className="p-4 bg-[#191917] border border-[#2A2926] rounded flex flex-col md:flex-row md:items-center justify-between gap-3">
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-[#8E887E] uppercase">RAW QUERY TERM:</span>
-                    <div className="text-sm font-bold text-[#F3F0E8]">{step.input}</div>
+                <div key={idx} className="p-4 bg-slate-50 border border-slate-200 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Raw Query Term:</span>
+                    <div className="text-sm font-semibold text-slate-800">{step.input}</div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#B78A5A] hidden md:block" />
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-[#5E8B72] uppercase">CANONICAL RESOLUTION:</span>
-                    <div className="text-sm font-bold text-[#5E8B72]">{step.resolved}</div>
+                  <ArrowRight className="w-4 h-4 text-blue-600 hidden md:block" />
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] text-emerald-700 uppercase font-semibold">Canonical Resolution:</span>
+                    <div className="text-sm font-bold text-emerald-800">{step.resolved}</div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-[#B78A5A] uppercase block">METHOD & CONFIDENCE</span>
-                    <span className="text-xs text-[#C9C2B7]">{step.method} ({step.confidence}%)</span>
+                  <div className="text-left md:text-right">
+                    <span className="text-[10px] text-blue-700 uppercase block font-semibold">Method & Confidence</span>
+                    <span className="text-xs text-slate-600">{step.method} ({step.confidence}%)</span>
                   </div>
                 </div>
               ))}
@@ -229,18 +233,23 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         {/* STAGE 4: JOIN */}
         {activeStage === 'JOIN' && (
-          <div className="space-y-4 font-mono text-xs animate-in fade-in">
+          <div className="space-y-4 text-xs animate-in fade-in">
             <div className="flex justify-between items-center">
-              <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
-                4. Deterministic Cross-Dataset LGD Join Matrix
-              </h3>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-[#B78A5A]/20 text-[#B78A5A] border border-[#B78A5A]/40">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                  4. Deterministic Cross-Dataset LGD Join Matrix
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Records joined strictly on canonical Local Government Directory (LGD) district codes.
+                </p>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
                 PRIMARY KEY: LGD_DISTRICT_CODE
               </span>
             </div>
-            <div className="border border-[#2A2926] rounded overflow-x-auto">
+            <div className="border border-slate-200 rounded-lg overflow-x-auto bg-white">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#191917] text-[#8E887E] border-b border-[#2A2926]">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-medium">
                   <tr>
                     <th className="p-3">LGD CODE</th>
                     <th className="p-3">DISTRICT</th>
@@ -252,26 +261,26 @@ export function InvestigationPipelineInspector({ data }: Props) {
                     <th className="p-3 text-right">COMPOSITE DRAWDOWN</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#2A2926]">
+                <tbody className="divide-y divide-slate-100">
                   {joinMatrix.slice(0, 6).map((row) => {
                     const isTarget = row.primaryKey === finding.districtLgdCode;
                     return (
                       <tr
                         key={row.primaryKey}
-                        className={isTarget ? 'bg-[#B78A5A]/10 font-bold text-[#F3F0E8]' : 'hover:bg-[#191917] text-[#C9C2B7]'}
+                        className={isTarget ? 'bg-blue-50/70 font-semibold text-slate-900' : 'hover:bg-slate-50 text-slate-700'}
                       >
-                        <td className="p-3 text-[#B78A5A]">{row.primaryKey}</td>
+                        <td className="p-3 font-mono text-blue-700">{row.primaryKey}</td>
                         <td className="p-3">{row.districtName} {isTarget && '★'}</td>
                         <td className="p-3">
-                          <span className="px-1.5 py-0.5 rounded bg-[#5E8B72]/15 text-[#5E8B72] text-[10px]">
+                          <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] border border-emerald-200 font-medium">
                             {row.quality} (100%)
                           </span>
                         </td>
                         <td className="p-3">₹{row.records['DS-JJM-MH']?.allocatedCr || '—'} Cr</td>
                         <td className="p-3">₹{row.records['DS-PMAYG-MH']?.allocatedCr || '—'} Cr</td>
                         <td className="p-3">₹{row.records['DS-PKVY-MH']?.allocatedCr || '—'} Cr</td>
-                        <td className="p-3 text-right">₹{String(row.joinedFields.totalAllocatedCr || 0)} Cr</td>
-                        <td className="p-3 text-right font-bold text-[#A66A62]">
+                        <td className="p-3 text-right font-mono">₹{String(row.joinedFields.totalAllocatedCr || 0)} Cr</td>
+                        <td className="p-3 text-right font-mono font-bold text-rose-700">
                           {String(row.joinedFields.compositeDrawdownRate || 0)}%
                         </td>
                       </tr>
@@ -285,44 +294,46 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         {/* STAGE 5: CALCULATION */}
         {activeStage === 'CALCULATION' && (
-          <div className="space-y-4 font-mono text-xs animate-in fade-in">
-            <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
-              5. Deterministic Mathematical Formulation
-            </h3>
-            <p className="text-xs text-[#8E887E]">
-              Zero probabilistic LLM math. All formulations are verified, reproducible algebraic equations.
-            </p>
+          <div className="space-y-4 text-xs animate-in fade-in">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                5. Deterministic Mathematical Formulation
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Zero probabilistic LLM math. All formulations are verified, reproducible algebraic equations.
+              </p>
+            </div>
 
-            <div className="p-5 bg-[#191917] border border-[#B78A5A]/40 rounded space-y-3">
-              <span className="text-[10px] text-[#B78A5A] uppercase tracking-wider block font-bold">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+              <span className="text-[10px] text-blue-700 uppercase tracking-wider block font-bold font-mono">
                 FORMULATION: {finding.calculation.formulaName}
               </span>
-              <div className="p-3 bg-[#141412] border border-[#2A2926] rounded text-[#F3F0E8] text-sm overflow-x-auto">
+              <div className="p-3 bg-white border border-slate-200 rounded text-slate-900 font-mono text-xs overflow-x-auto shadow-xs">
                 <code>{finding.calculation.formulaText}</code>
               </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2">
-                <span className="text-[10px] text-[#8E887E] uppercase block">FORMULA INPUT VARIABLES</span>
-                <div className="space-y-1 text-[11px]">
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                <span className="text-[10px] text-slate-500 uppercase block font-semibold">Formula Input Variables</span>
+                <div className="space-y-1 text-xs">
                   {Object.entries(finding.calculation.inputs).map(([k, v]) => (
-                    <div key={k} className="flex justify-between border-b border-[#2A2926]/50 py-1">
-                      <span className="text-[#8E887E]">{k}:</span>
-                      <span className="font-bold text-[#F3F0E8]">{v}</span>
+                    <div key={k} className="flex justify-between border-b border-slate-200/60 py-1">
+                      <span className="text-slate-600">{k}:</span>
+                      <span className="font-mono font-bold text-slate-900">{v}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="p-4 bg-[#191917] border-2 border-[#5E8B72]/40 rounded space-y-3">
-                <span className="text-[10px] text-[#5E8B72] uppercase tracking-wider block font-bold">
-                  DETERMINISTIC RESULT
+              <div className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-lg space-y-2">
+                <span className="text-[10px] text-emerald-700 uppercase tracking-wider block font-bold font-mono">
+                  Deterministic Result
                 </span>
-                <div className="text-2xl font-bold text-[#F3F0E8] font-editorial">
+                <div className="text-2xl font-bold text-slate-900 font-mono">
                   {finding.calculation.outputValue}
                 </div>
-                <p className="text-xs text-[#C9C2B7] leading-relaxed">
+                <p className="text-xs text-slate-700 leading-relaxed">
                   {finding.calculation.interpretation}
                 </p>
               </div>
@@ -332,37 +343,37 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         {/* STAGE 6: FINDING & CLAIMS SEPARATION */}
         {activeStage === 'FINDING' && (
-          <div className="space-y-6 font-mono text-xs animate-in fade-in">
+          <div className="space-y-5 text-xs animate-in fade-in">
             {/* Top Stat Highlights with Audited Terminology */}
-            <div className="grid sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-[#191917] border border-[#A66A62] rounded">
-                <span className="text-[10px] text-[#A66A62] uppercase block">DRAWDOWN DEFICIT VS BENCHMARK</span>
-                <div className="text-2xl font-bold text-[#A66A62] mt-1">-27.7 pp</div>
-                <span className="text-[10px] text-[#8E887E]">46.3% vs 74.0% State Benchmark</span>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <div className="p-3.5 bg-rose-50/60 border border-rose-200 rounded-lg">
+                <span className="text-[10px] text-rose-700 uppercase block font-semibold">Drawdown Deficit vs Benchmark</span>
+                <div className="text-2xl font-bold text-rose-700 mt-1 font-mono">-27.7 pp</div>
+                <span className="text-[10px] text-slate-500">46.3% vs 74.0% State Benchmark</span>
               </div>
-              <div className="p-4 bg-[#191917] border border-[#B78A5A] rounded">
-                <span className="text-[10px] text-[#B78A5A] uppercase block">UNRELEASED APPROVED ALLOCATION</span>
-                <div className="text-2xl font-bold text-[#F3F0E8] mt-1">₹68.10 Cr</div>
-                <span className="text-[10px] text-[#8E887E]">Undrawn across JJM, PMAY-G, PKVY</span>
+              <div className="p-3.5 bg-blue-50/60 border border-blue-200 rounded-lg">
+                <span className="text-[10px] text-blue-700 uppercase block font-semibold">Unreleased Approved Allocation</span>
+                <div className="text-2xl font-bold text-slate-900 mt-1 font-mono">₹68.10 Cr</div>
+                <span className="text-[10px] text-slate-500">Undrawn across JJM, PMAY-G, PKVY</span>
               </div>
-              <div className="p-4 bg-[#191917] border border-[#5E8B72] rounded">
-                <span className="text-[10px] text-[#5E8B72] uppercase block">PHYSICAL DELIVERY PACE DIVERGENCE</span>
-                <div className="text-2xl font-bold text-[#5E8B72] mt-1">18.4 pp</div>
-                <span className="text-[10px] text-[#8E887E]">Housing (46.8%) vs Water (28.4%)</span>
+              <div className="p-3.5 bg-emerald-50/60 border border-emerald-200 rounded-lg">
+                <span className="text-[10px] text-emerald-700 uppercase block font-semibold">Physical Delivery Divergence</span>
+                <div className="text-2xl font-bold text-emerald-800 mt-1 font-mono">18.4 pp</div>
+                <span className="text-[10px] text-slate-500">Housing (46.8%) vs Water (28.4%)</span>
               </div>
             </div>
 
             {/* Structured Facts vs Derived Claims Separation */}
             <div className="grid md:grid-cols-3 gap-4">
               {/* Column 1: Source Facts */}
-              <div className="p-4 bg-[#191917] border border-[#5E8B72]/40 rounded space-y-2">
-                <div className="flex items-center space-x-1.5 text-[#5E8B72]">
+              <div className="p-4 bg-emerald-50/40 border border-emerald-200 rounded-lg space-y-2">
+                <div className="flex items-center space-x-1.5 text-emerald-700">
                   <CheckCircle className="w-3.5 h-3.5" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">VERIFIED SOURCE FACTS</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Verified Source Facts</span>
                 </div>
-                <ul className="space-y-2 text-[11px] text-[#C9C2B7]">
+                <ul className="space-y-2 text-xs text-slate-700">
                   {finding.factBreakdown.sourceFacts.map((fact, idx) => (
-                    <li key={idx} className="border-l-2 border-[#5E8B72] pl-2">
+                    <li key={idx} className="border-l-2 border-emerald-500 pl-2">
                       {fact}
                     </li>
                   ))}
@@ -370,14 +381,14 @@ export function InvestigationPipelineInspector({ data }: Props) {
               </div>
 
               {/* Column 2: Derived Metrics */}
-              <div className="p-4 bg-[#191917] border border-[#B78A5A]/40 rounded space-y-2">
-                <div className="flex items-center space-x-1.5 text-[#B78A5A]">
+              <div className="p-4 bg-blue-50/40 border border-blue-200 rounded-lg space-y-2">
+                <div className="flex items-center space-x-1.5 text-blue-700">
                   <Calculator className="w-3.5 h-3.5" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">DERIVED METRICS</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Derived Metrics</span>
                 </div>
-                <ul className="space-y-2 text-[11px] text-[#C9C2B7]">
+                <ul className="space-y-2 text-xs text-slate-700">
                   {finding.factBreakdown.derivedMetrics.map((met, idx) => (
-                    <li key={idx} className="border-l-2 border-[#B78A5A] pl-2">
+                    <li key={idx} className="border-l-2 border-blue-500 pl-2">
                       {met}
                     </li>
                   ))}
@@ -385,14 +396,14 @@ export function InvestigationPipelineInspector({ data }: Props) {
               </div>
 
               {/* Column 3: Interpretations & Caveats */}
-              <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2">
-                <div className="flex items-center space-x-1.5 text-[#8E887E]">
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                <div className="flex items-center space-x-1.5 text-slate-600">
                   <Info className="w-3.5 h-3.5" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">INTERPRETATIONS & SCOPE</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Interpretations & Scope</span>
                 </div>
-                <ul className="space-y-2 text-[11px] text-[#8E887E]">
+                <ul className="space-y-2 text-xs text-slate-600">
                   {finding.factBreakdown.interpretations.map((interp, idx) => (
-                    <li key={idx} className="border-l-2 border-[#2A2926] pl-2">
+                    <li key={idx} className="border-l-2 border-slate-300 pl-2">
                       {interp}
                     </li>
                   ))}
@@ -401,48 +412,48 @@ export function InvestigationPipelineInspector({ data }: Props) {
             </div>
 
             {/* Confidence Component Breakdown Card */}
-            <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-3">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] text-[#B78A5A] uppercase font-bold tracking-wider">
-                  CONFIDENCE METHODOLOGY BREAKDOWN ({finding.confidence}%)
+                <span className="text-[10px] text-blue-700 uppercase font-bold tracking-wider font-mono">
+                  Confidence Methodology Breakdown ({finding.confidence}%)
                 </span>
-                <span className="text-[10px] text-[#5E8B72]">
+                <span className="text-xs text-emerald-700 font-medium">
                   {finding.confidenceAssessment.methodology}
                 </span>
               </div>
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-[11px]">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-xs">
                 {Object.entries(finding.confidenceAssessment.components).map(([key, comp]) => (
-                  <div key={key} className="p-2.5 bg-[#141412] border border-[#2A2926] rounded space-y-1">
-                    <div className="flex justify-between text-[#8E887E] text-[10px]">
+                  <div key={key} className="p-2.5 bg-white border border-slate-200 rounded space-y-1">
+                    <div className="flex justify-between text-slate-500 text-[10px]">
                       <span>{comp.name}</span>
-                      <span className="text-[#5E8B72] font-bold">{(comp.score * 100).toFixed(0)}%</span>
+                      <span className="text-emerald-700 font-mono font-bold">{(comp.score * 100).toFixed(0)}%</span>
                     </div>
-                    <div className="text-[#F3F0E8] font-bold">{comp.rating} (Weight: {comp.weight * 100}%)</div>
-                    <p className="text-[9px] text-[#7E7A72]">{comp.rationale}</p>
+                    <div className="text-slate-900 font-semibold">{comp.rating} (Weight: {comp.weight * 100}%)</div>
+                    <p className="text-[10px] text-slate-500">{comp.rationale}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Detailed Executive Brief */}
-            <div className="p-5 bg-[#191917] border border-[#2A2926] rounded space-y-3">
-              <span className="text-[10px] text-[#B78A5A] uppercase font-bold tracking-wider block">
-                EXECUTIVE INVESTIGATION FINDING
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+              <span className="text-[10px] text-blue-700 uppercase font-bold tracking-wider block font-mono">
+                Executive Investigation Finding
               </span>
-              <p className="text-xs text-[#F3F0E8] font-editorial text-sm leading-relaxed">
+              <p className="text-xs text-slate-800 leading-relaxed">
                 {finding.detailedAnalysis}
               </p>
             </div>
 
             {/* Policy Interventions */}
-            <div className="p-5 bg-[#191917] border border-[#2A2926] rounded space-y-3">
-              <span className="text-[10px] text-[#5E8B72] uppercase font-bold tracking-wider block">
-                STATUTORY CONVERGENCE RECOMMENDATIONS
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+              <span className="text-[10px] text-emerald-700 uppercase font-bold tracking-wider block font-mono">
+                Statutory Convergence Recommendations
               </span>
-              <ul className="space-y-2 text-xs text-[#C9C2B7]">
+              <ul className="space-y-1.5 text-xs text-slate-700">
                 {finding.policyRecommendations.map((rec, i) => (
                   <li key={i} className="flex items-start space-x-2">
-                    <span className="text-[#B78A5A] font-bold">↳</span>
+                    <span className="text-blue-600 font-bold">&bull;</span>
                     <span>{rec}</span>
                   </li>
                 ))}
@@ -450,32 +461,32 @@ export function InvestigationPipelineInspector({ data }: Props) {
             </div>
 
             {/* Explicit Limitations Card */}
-            <div className="p-4 bg-[#141412] border border-[#2A2926] rounded space-y-2">
-              <div className="flex items-center space-x-2 text-[#8E887E]">
-                <AlertTriangle className="w-3.5 h-3.5 text-[#B78A5A]" />
+            <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-lg space-y-1.5">
+              <div className="flex items-center space-x-2 text-amber-800">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">
-                  STATUTORY DATA LIMITATIONS & TEMPORAL NOTE
+                  Statutory Data Limitations & Temporal Note
                 </span>
               </div>
-              <p className="text-[10px] text-[#B78A5A] italic">
+              <p className="text-xs text-amber-900 font-medium">
                 {finding.temporalCoverageNote}
               </p>
-              <ul className="space-y-1 text-[10px] text-[#8E887E]">
+              <ul className="space-y-1 text-xs text-slate-600">
                 {finding.limitations.map((lim, i) => (
-                  <li key={i}>• {lim}</li>
+                  <li key={i}>&bull; {lim}</li>
                 ))}
               </ul>
             </div>
 
             {/* Evidence Records Inspection Links */}
-            <div className="pt-2 border-t border-[#2A2926] flex flex-wrap gap-2 justify-end">
+            <div className="pt-2 border-t border-slate-100 flex flex-wrap gap-2 justify-end">
               {finding.sourceRecords.map((rec) => (
                 <button
                   key={rec.id}
                   onClick={() => openEvidence(rec.id)}
-                  className="px-3 py-1.5 rounded bg-[#191917] border border-[#2A2926] hover:border-[#B78A5A] text-[#C9C2B7] hover:text-[#F3F0E8] text-xs flex items-center space-x-1.5"
+                  className="px-3 py-1.5 rounded bg-white border border-slate-300 hover:border-blue-500 text-slate-700 hover:text-blue-700 text-xs flex items-center space-x-1.5 transition-colors shadow-xs"
                 >
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-[#B78A5A]" />
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-blue-600" />
                   <span>Inspect Evidence {rec.recordNumber} ({rec.datasetId})</span>
                 </button>
               ))}
@@ -485,17 +496,19 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         {/* STAGE 7: METRIC LINEAGE TABLE */}
         {activeStage === 'LINEAGE' && (
-          <div className="space-y-4 font-mono text-xs animate-in fade-in">
-            <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
-              7. Metric Audit Lineage (UI Number Traceability)
-            </h3>
-            <p className="text-xs text-[#8E887E]">
-              Every metric displayed in this investigation traces directly to its source field, record number, and official government portal.
-            </p>
+          <div className="space-y-4 text-xs animate-in fade-in">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                7. Metric Audit Lineage (UI Number Traceability)
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Every metric displayed in this investigation traces directly to its source field, record number, and official government portal.
+              </p>
+            </div>
 
-            <div className="border border-[#2A2926] rounded overflow-x-auto">
+            <div className="border border-slate-200 rounded-lg overflow-x-auto bg-white">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#191917] text-[#8E887E] border-b border-[#2A2926]">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200">
                   <tr>
                     <th className="p-3">METRIC LABEL</th>
                     <th className="p-3">DISPLAY VALUE</th>
@@ -505,33 +518,33 @@ export function InvestigationPipelineInspector({ data }: Props) {
                     <th className="p-3">DATASET ID</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#2A2926]">
+                <tbody className="divide-y divide-slate-100 font-mono">
                   {finding.metricLineage.map((item) => (
                     <tr
                       key={item.metricId}
                       onClick={() => setSelectedMetric(item)}
-                      className="hover:bg-[#191917] cursor-pointer text-[#C9C2B7]"
+                      className="hover:bg-slate-50 cursor-pointer text-slate-700"
                     >
-                      <td className="p-3 font-bold text-[#F3F0E8]">{item.uiLabel}</td>
-                      <td className="p-3 font-bold text-[#B78A5A]">{item.displayValue}</td>
+                      <td className="p-3 font-sans font-semibold text-slate-900">{item.uiLabel}</td>
+                      <td className="p-3 font-bold text-blue-700">{item.displayValue}</td>
                       <td className="p-3">
                         <span
                           className={`px-1.5 py-0.5 rounded text-[10px] ${
                             item.classification === 'SOURCE_FACT'
-                              ? 'bg-[#5E8B72]/15 text-[#5E8B72]'
-                              : 'bg-[#B78A5A]/15 text-[#B78A5A]'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-blue-50 text-blue-700 border border-blue-200'
                           }`}
                         >
                           {item.classification}
                         </span>
                       </td>
-                      <td className="p-3 text-[11px] text-[#8E887E]">
+                      <td className="p-3 text-xs text-slate-500">
                         {item.financialStage || item.unit}
                       </td>
-                      <td className="p-3 text-[11px] font-mono text-[#F3F0E8]">
+                      <td className="p-3 text-xs text-slate-800">
                         {item.sourceField || item.formula}
                       </td>
-                      <td className="p-3 text-[10px] text-[#7E7A72]">{item.sourceDatasetId || 'SYNTHESIZED'}</td>
+                      <td className="p-3 text-[11px] text-slate-500">{item.sourceDatasetId || 'SYNTHESIZED'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -539,34 +552,34 @@ export function InvestigationPipelineInspector({ data }: Props) {
             </div>
 
             {selectedMetric && (
-              <div className="p-4 bg-[#191917] border border-[#B78A5A] rounded space-y-2 animate-in fade-in">
+              <div className="p-4 bg-slate-50 border border-blue-200 rounded-lg space-y-2 animate-in fade-in">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] text-[#B78A5A] font-bold uppercase">
-                    METRIC LINEAGE INSPECTOR: {selectedMetric.uiLabel}
+                  <span className="text-[10px] text-blue-700 font-bold uppercase font-mono">
+                    Metric Lineage Inspector: {selectedMetric.uiLabel}
                   </span>
                   <button
                     onClick={() => setSelectedMetric(null)}
-                    className="text-[#8E887E] hover:text-[#F3F0E8] text-[10px]"
+                    className="text-slate-500 hover:text-slate-800 text-[10px] font-medium"
                   >
                     CLOSE
                   </button>
                 </div>
-                <div className="grid md:grid-cols-2 gap-3 text-[11px]">
+                <div className="grid md:grid-cols-2 gap-3 text-xs">
                   <div>
-                    <span className="text-[#8E887E] block">Value & Classification:</span>
-                    <span className="text-[#F3F0E8] font-bold">{selectedMetric.displayValue} ({selectedMetric.classification})</span>
+                    <span className="text-slate-500 block">Value & Classification:</span>
+                    <span className="text-slate-900 font-bold">{selectedMetric.displayValue} ({selectedMetric.classification})</span>
                   </div>
                   <div>
-                    <span className="text-[#8E887E] block">Unit & Stage:</span>
-                    <span className="text-[#F3F0E8]">{selectedMetric.unit} ({selectedMetric.financialStage || 'N/A'})</span>
+                    <span className="text-slate-500 block">Unit & Stage:</span>
+                    <span className="text-slate-700">{selectedMetric.unit} ({selectedMetric.financialStage || 'N/A'})</span>
                   </div>
                   <div>
-                    <span className="text-[#8E887E] block">Source / Formula:</span>
-                    <code className="text-[#5E8B72]">{selectedMetric.sourceField || selectedMetric.formula}</code>
+                    <span className="text-slate-500 block">Source / Formula:</span>
+                    <code className="text-blue-700 font-mono text-[11px]">{selectedMetric.sourceField || selectedMetric.formula}</code>
                   </div>
                   <div>
-                    <span className="text-[#8E887E] block">Derivation Note:</span>
-                    <span className="text-[#C9C2B7]">{selectedMetric.derivationStep || 'Direct ministerial register observation'}</span>
+                    <span className="text-slate-500 block">Derivation Note:</span>
+                    <span className="text-slate-700">{selectedMetric.derivationStep || 'Direct ministerial register observation'}</span>
                   </div>
                 </div>
               </div>
@@ -576,39 +589,45 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
         {/* STAGE 8: PROVENANCE */}
         {activeStage === 'PROVENANCE' && (
-          <div className="space-y-4 font-mono text-xs animate-in fade-in">
-            <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
-              8. Cryptographic Provenance & Audit Hash Lineage
-            </h3>
-            <p className="text-xs text-[#8E887E]">
-              Immutable SHA-256 chain validating raw source inputs, join matrices, and calculations.
-            </p>
+          <div className="space-y-4 text-xs animate-in fade-in">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                8. Cryptographic Provenance & Audit Hash Lineage
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Immutable SHA-256 chain validating raw source inputs, join matrices, and calculations.
+              </p>
+            </div>
 
-            <div className="space-y-3">
-              <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2">
-                <span className="text-[10px] text-[#B78A5A] uppercase block">FINDING SHA-256 HASH</span>
-                <div className="flex items-center justify-between p-2 bg-[#141412] border border-[#2A2926] rounded text-[#5E8B72] text-[11px] truncate">
+            <div className="space-y-3 font-mono">
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                <span className="text-[10px] text-blue-700 uppercase block font-semibold font-sans">
+                  Finding SHA-256 Hash
+                </span>
+                <div className="flex items-center justify-between p-2.5 bg-white border border-slate-200 rounded text-emerald-700 text-xs truncate">
                   <code>{finding.provenanceHashes.findingHash}</code>
                   <button
                     onClick={() => handleCopyHash(finding.provenanceHashes.findingHash)}
-                    className="ml-2 px-2 py-0.5 rounded bg-[#191917] text-[#8E887E] hover:text-[#F3F0E8] text-[10px]"
+                    className="ml-2 px-2.5 py-1 rounded bg-slate-100 text-slate-700 hover:bg-slate-200 text-[10px] font-sans font-medium"
                   >
                     {copiedHash === finding.provenanceHashes.findingHash ? 'COPIED!' : 'COPY'}
                   </button>
                 </div>
               </div>
 
-              <div className="p-4 bg-[#191917] border border-[#2A2926] rounded space-y-2">
-                <span className="text-[10px] text-[#8E887E] uppercase block">STAGE-BY-STAGE AUDIT LINEAGE</span>
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                <span className="text-[10px] text-slate-600 uppercase block font-semibold font-sans">
+                  Stage-by-Stage Audit Lineage
+                </span>
                 <div className="space-y-2">
                   {pipelineAuditTrail.map((audit, i) => (
-                    <div key={i} className="p-2.5 bg-[#141412] border border-[#2A2926] rounded flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
+                    <div key={i} className="p-2.5 bg-white border border-slate-200 rounded flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                       <div className="flex items-center space-x-2">
-                        <span className="text-[#5E8B72]">✓</span>
-                        <span className="text-[#F3F0E8] font-bold">{audit.step}</span>
-                        <span className="text-[#7E7A72]">({audit.timestamp})</span>
+                        <span className="text-emerald-600 font-bold">✓</span>
+                        <span className="text-slate-900 font-semibold font-sans">{audit.step}</span>
+                        <span className="text-slate-400 text-[11px]">({audit.timestamp})</span>
                       </div>
-                      <code className="text-[#8E887E] text-[10px]">{audit.hash.substring(0, 24)}...</code>
+                      <code className="text-slate-500 text-[11px]">{audit.hash.substring(0, 24)}...</code>
                     </div>
                   ))}
                 </div>

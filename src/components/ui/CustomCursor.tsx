@@ -77,13 +77,13 @@ export function CustomCursor() {
     >
       <div
         ref={badgeRef}
-        className="-translate-x-1/2 -translate-y-1/2 px-2 py-0.5 rounded-none bg-[#B78A5A] text-[#0D0D0C] font-mono text-[9px] font-bold tracking-widest uppercase shadow-lg border border-[#F3F0E8]/40 hidden"
+        className="-translate-x-1/2 -translate-y-1/2 px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-[9px] font-semibold tracking-wider uppercase shadow-md border border-blue-400/50 hidden"
       >
         VIEW
       </div>
       <div
         ref={dotRef}
-        className="-translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#B78A5A] opacity-80"
+        className="-translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-600 opacity-70"
       />
     </div>
   );

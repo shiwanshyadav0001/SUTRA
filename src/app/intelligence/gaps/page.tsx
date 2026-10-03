@@ -2,13 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
-import { ShieldAlert, ArrowRight, CheckCircle2, ChevronRight, BarChart2 } from 'lucide-react';
+import { ShieldAlert, ArrowRight, CheckCircle2, ChevronRight, BarChart2, Sparkles, Layers, MapPin } from 'lucide-react';
 
 export default function GeographicGapsPage() {
-  const { openEvidence, openExplain } = useIntelligence();
+  const router = useRouter();
+  const { openEvidence, openExplain, openWhyFlagged } = useIntelligence();
   const gapDistricts = MAHARASHTRA_DISTRICTS.filter((d) => d.isGapFlagged).sort(
     (a, b) => b.gapPercentagePoints - a.gapPercentagePoints
   );
@@ -18,79 +20,79 @@ export default function GeographicGapsPage() {
   return (
     <AppShell>
       {/* Title */}
-      <div className="space-y-2 border-b border-[#2A2926] pb-6">
-        <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#B78A5A] uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#B78A5A]" />
-          <span>STATISTICAL DEFICIT RADAR</span>
+      <div className="space-y-2 border-b border-slate-200 pb-5">
+        <div className="inline-flex items-center space-x-2 text-[11px] font-mono tracking-wider text-blue-700 uppercase font-semibold">
+          <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+          <span>STATISTICAL DEFICIT RADAR • REGIONAL EQUITY</span>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#F3F0E8] font-editorial">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 font-editorial">
           GEOGRAPHIC GAPS
         </h1>
-        <p className="text-xs text-[#8E887E] max-w-2xl">
+        <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">
           Algorithmic identification of regions exhibiting disproportionately high eligible beneficiary demand coupled with severely lagging programme delivery and capital drawdown.
         </p>
       </div>
 
       {/* Featured Primary Gap Spotlight: NANDURBAR */}
-      <div className="p-8 rounded-sm bg-[#141412] border-2 border-[#A66A62]/40 relative overflow-hidden space-y-6">
+      <div className="p-6 sm:p-8 rounded-lg bg-white border border-rose-200 shadow-sm relative overflow-hidden space-y-6 my-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded bg-[#A66A62]/20 text-[#A66A62] border border-[#A66A62]/30">
+            <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-rose-50 text-rose-700 border border-rose-200 font-bold">
               PRIORITY #01 TERRITORIAL GAP
             </span>
-            <h2 className="text-3xl font-bold text-[#F3F0E8] font-editorial mt-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 font-editorial mt-2">
               {nandurbar.name.toUpperCase()}
             </h2>
-            <p className="text-xs text-[#8E887E]">
+            <p className="text-xs text-slate-500">
               {nandurbar.zone}, Maharashtra • LGD Code: {nandurbar.code}
             </p>
           </div>
 
           <div className="text-left sm:text-right font-mono">
-            <span className="text-[10px] text-[#8E887E] uppercase block">CRITICAL GAP MARGIN</span>
-            <div className="text-3xl sm:text-4xl font-bold text-[#A66A62]">
+            <span className="text-[10px] text-slate-500 uppercase block font-semibold">CRITICAL GAP MARGIN</span>
+            <div className="text-3xl sm:text-4xl font-bold text-rose-700">
               {nandurbar.gapPercentagePoints} pp
             </div>
-            <span className="text-[10px] text-[#8E887E]">Deficit below 64% benchmark</span>
+            <span className="text-[10px] text-slate-500">Deficit below 64% benchmark</span>
           </div>
         </div>
 
         {/* Comparison Bars */}
-        <div className="grid md:grid-cols-3 gap-6 font-mono text-xs border-y border-[#2A2926] py-6">
-          <div className="p-4 rounded bg-[#191917] border border-[#2A2926]">
-            <span className="text-[#8E887E] text-[10px] block">PROGRAMME COVERAGE</span>
-            <span className="text-2xl font-bold text-[#A66A62] mt-1 block">
+        <div className="grid md:grid-cols-3 gap-4 font-mono text-xs border-y border-slate-100 py-5">
+          <div className="p-3.5 rounded-md bg-rose-50/50 border border-rose-200">
+            <span className="text-slate-500 text-[10px] block uppercase font-semibold">PROGRAMME COVERAGE</span>
+            <span className="text-2xl font-bold text-rose-700 mt-0.5 block">
               {nandurbar.coverageRate}%
             </span>
-            <div className="w-full bg-[#2A2926] h-1.5 rounded mt-2">
+            <div className="w-full bg-slate-200 h-1.5 rounded mt-2">
               <div
-                className="bg-[#A66A62] h-full rounded"
+                className="bg-rose-600 h-full rounded"
                 style={{ width: `${nandurbar.coverageRate}%` }}
               />
             </div>
           </div>
 
-          <div className="p-4 rounded bg-[#191917] border border-[#2A2926]">
-            <span className="text-[#8E887E] text-[10px] block">REGIONAL BENCHMARK</span>
-            <span className="text-2xl font-bold text-[#C9C2B7] mt-1 block">
+          <div className="p-3.5 rounded-md bg-slate-50 border border-slate-200">
+            <span className="text-slate-500 text-[10px] block uppercase font-semibold">REGIONAL BENCHMARK</span>
+            <span className="text-2xl font-bold text-slate-800 mt-0.5 block">
               {nandurbar.regionalBenchmarkRate}%
             </span>
-            <div className="w-full bg-[#2A2926] h-1.5 rounded mt-2">
+            <div className="w-full bg-slate-200 h-1.5 rounded mt-2">
               <div
-                className="bg-[#8E887E] h-full rounded"
+                className="bg-slate-400 h-full rounded"
                 style={{ width: `${nandurbar.regionalBenchmarkRate}%` }}
               />
             </div>
           </div>
 
-          <div className="p-4 rounded bg-[#191917] border border-[#2A2926]">
-            <span className="text-[#8E887E] text-[10px] block">FUND UTILIZATION RATE</span>
-            <span className="text-2xl font-bold text-[#B59A63] mt-1 block">
+          <div className="p-3.5 rounded-md bg-amber-50/50 border border-amber-200">
+            <span className="text-slate-500 text-[10px] block uppercase font-semibold">FUND UTILIZATION RATE</span>
+            <span className="text-2xl font-bold text-amber-800 mt-0.5 block">
               {nandurbar.fundUtilizationRate}%
             </span>
-            <div className="w-full bg-[#2A2926] h-1.5 rounded mt-2">
+            <div className="w-full bg-slate-200 h-1.5 rounded mt-2">
               <div
-                className="bg-[#B59A63] h-full rounded"
+                className="bg-amber-600 h-full rounded"
                 style={{ width: `${nandurbar.fundUtilizationRate}%` }}
               />
             </div>
@@ -98,55 +100,51 @@ export default function GeographicGapsPage() {
         </div>
 
         {/* Why Flagged & CTAs */}
-        <div className="grid md:grid-cols-2 gap-8 items-center pt-2">
-          <div className="space-y-3">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A] block">
-              WHY FLAGGED?
+        <div className="grid md:grid-cols-2 gap-6 items-center pt-1">
+          <div className="space-y-2.5">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
+              WHY FLAGGED? ATTRIBUTION BREAKDOWN
             </span>
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center space-x-2 text-[#F3F0E8]">
-                <span className="text-[#5E8B72] font-bold">✓</span>
+            <div className="space-y-1.5 text-xs text-slate-700">
+              <div className="flex items-center space-x-2">
+                <span className="text-emerald-600 font-bold">✓</span>
                 <span>High eligible population (1.6M total pop, high smallholder ratio)</span>
               </div>
-              <div className="flex items-center space-x-2 text-[#F3F0E8]">
-                <span className="text-[#5E8B72] font-bold">✓</span>
+              <div className="flex items-center space-x-2">
+                <span className="text-emerald-600 font-bold">✓</span>
                 <span>Low programme coverage (28% vs 64% regional average)</span>
               </div>
-              <div className="flex items-center space-x-2 text-[#F3F0E8]">
-                <span className="text-[#5E8B72] font-bold">✓</span>
+              <div className="flex items-center space-x-2">
+                <span className="text-emerald-600 font-bold">✓</span>
                 <span>Low intervention density (only 14 active work projects)</span>
               </div>
-              <div className="flex items-center space-x-2 text-[#F3F0E8]">
-                <span className="text-[#5E8B72] font-bold">✓</span>
-                <span>Low fund utilization (42% drawn vs 73% national pace)</span>
+              <div className="flex items-center space-x-2">
+                <span className="text-emerald-600 font-bold">✓</span>
+                <span>Low fund drawdown pace (42% drawn vs 73% national pace)</span>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-end">
+          <div className="flex flex-wrap gap-2.5 justify-end">
             <button
-              onClick={() =>
-                openExplain({
-                  title: 'Nandurbar Territorial Gap Detection',
-                  subtitle: 'Coverage: 28% vs Regional Benchmark: 64% (Gap: 36 pp)',
-                  confidence: 87,
-                  factors: [
-                    { title: 'HIGH BENEFICIARY DEMAND', weight: 26 },
-                    { title: 'LOW FUND UTILIZATION', weight: 31 },
-                    { title: 'LOW PROJECT DENSITY', weight: 22 },
-                    { title: 'REGIONAL DEVIATION', weight: 21 },
-                  ],
-                  evidenceRecordNumber: '#9281',
-                })
-              }
-              className="px-5 py-3 rounded-sm bg-[#191917] border border-[#2A2926] text-xs text-[#F3F0E8] hover:border-[#B78A5A] transition-colors"
+              onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+              className="px-4 py-2 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              WHY THIS INSIGHT?
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span>WHY THIS INSIGHT?</span>
             </button>
 
             <button
-              onClick={() => openEvidence('#9281')}
-              className="px-6 py-3 rounded-sm bg-[#B78A5A] text-[#0D0D0C] font-semibold text-xs hover:bg-[#CBB093] transition-colors flex items-center justify-center space-x-2"
+              onClick={() => router.push('/investigation/SUTRA-INV-2026-0001')}
+              className="px-4 py-2 rounded-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Layers className="w-3.5 h-3.5 text-blue-600" />
+              <span>INVESTIGATE WORKSPACE</span>
+            </button>
+
+            <button
+              onClick={() => openEvidence('SUTRA-EVD-9281')}
+              className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs"
             >
               <span>VIEW EVIDENCE →</span>
             </button>
@@ -155,8 +153,8 @@ export default function GeographicGapsPage() {
       </div>
 
       {/* Additional Flagged Geographic Deficits */}
-      <div className="space-y-4 pt-4">
-        <h3 className="text-base font-bold font-editorial text-[#F3F0E8]">
+      <div className="space-y-4 pt-2">
+        <h3 className="text-base font-bold font-editorial text-slate-900">
           All Active Territorial Deficits (Maharashtra)
         </h3>
 
@@ -164,41 +162,41 @@ export default function GeographicGapsPage() {
           {gapDistricts.slice(1).map((dist) => (
             <div
               key={dist.id}
-              className="p-5 rounded-sm bg-[#141412] border border-[#2A2926] hover:border-[#B78A5A]/50 transition-all space-y-4"
+              className="p-5 rounded-lg bg-white border border-slate-200 hover:border-blue-400 transition-all space-y-3.5 shadow-2xs"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-[10px] font-mono text-[#8E887E] uppercase">
+                  <span className="text-[10px] font-mono text-slate-500 uppercase font-semibold">
                     {dist.code} • {dist.zone}
                   </span>
-                  <h4 className="font-bold text-lg text-[#F3F0E8] font-editorial">
+                  <h4 className="font-bold text-base text-slate-900 font-editorial mt-0.5">
                     {dist.name}
                   </h4>
                 </div>
                 <div className="text-right font-mono">
-                  <span className="text-[10px] text-[#A66A62] block font-bold">
+                  <span className="text-[10px] text-rose-700 block font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
                     GAP: {dist.gapPercentagePoints} pp
                   </span>
-                  <span className="text-[10px] text-[#8E887E]">
+                  <span className="text-[10px] text-slate-500 mt-0.5 block">
                     Coverage: {dist.coverageRate}%
                   </span>
                 </div>
               </div>
 
               <div className="space-y-1 font-mono text-xs">
-                <div className="flex justify-between text-[11px] text-[#8E887E]">
+                <div className="flex justify-between text-[11px] text-slate-600">
                   <span>Utilization Pace: {dist.fundUtilizationRate}%</span>
                   <span>Active Projects: {dist.projectsCount}</span>
                 </div>
-                <div className="w-full bg-[#191917] h-1.5 rounded">
+                <div className="w-full bg-slate-200 h-1.5 rounded">
                   <div
-                    className="bg-[#B59A63] h-full rounded"
+                    className="bg-amber-500 h-full rounded"
                     style={{ width: `${dist.coverageRate}%` }}
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-[#2A2926] text-xs">
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
                 <button
                   onClick={() =>
                     openExplain({
@@ -213,18 +211,27 @@ export default function GeographicGapsPage() {
                       evidenceRecordNumber: dist.name === 'Gadchiroli' ? '#4412' : '#7211',
                     })
                   }
-                  className="text-[#8E887E] hover:text-[#F3F0E8]"
+                  className="text-slate-600 hover:text-blue-700 font-medium cursor-pointer"
                 >
                   Decompose Factors
                 </button>
 
-                <button
-                  onClick={() => openEvidence(dist.name === 'Gadchiroli' ? '#4412' : '#7211')}
-                  className="text-[#B78A5A] hover:underline flex items-center gap-1 font-mono text-[11px]"
-                >
-                  <span>Supporting Record</span>
-                  <ArrowRight className="w-3 h-3" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/map?district=${dist.id}`}
+                    className="text-blue-700 hover:underline flex items-center gap-1 font-mono text-[11px]"
+                  >
+                    <MapPin className="w-3 h-3 text-blue-600" />
+                    <span>View Map</span>
+                  </Link>
+                  <button
+                    onClick={() => openEvidence(dist.name === 'Gadchiroli' ? '#4412' : '#7211')}
+                    className="text-blue-700 hover:underline flex items-center gap-1 font-mono text-[11px] cursor-pointer"
+                  >
+                    <span>Supporting Record</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

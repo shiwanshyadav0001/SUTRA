@@ -21,7 +21,7 @@ export function SutraAnimatedLogo({
   showTagline = true,
   emblemOnly = false,
   className = '',
-  theme = 'dark',
+  theme = 'light',
 }: SutraAnimatedLogoProps) {
   const [animationStarted, setAnimationStarted] = useState(false);
   const [animationStage, setAnimationStage] = useState<
@@ -89,8 +89,8 @@ export function SutraAnimatedLogo({
   };
 
   const isDarkMode = theme === 'dark';
-  const textColor = isDarkMode ? '#F3F0E8' : '#0D0D0C';
-  const subtextColor = isDarkMode ? '#C9C2B7' : '#4A4844';
+  const textColor = isDarkMode ? '#F3F0E8' : '#0F172A';
+  const subtextColor = isDarkMode ? '#C9C2B7' : '#64748B';
 
   return (
     <div

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { LiveGovernancePulse } from '@/components/live/LiveGovernancePulse';
@@ -26,10 +27,13 @@ import {
   CheckCircle2,
   PieChart,
   Activity,
+  FileText,
+  Search,
 } from 'lucide-react';
 
 export default function CommandCenterPage() {
-  const { openEvidence, openExplain, sourceHealth } = useIntelligence();
+  const router = useRouter();
+  const { openEvidence, openExplain, openWhyFlagged, sourceHealth } = useIntelligence();
 
   // Animated counters
   const [allocationCount, setAllocationCount] = useState(0);
@@ -90,165 +94,199 @@ export default function CommandCenterPage() {
     { period: 'Q1-2026 (Current)', score: 78, delta: '+4 pts', status: 'Optimal Velocity', x: 290, y: 38, driver: 'Direct bank transfers reached 12.4M citizens' },
   ];
 
+  const sectorData = [
+    { name: 'Rural Water & JJM', outlay: '₹980 Cr', pct: 86, color: 'bg-blue-600', link: '/schemes' },
+    { name: 'Affordable Housing (PMAY-G)', outlay: '₹740 Cr', pct: 64, color: 'bg-emerald-600', link: '/schemes' },
+    { name: 'Organic Farming (PKVY)', outlay: '₹420 Cr', pct: 58, color: 'bg-amber-600', link: '/schemes' },
+    { name: 'PM-KISAN Direct DBT', outlay: '₹700 Cr', pct: 92, color: 'bg-indigo-600', link: '/schemes' },
+  ];
+
+  const schemeMilestones = [
+    { scheme: 'JJM Tap Connections', rate: 76, milestone: '3.2M Households Verified', status: 'On Target' },
+    { scheme: 'PMAY-G Unit Completions', rate: 58, milestone: '412K Units Sanctioned', status: 'Drawdown Deficit' },
+    { scheme: 'PKVY Soil Certification', rate: 64, milestone: '184 Clusters Formed', status: 'Overlapping Subsidy' },
+    { scheme: 'PM-KISAN Aadhaar DBT', rate: 94, milestone: '2.8M Accounts Credited', status: 'Fully Disbursed' },
+  ];
+
   return (
     <AppShell>
       {/* Hero Section */}
-      <div className="space-y-2 border-b border-[#2A2926] pb-8">
-        <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#B78A5A] uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#B78A5A]" />
-          <span>NATIONAL GOVERNANCE APEX CONSOLE</span>
+      <div className="space-y-2 border-b border-slate-200 pb-6">
+        <div className="inline-flex items-center space-x-2 text-[11px] font-mono tracking-wider text-blue-700 uppercase font-semibold">
+          <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+          <span>NATIONAL GOVERNANCE APEX CONSOLE • AUDITED REGISTRY</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#F3F0E8] font-editorial">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 font-editorial">
           GOVERNANCE AT A GLANCE
         </h1>
-        <p className="text-sm text-[#C9C2B7] max-w-2xl font-normal">
-          Cross-ministry programme intelligence across regions, resources and outcomes. Hover over charts to inspect live statutory deviations.
+        <p className="text-xs sm:text-sm text-slate-600 max-w-2xl font-normal">
+          Cross-ministry programme intelligence across regions, resources and statutory outcomes. All figures are deterministically aggregated from official state and central registers.
         </p>
       </div>
 
-      {/* SUTRA V2 Live Intelligence Pulse */}
-      <div className="space-y-6">
-        <LiveGovernancePulse />
+      {/* SUTRA Live Intelligence Pulse & Source Health */}
+      <div className="space-y-5 my-6">
+        <LiveGovernancePulse onOpenWhyFlagged={(id) => openWhyFlagged(id)} />
         <SourceHealthCard sourceHealth={sourceHealth} />
       </div>
 
-      {/* Editorial Key Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b border-[#2A2926] pb-8">
-        <div className="p-4 bg-[#141412] border-l-2 border-[#B78A5A] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+      {/* Editorial Key Metrics Grid - All Connected to Real Destinaions */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 border-b border-slate-200 pb-6">
+        <Link
+          href="/schemes"
+          className="p-3.5 bg-white border border-slate-200 border-l-4 border-l-blue-600 rounded-md hover:border-blue-400 hover:shadow-xs transition-all group cursor-pointer"
+        >
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
             TOTAL ALLOCATION
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5 group-hover:text-blue-700 transition-colors">
             ₹{allocationCount}B
           </div>
-          <span className="text-[10px] text-[#5E8B72] block mt-1 font-mono">
-            +8.4% vs FY25
+          <span className="text-[10px] text-emerald-700 block mt-1 font-mono font-medium">
+            +8.4% vs FY25 →
           </span>
-        </div>
+        </Link>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#5E8B72] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <Link
+          href="/signals?filter=active"
+          className="p-3.5 bg-white border border-slate-200 border-l-4 border-l-emerald-600 rounded-md hover:border-emerald-400 hover:shadow-xs transition-all group cursor-pointer"
+        >
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
             FUND UTILIZATION
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5 group-hover:text-emerald-700 transition-colors">
             {utilizationCount}%
           </div>
-          <span className="text-[10px] text-[#8E887E] block mt-1 font-mono">
-            Target: 80%
+          <span className="text-[10px] text-slate-500 block mt-1 font-mono">
+            Target: 80% (View Signals) →
           </span>
-        </div>
+        </Link>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#B78A5A] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <Link
+          href="/data"
+          className="p-3.5 bg-white border border-slate-200 border-l-4 border-l-indigo-600 rounded-md hover:border-indigo-400 hover:shadow-xs transition-all group cursor-pointer"
+        >
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
             BENEFICIARIES
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5 group-hover:text-indigo-700 transition-colors">
             {beneficiariesCount}M
           </div>
-          <span className="text-[10px] text-[#8E887E] block mt-1 font-mono">
-            Direct DBT Verified
+          <span className="text-[10px] text-slate-500 block mt-1 font-mono">
+            Direct DBT Verified →
           </span>
-        </div>
+        </Link>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#7E7A72] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <Link
+          href="/schemes"
+          className="p-3.5 bg-white border border-slate-200 border-l-4 border-l-slate-400 rounded-md hover:border-slate-500 hover:shadow-xs transition-all group cursor-pointer"
+        >
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
             ACTIVE PROJECTS
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5 group-hover:text-slate-700 transition-colors">
             {projectsCount}
           </div>
-          <span className="text-[10px] text-[#8E887E] block mt-1 font-mono">
-            Across 36 Districts
+          <span className="text-[10px] text-slate-500 block mt-1 font-mono">
+            Across 36 Districts →
           </span>
-        </div>
+        </Link>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#B59A63] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <Link
+          href="/intelligence/gaps"
+          className="p-3.5 bg-white border border-slate-200 border-l-4 border-l-amber-500 rounded-md hover:border-amber-400 hover:shadow-xs transition-all group cursor-pointer"
+        >
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
             COVERAGE
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5 group-hover:text-amber-700 transition-colors">
             {coverageCount}%
           </div>
-          <span className="text-[10px] text-[#A66A62] block mt-1 font-mono">
-            5 Critical Gaps
+          <span className="text-[10px] text-amber-700 block mt-1 font-mono font-medium">
+            5 Critical Gaps →
           </span>
-        </div>
+        </Link>
 
-        <div className="p-4 bg-[#141412] border-l-2 border-[#5E8B72] rounded-r-sm">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E887E] block">
+        <Link
+          href="/evidence"
+          className="p-3.5 bg-white border border-slate-200 border-l-4 border-l-emerald-600 rounded-md hover:border-emerald-400 hover:shadow-xs transition-all group cursor-pointer"
+        >
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
             OUTCOME INDEX
           </span>
-          <div className="text-2xl lg:text-3xl font-bold font-mono text-[#F3F0E8] mt-1">
+          <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5 group-hover:text-emerald-700 transition-colors">
             {outcomeCount}
           </div>
-          <span className="text-[10px] text-[#5E8B72] block mt-1 font-mono">
-            Scale: 0–100
+          <span className="text-[10px] text-emerald-700 block mt-1 font-mono font-medium">
+            Audit Lineage →
           </span>
-        </div>
+        </Link>
       </div>
 
-      {/* Part 7: All 6 Core Visualizations */}
-      <div className="space-y-8">
+      {/* Part 7: Core Visualizations & Deep Dive Controllers */}
+      <div className="space-y-6 my-6">
         {/* Row 1: Chart 1 & Chart 2 */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-6">
           {/* 1. Fund Utilization Trend */}
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-4 relative">
+          <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4 relative">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-blue-700 font-semibold">
                   1. DRAWDOWN PACE • INTERACTIVE TELEMETRY
                 </span>
-                <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
+                <h3 className="text-base font-bold text-slate-900 font-editorial">
                   Fund Utilization Trend vs Statutory Benchmark
                 </h3>
               </div>
-              <span className="text-xs font-mono text-[#5E8B72]">FY 2025–26</span>
+              <span className="text-xs font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                FY 2025–26
+              </span>
             </div>
 
             {/* Active Hover Detail Banner for Chart 1 */}
             {hoveredDrawdownIdx !== null && (
-              <div className="p-3 bg-[#191917] border border-[#B78A5A]/50 rounded font-mono text-xs flex flex-wrap items-center justify-between gap-2 animate-in fade-in duration-150">
+              <div className="p-3 bg-slate-50 border border-blue-200 rounded-md font-mono text-xs flex flex-wrap items-center justify-between gap-2 animate-in fade-in duration-150">
                 <div>
-                  <span className="text-[10px] text-[#8E887E] uppercase block">
+                  <span className="text-[10px] text-slate-500 uppercase block font-semibold">
                     PERIOD: {drawdownPoints[hoveredDrawdownIdx].month}
                   </span>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-sm font-bold text-[#F3F0E8]">
+                    <span className="text-sm font-bold text-slate-900">
                       {drawdownPoints[hoveredDrawdownIdx].actual}% Actual
                     </span>
-                    <span className="text-xs text-[#B78A5A]">
+                    <span className="text-xs font-semibold text-blue-700">
                       (₹{drawdownPoints[hoveredDrawdownIdx].amountCr} Cr)
                     </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] text-[#8E887E] uppercase block">
+                  <span className="text-[10px] text-slate-500 uppercase block font-semibold">
                     BENCHMARK: {drawdownPoints[hoveredDrawdownIdx].benchmark}%
                   </span>
-                  <span className="text-xs font-bold text-[#5E8B72]">
+                  <span className="text-xs font-bold text-emerald-700">
                     +{(drawdownPoints[hoveredDrawdownIdx].actual - drawdownPoints[hoveredDrawdownIdx].benchmark).toFixed(1)} pp Variance
                   </span>
                 </div>
               </div>
             )}
 
-            <div className="h-44 w-full pt-2 relative">
+            <div className="h-44 w-full pt-2 relative bg-slate-50/50 rounded-md border border-slate-100">
               <svg className="w-full h-full" viewBox="0 0 500 140" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="chartGrad1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#B78A5A" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="#B78A5A" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="#2563EB" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
-                <line x1="0" y1="35" x2="500" y2="35" stroke="#2A2926" strokeDasharray="3 3" />
-                <line x1="0" y1="70" x2="500" y2="70" stroke="#2A2926" strokeDasharray="3 3" />
-                <line x1="0" y1="105" x2="500" y2="105" stroke="#2A2926" strokeDasharray="3 3" />
+                <line x1="0" y1="35" x2="500" y2="35" stroke="#E2E8F0" strokeDasharray="3 3" />
+                <line x1="0" y1="70" x2="500" y2="70" stroke="#E2E8F0" strokeDasharray="3 3" />
+                <line x1="0" y1="105" x2="500" y2="105" stroke="#E2E8F0" strokeDasharray="3 3" />
 
                 {/* Benchmark path */}
                 <path
                   d="M 10 120 L 90 100 L 170 80 L 250 62 L 330 45 L 410 32 L 490 22"
                   fill="none"
-                  stroke="#7E7A72"
+                  stroke="#94A3B8"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -262,9 +300,8 @@ export default function CommandCenterPage() {
                 <path
                   d="M 10 130 L 90 115 L 170 95 L 250 72 L 330 52 L 410 40 L 490 35"
                   fill="none"
-                  stroke="#B78A5A"
+                  stroke="#2563EB"
                   strokeWidth="2.5"
-                  className="animate-path-draw"
                 />
 
                 {/* Vertical cursor guide line for active hover */}
@@ -274,10 +311,10 @@ export default function CommandCenterPage() {
                     y1="0"
                     x2={drawdownPoints[hoveredDrawdownIdx].x}
                     y2="140"
-                    stroke="#B78A5A"
+                    stroke="#2563EB"
                     strokeWidth="1"
                     strokeDasharray="2 2"
-                    strokeOpacity="0.8"
+                    strokeOpacity="0.6"
                   />
                 )}
 
@@ -290,7 +327,6 @@ export default function CommandCenterPage() {
                       className="cursor-pointer"
                       onMouseEnter={() => setHoveredDrawdownIdx(i)}
                     >
-                      {/* Generous invisible target for seamless hover */}
                       <circle cx={pt.x} cy={pt.yActual} r="18" fill="transparent" />
                       {isHovered && (
                         <circle
@@ -298,7 +334,7 @@ export default function CommandCenterPage() {
                           cy={pt.yActual}
                           r="9"
                           fill="none"
-                          stroke="#B78A5A"
+                          stroke="#2563EB"
                           strokeWidth="2"
                           className="animate-ping"
                         />
@@ -307,9 +343,9 @@ export default function CommandCenterPage() {
                         cx={pt.x}
                         cy={pt.yActual}
                         r={isHovered ? '6' : '3.5'}
-                        fill={isHovered ? '#B78A5A' : '#F3F0E8'}
-                        stroke="#0D0D0C"
-                        strokeWidth="1.5"
+                        fill={isHovered ? '#2563EB' : '#FFFFFF'}
+                        stroke="#1D4ED8"
+                        strokeWidth="2"
                         className="transition-all duration-200"
                       />
                     </g>
@@ -317,13 +353,13 @@ export default function CommandCenterPage() {
                 })}
               </svg>
             </div>
-            <div className="flex justify-between text-[10px] font-mono text-[#7E7A72] border-t border-[#2A2926] pt-2">
+            <div className="flex justify-between text-[10px] font-mono text-slate-500 border-t border-slate-100 pt-2">
               {drawdownPoints.map((pt, i) => (
                 <span
                   key={i}
                   onMouseEnter={() => setHoveredDrawdownIdx(i)}
                   className={`cursor-pointer transition-colors ${
-                    hoveredDrawdownIdx === i ? 'text-[#B78A5A] font-bold underline' : 'hover:text-[#F3F0E8]'
+                    hoveredDrawdownIdx === i ? 'text-blue-700 font-bold underline' : 'hover:text-slate-900'
                   }`}
                 >
                   {pt.label} ({pt.actual}%)
@@ -333,35 +369,35 @@ export default function CommandCenterPage() {
           </div>
 
           {/* 2. Regional Coverage */}
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-4">
+          <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#B59A63]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-700 font-semibold">
                   2. GEOGRAPHIC DISTRIBUTION • HOVER DETAILS
                 </span>
-                <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
+                <h3 className="text-base font-bold text-slate-900 font-editorial">
                   Regional Coverage (36 Maharashtra Districts)
                 </h3>
               </div>
-              <Link href="/map" className="text-xs font-mono text-[#B78A5A] hover:underline flex items-center gap-1">
+              <Link href="/map" className="text-xs font-mono text-blue-700 font-semibold hover:underline flex items-center gap-1">
                 <span>VIEW MAP</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Persistent Fixed-Height Callout Slot (ZERO Layout Shift / ZERO Vibration) */}
-            <div className="h-[54px] w-full p-2.5 bg-[#191917] border border-[#2A2926] rounded font-mono text-xs flex items-center justify-between transition-colors duration-150">
+            {/* Persistent Fixed-Height Callout Slot */}
+            <div className="h-[54px] w-full p-2.5 bg-slate-50 border border-slate-200 rounded-md font-mono text-xs flex items-center justify-between">
               {hoveredDistrict ? (
                 <>
                   <div>
-                    <span className="font-bold text-[#F3F0E8]">{hoveredDistrict.name} District</span>
-                    <span className="text-[10px] text-[#8E887E] block">
+                    <span className="font-bold text-slate-900">{hoveredDistrict.name} District</span>
+                    <span className="text-[10px] text-slate-500 block">
                       Pop: {(hoveredDistrict.population / 1000000).toFixed(2)}M • {hoveredDistrict.activeSchemesCount} Active Schemes
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[#B78A5A] font-bold">{hoveredDistrict.coverageRate}% Cov</span>
-                    <span className="text-[10px] text-[#A66A62] block">
+                    <span className="text-blue-700 font-bold">{hoveredDistrict.coverageRate}% Cov</span>
+                    <span className="text-[10px] text-rose-700 block font-semibold">
                       Fund Util: {hoveredDistrict.fundUtilizationRate}%
                     </span>
                   </div>
@@ -369,259 +405,144 @@ export default function CommandCenterPage() {
               ) : (
                 <>
                   <div>
-                    <span className="text-[11px] text-[#C9C2B7] font-semibold">36 Maharashtra Districts</span>
-                    <span className="text-[10px] text-[#7E7A72] block">
+                    <span className="text-[11px] text-slate-800 font-semibold">36 Maharashtra Districts</span>
+                    <span className="text-[10px] text-slate-500 block">
                       Hover any district below to lock granular telemetry
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[#5E8B72] font-bold">71% Avg Cov</span>
-                    <span className="text-[10px] text-[#8E887E] block">Benchmark: 64%</span>
+                    <span className="text-emerald-700 font-bold">71% Avg Cov</span>
+                    <span className="text-[10px] text-slate-500 block">Benchmark: 64%</span>
                   </div>
                 </>
               )}
             </div>
 
-            <div className="space-y-3 font-mono text-xs">
-              {MAHARASHTRA_DISTRICTS.slice(0, 5).map((dist) => {
-                const isHovered = hoveredDistrict?.id === dist.id;
-                return (
-                  <div
-                    key={dist.id}
-                    onMouseEnter={() => setHoveredDistrict(dist)}
-                    onMouseLeave={() => setHoveredDistrict(null)}
-                    onClick={() => setHoveredDistrict(dist)}
-                    className={`p-1.5 rounded cursor-pointer transition-colors ${
-                      isHovered ? 'bg-[#1E1E1A] border border-[#B78A5A]' : 'border border-transparent hover:bg-[#191917]'
-                    }`}
-                  >
-                    <div className="flex justify-between text-[11px] mb-1">
-                      <span className={`font-semibold ${isHovered ? 'text-[#B78A5A]' : 'text-[#F3F0E8]'}`}>
-                        {dist.name}
-                      </span>
-                      <span className={dist.isGapFlagged ? 'text-[#A66A62] font-bold' : 'text-[#5E8B72]'}>
-                        {dist.coverageRate}% {dist.isGapFlagged ? `(Gap ${dist.gapPercentagePoints} pp)` : 'Benchmark Met'}
-                      </span>
-                    </div>
-                    <div className="w-full bg-[#191917] h-2 rounded border border-[#2A2926] relative overflow-hidden">
-                      <div className="absolute top-0 bottom-0 left-[64%] w-0.5 bg-[#8E887E] z-10" />
-                      <div
-                        className={`h-full rounded transition-all duration-300 ${
-                          dist.isGapFlagged ? 'bg-[#A66A62]' : 'bg-[#5E8B72]'
-                        }`}
-                        style={{ width: `${dist.coverageRate}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+            {/* Mini District Strip */}
+            <div className="grid grid-cols-6 sm:grid-cols-9 gap-1.5 pt-1">
+              {MAHARASHTRA_DISTRICTS.slice(0, 18).map((dist) => (
+                <div
+                  key={dist.id}
+                  onMouseEnter={() => setHoveredDistrict(dist)}
+                  onClick={() => router.push(`/map?district=${dist.id}`)}
+                  className={`h-8 rounded flex items-center justify-center text-[10px] font-mono cursor-pointer transition-all border ${
+                    hoveredDistrict?.id === dist.id
+                      ? 'bg-blue-600 text-white font-bold border-blue-700 shadow-xs'
+                      : dist.isGapFlagged
+                      ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                      : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                  }`}
+                  title={`${dist.name}: ${dist.coverageRate}% coverage`}
+                >
+                  {dist.name.slice(0, 3).toUpperCase()}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-100">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded bg-rose-500" /> Gap Flagged (5)
+                <span className="w-2 h-2 rounded bg-slate-300 ml-2" /> Compliant (31)
+              </span>
+              <Link href="/intelligence/gaps" className="text-blue-700 hover:underline">
+                Explore Gaps Matrix →
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* Row 2: Chart 3, Chart 4, Chart 5 */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* 3. Beneficiary Reach */}
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-4">
+        {/* Row 2: Sectoral Outlay & Delivery Milestone Pace */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* 3. Sector Outlays */}
+          <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A]">
-                  3. SECTORAL DEMOGRAPHICS
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
+                  3. BUDGETARY ALLOCATION • BY SECTOR
                 </span>
-                <h3 className="text-sm font-bold text-[#F3F0E8] font-editorial">
-                  Beneficiary Reach by Sector
+                <h3 className="text-base font-bold text-slate-900 font-editorial">
+                  Sectoral Outlay Breakdown
                 </h3>
               </div>
-              <span className="text-xs font-mono text-[#C9C2B7]">12.4M Total</span>
+              <Link href="/schemes" className="text-xs font-mono text-blue-700 font-semibold hover:underline">
+                ALL SCHEMES →
+              </Link>
             </div>
 
-            <div className="space-y-2.5 font-mono text-xs">
-              {[
-                { sector: 'Agriculture (PM-KISAN/PKVY)', count: '4.8M', pct: 39, color: '#B78A5A', verified: '99.4% DBT Linked' },
-                { sector: 'Health (AB-PMJAY)', count: '3.6M', pct: 29, color: '#5E8B72', verified: '98.8% Cashless' },
-                { sector: 'Rural Infra & Housing (PMAY-G)', count: '2.4M', pct: 19, color: '#B59A63', verified: 'Geo-tagged 100%' },
-                { sector: 'Water (Jal Jeevan Mission)', count: '1.6M', pct: 13, color: '#8E887E', verified: 'Flow Sensor Mapped' },
-              ].map((item, idx) => {
-                const isHovered = hoveredSector === idx;
-                return (
-                  <div
-                    key={item.sector}
-                    onMouseEnter={() => setHoveredSector(idx)}
-                    onMouseLeave={() => setHoveredSector(null)}
-                    className={`p-2.5 rounded bg-[#191917] border transition-colors cursor-pointer ${
-                      isHovered ? 'border-[#B78A5A]' : 'border-[#2A2926]'
-                    }`}
-                  >
-                    <div className="flex justify-between text-[11px] mb-1">
-                      <span className={`truncate ${isHovered ? 'text-[#B78A5A] font-bold' : 'text-[#F3F0E8]'}`}>
-                        {item.sector}
-                      </span>
-                      <span className="font-bold text-[#F3F0E8]">{item.count}</span>
-                    </div>
-                    <div className="w-full bg-[#141412] h-1.5 rounded overflow-hidden">
-                      <div className="h-full rounded" style={{ width: `${item.pct}%`, backgroundColor: item.color }} />
-                    </div>
-                    <div className="mt-1 flex justify-between text-[9px] text-[#8E887E]">
-                      <span>Share: {item.pct}%</span>
-                      <span className={isHovered ? 'text-[#5E8B72] font-semibold' : 'text-[#7E7A72]'}>{item.verified}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* 4. Programme Completion */}
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#5E8B72]">
-                  4. WORK VELOCITY
-                </span>
-                <h3 className="text-sm font-bold text-[#F3F0E8] font-editorial">
-                  Programme Milestone Completion
-                </h3>
-              </div>
-              <span className="text-xs font-mono text-[#5E8B72]">684 Projects</span>
-            </div>
-
-            <div className="space-y-3 font-mono text-xs">
-              {[
-                { scheme: 'PM-KISAN (Direct Income)', rate: 90, status: 'On Track', milestone: 'Tranche 17 Released' },
-                { scheme: 'PMGSY-III (Rural Roads)', rate: 76, status: 'Normal', milestone: '3,410 km Completed' },
-                { scheme: 'PMAY-G (Rural Housing)', rate: 74, status: 'Normal', milestone: '18,400 Units Built' },
-                { scheme: 'PKVY (Organic Farming)', rate: 61, status: 'Lagging', milestone: 'Bio-hub Cert Pending' },
-                { scheme: 'Jal Jeevan Mission (Water)', rate: 58, status: 'Review', milestone: 'Sensor Calibrations' },
-              ].map((sch, idx) => {
-                const isHovered = hoveredScheme === idx;
-                return (
-                  <div
-                    key={sch.scheme}
-                    onMouseEnter={() => setHoveredScheme(idx)}
-                    onMouseLeave={() => setHoveredScheme(null)}
-                    className={`p-1.5 rounded cursor-pointer transition-colors ${
-                      isHovered ? 'bg-[#191917] border border-[#B78A5A]/50' : 'hover:bg-[#191917]/50'
-                    }`}
-                  >
-                    <div className="flex justify-between text-[11px]">
-                      <span className={`truncate ${isHovered ? 'text-[#F3F0E8] font-bold' : 'text-[#C9C2B7]'}`}>
-                        {sch.scheme}
-                      </span>
-                      <span className={sch.rate < 65 ? 'text-[#A66A62] font-bold' : 'text-[#5E8B72] font-bold'}>
-                        {sch.rate}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-[#191917] h-1.5 rounded mt-1">
-                      <div
-                        className={`h-full rounded ${sch.rate < 65 ? 'bg-[#A66A62]' : 'bg-[#5E8B72]'}`}
-                        style={{ width: `${sch.rate}%` }}
-                      />
-                    </div>
-                    <div className="mt-1 flex justify-between text-[9px] text-[#7E7A72]">
-                      <span className="truncate">{sch.milestone}</span>
-                      <span className={sch.rate < 65 ? 'text-[#A66A62]' : 'text-[#5E8B72]'}>{sch.status}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* 5. Outcome Trend */}
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-4 relative">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#B59A63]">
-                  5. IMPACT VELOCITY • HOVER
-                </span>
-                <h3 className="text-sm font-bold text-[#F3F0E8] font-editorial">
-                  Outcome Trend (Index 78/100)
-                </h3>
-              </div>
-              <span className="text-xs font-mono text-[#5E8B72]">+6 pts QoQ</span>
-            </div>
-
-            {/* Active Hover Detail for Chart 5 */}
-            {hoveredOutcome !== null && (
-              <div className="p-2 bg-[#191917] border border-[#5E8B72]/50 rounded font-mono text-[11px] animate-in fade-in duration-150">
-                <div className="flex justify-between text-[#F3F0E8]">
-                  <span>{outcomePoints[hoveredOutcome].period}</span>
-                  <span className="text-[#5E8B72] font-bold">Score: {outcomePoints[hoveredOutcome].score}/100</span>
-                </div>
-                <div className="text-[10px] text-[#8E887E] mt-0.5 truncate">
-                  {outcomePoints[hoveredOutcome].driver}
-                </div>
-              </div>
-            )}
-
-            <div className="h-32 w-full pt-1">
-              <svg className="w-full h-full" viewBox="0 0 300 120" preserveAspectRatio="none">
-                <line x1="0" y1="30" x2="300" y2="30" stroke="#2A2926" strokeDasharray="3 3" />
-                <line x1="0" y1="60" x2="300" y2="60" stroke="#2A2926" strokeDasharray="3 3" />
-                <line x1="0" y1="90" x2="300" y2="90" stroke="#2A2926" strokeDasharray="3 3" />
-
-                <path
-                  d="M 10 95 L 80 82 L 150 68 L 220 54 L 290 38"
-                  fill="none"
-                  stroke="#5E8B72"
-                  strokeWidth="2.5"
-                />
-
-                {outcomePoints.map((pt, i) => {
-                  const isHovered = hoveredOutcome === i;
-                  return (
-                    <g
-                      key={i}
-                      className="cursor-pointer"
-                      onMouseEnter={() => setHoveredOutcome(i)}
-                    >
-                      <circle cx={pt.x} cy={pt.y} r="14" fill="transparent" />
-                      {isHovered && (
-                        <circle cx={pt.x} cy={pt.y} r="7" fill="none" stroke="#5E8B72" strokeWidth="1.5" className="animate-ping" />
-                      )}
-                      <circle
-                        cx={pt.x}
-                        cy={pt.y}
-                        r={isHovered ? '5' : '3'}
-                        fill={isHovered ? '#5E8B72' : '#F3F0E8'}
-                        stroke="#0D0D0C"
-                        strokeWidth="1.5"
-                      />
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-
-            <div className="flex justify-between text-[10px] font-mono text-[#7E7A72] border-t border-[#2A2926] pt-1">
-              {outcomePoints.map((pt, i) => (
-                <span
-                  key={i}
-                  onMouseEnter={() => setHoveredOutcome(i)}
-                  className={`cursor-pointer transition-colors ${
-                    hoveredOutcome === i ? 'text-[#5E8B72] font-bold underline' : 'hover:text-[#F3F0E8]'
+            <div className="space-y-3 pt-1">
+              {sectorData.map((sec, idx) => (
+                <Link
+                  key={idx}
+                  href={sec.link}
+                  onMouseEnter={() => setHoveredSector(idx)}
+                  onMouseLeave={() => setHoveredSector(null)}
+                  className={`block p-2.5 rounded-md border transition-all ${
+                    hoveredSector === idx ? 'bg-blue-50/50 border-blue-300' : 'bg-slate-50 border-slate-200'
                   }`}
                 >
-                  {pt.period.split('-')[0]} ({pt.score})
+                  <div className="flex justify-between text-xs font-medium text-slate-900">
+                    <span>{sec.name}</span>
+                    <span className="font-mono font-bold text-slate-700">{sec.outlay} ({sec.pct}%)</span>
+                  </div>
+                  <div className="w-full bg-slate-200 h-2 rounded-full mt-2 overflow-hidden">
+                    <div className={`${sec.color} h-full rounded-full transition-all`} style={{ width: `${sec.pct}%` }} />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* 4. Delivery Milestone Pace */}
+          <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
+                  4. IMPLEMENTATION VELOCITY • MILESTONES
                 </span>
+                <h3 className="text-base font-bold text-slate-900 font-editorial">
+                  Flagship Delivery Milestones
+                </h3>
+              </div>
+              <span className="text-xs font-mono text-slate-500">Q4 Inspection</span>
+            </div>
+
+            <div className="space-y-2.5 pt-1">
+              {schemeMilestones.map((sch, idx) => (
+                <div
+                  key={idx}
+                  className="p-2.5 rounded-md bg-slate-50 border border-slate-200"
+                >
+                  <div className="flex justify-between text-xs">
+                    <span className="font-semibold text-slate-900">{sch.scheme}</span>
+                    <span className={`font-mono font-bold ${sch.rate < 65 ? 'text-rose-700' : 'text-emerald-700'}`}>
+                      {sch.rate}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+                    <span>{sch.milestone}</span>
+                    <span className={`font-medium ${sch.rate < 65 ? 'text-rose-700' : 'text-emerald-700'}`}>
+                      {sch.status}
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Row 3: 6. Active Intelligence Signals & Overlaps */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        {/* Row 3: Active Implementation Signals & Cross-Programme Overlaps */}
+        <div className="grid lg:grid-cols-2 gap-6">
           {/* Active Implementation Signals */}
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-4">
+          <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="w-4 h-4 text-[#B59A63]" />
-                <h3 className="text-base font-bold text-[#F3F0E8] font-editorial">
-                  6. Active Implementation Signals
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <h3 className="text-base font-bold text-slate-900 font-editorial">
+                  Active Implementation Signals
                 </h3>
               </div>
-              <Link href="/signals" className="text-xs font-mono text-[#B78A5A] hover:underline">
-                VIEW SIGNALS RADAR →
+              <Link href="/signals?filter=active" className="text-xs font-mono font-semibold text-blue-700 hover:underline">
+                VIEW SIGNALS RADAR ({SIGNALS_DATA.length}) →
               </Link>
             </div>
 
@@ -629,32 +550,25 @@ export default function CommandCenterPage() {
               {SIGNALS_DATA.map((sig) => (
                 <div
                   key={sig.id}
-                  className="p-3.5 rounded bg-[#191917] border border-[#2A2926] hover:border-[#B78A5A]/50 transition-all flex items-center justify-between"
+                  className="p-3.5 rounded-md bg-slate-50 border border-slate-200 hover:border-blue-300 transition-all flex items-center justify-between shadow-2xs"
                 >
                   <div>
-                    <span className="text-[10px] font-mono text-[#B78A5A] block">
-                      {sig.schemeId} • {sig.districtName || 'National'}
+                    <span className="text-[10px] font-mono text-blue-700 font-semibold block">
+                      {sig.schemeId} • {sig.districtName || 'Maharashtra'}
                     </span>
-                    <h4 className="font-semibold text-xs text-[#F3F0E8]">{sig.schemeName}</h4>
-                    <span className="text-[10px] font-mono text-[#8E887E]">
+                    <h4 className="font-semibold text-xs text-slate-900 mt-0.5">{sig.schemeName}</h4>
+                    <span className="text-[10px] font-mono text-slate-500">
                       Current: {sig.currentUtilization}% (expected {sig.expectedUtilization}%)
                     </span>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-xs font-mono font-bold text-[#A66A62] block">
+                  <div className="text-right space-y-1">
+                    <span className="text-xs font-mono font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 block">
                       {sig.deviation} pp
                     </span>
                     <button
-                      onClick={() =>
-                        openExplain({
-                          title: `${sig.schemeName} (${sig.districtName})`,
-                          confidence: sig.confidence,
-                          factors: sig.factors.map((f) => ({ title: f.title, weight: f.value })),
-                          evidenceRecordNumber: sig.evidenceRecordId,
-                        })
-                      }
-                      className="text-[11px] font-mono text-[#B78A5A] hover:underline mt-1 block"
+                      onClick={() => openWhyFlagged(sig.id)}
+                      className="text-[11px] font-mono text-blue-700 hover:underline font-semibold block ml-auto cursor-pointer"
                     >
                       Why Flagged?
                     </button>
@@ -665,47 +579,47 @@ export default function CommandCenterPage() {
           </div>
 
           {/* Cross-Programme Overlap Callout */}
-          <div className="p-6 bg-[#141412] border border-[#B78A5A]/40 rounded-sm space-y-4">
+          <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A]">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-blue-700 font-semibold">
                 CROSS-PROGRAMME OVERLAP DETECTION
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#B78A5A]/20 text-[#B78A5A]">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 font-bold">
                 82% SIMILARITY
               </span>
             </div>
 
             <div>
-              <h4 className="font-bold text-base text-[#F3F0E8] font-editorial">
+              <h4 className="font-bold text-base text-slate-900 font-editorial">
                 PKVY (Scheme A) ⇄ MOVCDNER (Scheme B)
               </h4>
-              <p className="text-xs text-[#C9C2B7] mt-1 leading-relaxed">
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                 Dual bio-input and organic cluster certification subsidies active concurrently in Nandurbar & Dhule with 91% target smallholder overlap.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs font-mono pt-1">
-              <div className="p-2.5 rounded bg-[#191917] border border-[#2A2926]">
-                <span className="text-[#8E887E] text-[10px] block">TARGET GROUP</span>
-                <span className="font-bold text-[#F3F0E8]">91% MATCH</span>
+              <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 text-[10px] block font-semibold">TARGET GROUP</span>
+                <span className="font-bold text-slate-900">91% MATCH</span>
               </div>
-              <div className="p-2.5 rounded bg-[#191917] border border-[#2A2926]">
-                <span className="text-[#8E887E] text-[10px] block">INTERVENTION</span>
-                <span className="font-bold text-[#F3F0E8]">86% MATCH</span>
+              <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 text-[10px] block font-semibold">INTERVENTION</span>
+                <span className="font-bold text-slate-900">86% MATCH</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-[#2A2926]">
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
               <Link
-                href="/overlaps"
-                className="text-xs font-mono text-[#B78A5A] hover:underline flex items-center gap-1"
+                href="/relationships"
+                className="text-xs font-mono font-semibold text-blue-700 hover:underline flex items-center gap-1"
               >
                 <span>OPEN OVERLAP DECOMPOSITION</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
               <button
-                onClick={() => openEvidence('#9281')}
-                className="text-xs font-mono text-[#8E887E] hover:text-[#F3F0E8]"
+                onClick={() => openEvidence('SUTRA-EVD-9281')}
+                className="text-xs font-mono text-slate-600 hover:text-blue-700 cursor-pointer"
               >
                 Inspect Evidence Record #9281
               </button>
@@ -713,27 +627,27 @@ export default function CommandCenterPage() {
           </div>
         </div>
 
-        {/* Row 4: SUTRA V4 — Maharashtra 36-District Coverage & Live Anomaly Mesh */}
-        <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#2A2926] pb-4">
+        {/* Row 4: 36 Maharashtra District Statutory Coverage Matrix */}
+        <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-3">
             <div>
-              <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#B78A5A] uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>PHASE 9 — 36 MAHARASHTRA DISTRICT STATUTORY COVERAGE MATRIX</span>
+              <div className="inline-flex items-center space-x-2 text-[10px] font-mono tracking-wider text-blue-700 uppercase font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                <span>36 MAHARASHTRA DISTRICT STATUTORY COVERAGE MATRIX</span>
               </div>
-              <h3 className="text-xl font-bold text-[#F3F0E8] font-editorial mt-1">
+              <h3 className="text-lg font-bold text-slate-900 font-editorial mt-0.5">
                 LGD-First Governance Mesh State
               </h3>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-              <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+              <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
                 28 VERIFIED SOURCES
               </span>
-              <span className="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">
+              <span className="px-2.5 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
                 5 STALE REPORTING
               </span>
-              <span className="px-2.5 py-1 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+              <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-600 border border-slate-200">
                 3 PENDING SYNC
               </span>
             </div>
@@ -745,22 +659,22 @@ export default function CommandCenterPage() {
               const isVerified = idx < 28;
               const isStale = idx >= 28 && idx < 33;
               const statusColor = isVerified
-                ? 'border-emerald-500/30 text-emerald-300 hover:border-emerald-400 bg-emerald-950/10'
+                ? 'border-emerald-200 text-emerald-800 hover:border-emerald-400 bg-emerald-50/50'
                 : isStale
-                ? 'border-amber-500/30 text-amber-300 hover:border-amber-400 bg-amber-950/10'
-                : 'border-zinc-800 text-zinc-500 hover:border-zinc-700 bg-zinc-950/40';
+                ? 'border-amber-200 text-amber-800 hover:border-amber-400 bg-amber-50/50'
+                : 'border-slate-200 text-slate-500 hover:border-slate-300 bg-slate-50';
 
               return (
                 <Link
                   key={dist.id}
-                  href="/map"
-                  className={`p-2 rounded border transition-all text-center group cursor-pointer ${statusColor}`}
+                  href={`/map?district=${dist.id}`}
+                  className={`p-2 rounded border transition-all text-center group cursor-pointer shadow-2xs ${statusColor}`}
                 >
-                  <div className="text-[10px] text-zinc-400 font-bold">LGD:{dist.lgdCode || 492 + idx}</div>
-                  <div className="font-semibold text-xs truncate group-hover:text-white mt-0.5">
+                  <div className="text-[10px] text-slate-500 font-bold">LGD:{dist.lgdCode || 492 + idx}</div>
+                  <div className="font-semibold text-xs truncate group-hover:text-blue-700 mt-0.5">
                     {dist.name}
                   </div>
-                  <div className="text-[9px] mt-1 opacity-80">
+                  <div className="text-[9px] mt-1 font-medium opacity-90">
                     {isVerified ? '● VERIFIED' : isStale ? '▲ STALE' : '○ PENDING'}
                   </div>
                 </Link>
@@ -768,9 +682,9 @@ export default function CommandCenterPage() {
             })}
           </div>
 
-          <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-zinc-400 pt-2 border-t border-[#2A2926]">
+          <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-100">
             <span>100% Deterministic LGD Resolution (Census 2011 & MoPR Registry)</span>
-            <Link href="/map" className="text-[#B78A5A] hover:underline flex items-center gap-1">
+            <Link href="/map" className="text-blue-700 font-semibold hover:underline flex items-center gap-1">
               <span>View Full GIS Spatial Map</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>

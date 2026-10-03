@@ -144,28 +144,28 @@ export function GuidedDemoTour() {
               router.push(currentStep.route);
             }
           }}
-          className="flex items-center space-x-2.5 px-4 py-2.5 rounded-full bg-[#B78A5A] text-[#0D0D0C] font-semibold text-xs shadow-2xl hover:bg-[#CBB093] transition-all border border-[#F3F0E8]/30 group"
+          className="flex items-center space-x-2 px-4 py-2.5 rounded-full bg-blue-600 text-white font-medium text-xs shadow-xl hover:bg-blue-700 transition-all border border-blue-500/30 group"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
-          <span className="tracking-wide">EXECUTIVE WALKTHROUGH (3-MIN)</span>
+          <span className="tracking-wide">Executive Walkthrough (3-Min)</span>
         </button>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 w-96 bg-[#141412] border-2 border-[#B78A5A] rounded-sm shadow-2xl p-5 text-xs font-editorial space-y-3 animate-in slide-in-from-bottom-6">
+    <div className="fixed bottom-6 right-6 z-40 w-96 bg-white border border-slate-200 rounded-lg shadow-2xl p-5 text-xs space-y-3 animate-in slide-in-from-bottom-6">
       {/* Top Banner */}
-      <div className="flex items-center justify-between border-b border-[#2A2926] pb-2">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-[#B78A5A] animate-ping" />
-          <span className="text-[10px] font-mono tracking-widest uppercase text-[#B78A5A] font-bold">
-            APEX POLICY BRIEFING ({currentStep.step} / {TOUR_STEPS.length})
+          <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+          <span className="text-[10px] font-mono tracking-wider uppercase text-blue-700 font-bold">
+            Apex Policy Briefing ({currentStep.step} / {TOUR_STEPS.length})
           </span>
         </div>
         <button
           onClick={() => setIsOpen(false)}
-          className="text-[#8E887E] hover:text-[#F3F0E8] p-1"
+          className="text-slate-400 hover:text-slate-700 p-1 rounded hover:bg-slate-100"
         >
           <X className="w-4 h-4" />
         </button>
@@ -173,8 +173,8 @@ export function GuidedDemoTour() {
 
       {/* Step Title & Instruction */}
       <div className="space-y-1">
-        <h3 className="font-bold text-sm text-[#F3F0E8]">{currentStep.title}</h3>
-        <p className="text-[11px] text-[#C9C2B7] leading-relaxed">
+        <h3 className="font-bold text-sm text-slate-900">{currentStep.title}</h3>
+        <p className="text-xs text-slate-600 leading-relaxed">
           {currentStep.instruction}
         </p>
       </div>
@@ -186,42 +186,42 @@ export function GuidedDemoTour() {
             onClick={() =>
               currentStep.executeAction?.({ openEvidence, openExplain })
             }
-            className="w-full py-1.5 px-3 rounded bg-[#191917] border border-[#B78A5A]/50 text-[#B78A5A] text-[11px] font-mono hover:bg-[#B78A5A] hover:text-[#0D0D0C] transition-colors"
+            className="w-full py-1.5 px-3 rounded bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium hover:bg-blue-100 transition-colors"
           >
-            ↳ {currentStep.actionText}
+            &rarr; {currentStep.actionText}
           </button>
         </div>
       )}
 
       {/* Navigation Buttons */}
-      <div className="flex items-center justify-between pt-2 border-t border-[#2A2926] text-[11px] font-mono">
+      <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs font-mono">
         <button
           onClick={handlePrev}
           disabled={currentStepIdx === 0}
-          className="flex items-center space-x-1 text-[#8E887E] hover:text-[#F3F0E8] disabled:opacity-30"
+          className="flex items-center space-x-1 text-slate-500 hover:text-slate-900 disabled:opacity-30 font-medium"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           <span>PREV</span>
         </button>
 
-        <span className="text-[10px] text-[#7E7A72]">
-          ROUTE: {currentStep.route}
+        <span className="text-[11px] text-slate-400">
+          {currentStep.route}
         </span>
 
         {currentStepIdx < TOUR_STEPS.length - 1 ? (
           <button
             onClick={handleNext}
-            className="flex items-center space-x-1 px-3 py-1 rounded bg-[#B78A5A] text-[#0D0D0C] font-bold hover:bg-[#CBB093]"
+            className="flex items-center space-x-1 px-3 py-1.5 rounded bg-blue-600 text-white font-medium hover:bg-blue-700"
           >
-            <span>NEXT STEP</span>
+            <span>NEXT</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         ) : (
           <button
             onClick={() => setIsOpen(false)}
-            className="px-3 py-1 rounded bg-[#5E8B72] text-[#0D0D0C] font-bold"
+            className="px-3 py-1.5 rounded bg-emerald-600 text-white font-medium hover:bg-emerald-700"
           >
-            COMPLETE ✓
+            COMPLETE &check;
           </button>
         )}
       </div>

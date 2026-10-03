@@ -20,6 +20,9 @@ import { ExplainabilityModal } from '@/components/ui/ExplainabilityModal';
 import { EngineSpecModal } from '@/components/modals/EngineSpecModal';
 import { ExecutiveBriefModal } from '@/components/ui/ExecutiveBriefModal';
 import { WhyFlaggedModal } from '@/components/investigation/WhyFlaggedModal';
+import { LiveTelemetryModal } from '@/components/modals/LiveTelemetryModal';
+import { CommandPaletteModal } from '@/components/modals/CommandPaletteModal';
+import { RoleContextModal } from '@/components/modals/RoleContextModal';
 
 interface ExplainParams {
   title: string;
@@ -39,6 +42,18 @@ export interface IntelligenceContextType {
   selectedDistrict: District | null;
   setSelectedDistrict: (district: District | null) => void;
   nandurbarDistrict: District;
+  regionalScope: string;
+  setRegionalScope: (scope: string) => void;
+  // Modals
+  isTelemetryModalOpen: boolean;
+  setIsTelemetryModalOpen: (open: boolean) => void;
+  isCommandPaletteOpen: boolean;
+  setIsCommandPaletteOpen: (open: boolean) => void;
+  isRoleModalOpen: boolean;
+  setIsRoleModalOpen: (open: boolean) => void;
+  // Signal State Management
+  signalStatuses: Record<string, 'ACTIVE' | 'ACKNOWLEDGED' | 'INVESTIGATING' | 'ESCALATED_PMO' | 'RESOLVED'>;
+  updateSignalStatus: (signalId: string, status: 'ACTIVE' | 'ACKNOWLEDGED' | 'INVESTIGATING' | 'ESCALATED_PMO' | 'RESOLVED') => void;
   // V2 Live Governance Telemetry
   events: GovernanceEvent[];
   activeEvents: GovernanceEvent[];
@@ -71,6 +86,42 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
   const [isBriefOpen, setIsBriefOpen] = useState(false);
 
   const [isEngineSpecOpen, setIsEngineSpecOpen] = useState(false);
+
+  // New Modals
+  const [isTelemetryModalOpen, setIsTelemetryModalOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+
+  // Regional Scope State (ALL_MH or District Name)
+  const [regionalScope, setRegionalScope] = useState<string>('ALL_MH');
+
+  // Signal State Management
+  const [signalStatuses, setSignalStatuses] = useState<
+    Record<string, 'ACTIVE' | 'ACKNOWLEDGED' | 'INVESTIGATING' | 'ESCALATED_PMO' | 'RESOLVED'>
+  >({
+    'SIG-001': 'ACTIVE',
+    'SIG-002': 'ACTIVE',
+    'SIG-003': 'ACTIVE',
+  });
+
+  const updateSignalStatus = (
+    signalId: string,
+    status: 'ACTIVE' | 'ACKNOWLEDGED' | 'INVESTIGATING' | 'ESCALATED_PMO' | 'RESOLVED'
+  ) => {
+    setSignalStatuses((prev) => ({ ...prev, [signalId]: status }));
+  };
+
+  // Keyboard shortcut listener for ⌘K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // V2 Why Flagged Modal State
   const [isWhyFlaggedOpen, setIsWhyFlaggedOpen] = useState(false);
@@ -267,6 +318,16 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
         selectedDistrict,
         setSelectedDistrict,
         nandurbarDistrict: nandurbar,
+        regionalScope,
+        setRegionalScope,
+        isTelemetryModalOpen,
+        setIsTelemetryModalOpen,
+        isCommandPaletteOpen,
+        setIsCommandPaletteOpen,
+        isRoleModalOpen,
+        setIsRoleModalOpen,
+        signalStatuses,
+        updateSignalStatus,
         events,
         activeEvents: events,
         latestEvent,
@@ -331,6 +392,24 @@ export function IntelligenceProvider({ children }: { children: React.ReactNode }
       <EngineSpecModal
         isOpen={isEngineSpecOpen}
         onClose={() => setIsEngineSpecOpen(false)}
+      />
+
+      {/* Global Live Telemetry & Event Mesh Modal */}
+      <LiveTelemetryModal
+        isOpen={isTelemetryModalOpen}
+        onClose={() => setIsTelemetryModalOpen(false)}
+      />
+
+      {/* Global ⌘K Ask SUTRA Quick Query Command Palette */}
+      <CommandPaletteModal
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+      />
+
+      {/* Global PMO Apex Desk / Role Clearance Modal */}
+      <RoleContextModal
+        isOpen={isRoleModalOpen}
+        onClose={() => setIsRoleModalOpen(false)}
       />
     </IntelligenceContext.Provider>
   );

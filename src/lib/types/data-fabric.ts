@@ -113,6 +113,7 @@ export interface District {
   eligibleDemandIndex: number;
   headquarters?: string;
   aliases?: string[];
+  evidenceRecordId?: string;
 }
 
 export interface Project {

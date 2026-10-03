@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
 import { useIntelligence } from '@/context/IntelligenceContext';
 import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
@@ -25,11 +26,13 @@ import {
   AlertCircle,
   Network,
   Sparkles,
+  FileText,
 } from 'lucide-react';
 
 type MetricFilter = 'Coverage' | 'Utilization' | 'Beneficiaries' | 'Outcomes' | 'Gaps' | 'Signals';
 
 export default function GeographicIntelligencePage() {
+  const router = useRouter();
   const {
     openEvidence,
     openExplain,
@@ -39,6 +42,7 @@ export default function GeographicIntelligencePage() {
     latestEvent,
     activeDistrictLiveState,
   } = useIntelligence();
+
   const [viewLevel, setViewLevel] = useState<'INDIA' | 'MAHARASHTRA'>('MAHARASHTRA');
   const [activeFilter, setActiveFilter] = useState<MetricFilter>('Gaps');
   const [selectedDistrict, setSelectedDistrict] = useState<District>(
@@ -60,44 +64,44 @@ export default function GeographicIntelligencePage() {
   const getFillColor = (d: District) => {
     if (activeFilter === 'Gaps') {
       if (d.isGapFlagged) {
-        if (d.gapPercentagePoints >= 30) return '#A66A62';
-        return '#B59A63';
+        if (d.gapPercentagePoints >= 30) return '#F43F5E'; // rose-500
+        return '#F59E0B'; // amber-500
       }
-      return '#20201D';
+      return '#E2E8F0'; // slate-200
     }
 
     if (activeFilter === 'Coverage') {
-      if (d.coverageRate >= 75) return '#5E8B72';
-      if (d.coverageRate >= 60) return '#B78A5A';
-      return '#A66A62';
+      if (d.coverageRate >= 75) return '#10B981';
+      if (d.coverageRate >= 60) return '#3B82F6';
+      return '#F43F5E';
     }
 
     if (activeFilter === 'Utilization') {
-      if (d.fundUtilizationRate >= 75) return '#5E8B72';
-      if (d.fundUtilizationRate >= 55) return '#B78A5A';
-      return '#A66A62';
+      if (d.fundUtilizationRate >= 75) return '#10B981';
+      if (d.fundUtilizationRate >= 55) return '#3B82F6';
+      return '#F43F5E';
     }
 
     if (activeFilter === 'Signals') {
-      return d.isGapFlagged ? '#A66A62' : '#20201D';
+      return d.isGapFlagged ? '#F43F5E' : '#E2E8F0';
     }
 
-    return '#B78A5A';
+    return '#3B82F6';
   };
 
   return (
     <AppShell>
       {/* Title & Filter Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2A2926] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <div className="flex items-center space-x-2 text-[10px] font-mono tracking-widest text-[#B78A5A] uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#B78A5A]" />
-            <span>TERRITORIAL GOVERNANCE LAYER</span>
+          <div className="flex items-center space-x-2 text-[11px] font-mono tracking-wider text-blue-700 uppercase font-semibold">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+            <span>TERRITORIAL GOVERNANCE LAYER • GIS MESH</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#F3F0E8] font-editorial">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 font-editorial">
             GEOGRAPHIC INTELLIGENCE
           </h1>
-          <p className="text-xs text-[#8E887E] mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             {viewLevel === 'INDIA'
               ? 'National Overview: Select Maharashtra state to drill down into 36 districts.'
               : 'Cartographic analysis across 36 districts of Maharashtra State.'}
@@ -107,23 +111,23 @@ export default function GeographicIntelligencePage() {
         {/* View Zoom & Metric Layer Controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Zoom Toggle */}
-          <div className="flex items-center p-1 bg-[#141412] border border-[#2A2926] rounded-sm text-xs font-mono">
+          <div className="flex items-center p-1 bg-slate-100 border border-slate-200 rounded-md text-xs font-mono">
             <button
               onClick={() => setViewLevel('INDIA')}
-              className={`px-3 py-1.5 rounded-sm transition-all ${
+              className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 viewLevel === 'INDIA'
-                  ? 'bg-[#B78A5A] text-[#0D0D0C] font-bold'
-                  : 'text-[#8E887E] hover:text-[#F3F0E8]'
+                  ? 'bg-blue-600 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               INDIA VIEW
             </button>
             <button
               onClick={() => setViewLevel('MAHARASHTRA')}
-              className={`px-3 py-1.5 rounded-sm transition-all ${
+              className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 viewLevel === 'MAHARASHTRA'
-                  ? 'bg-[#B78A5A] text-[#0D0D0C] font-bold'
-                  : 'text-[#8E887E] hover:text-[#F3F0E8]'
+                  ? 'bg-blue-600 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               MAHARASHTRA (36 DISTS)
@@ -131,16 +135,16 @@ export default function GeographicIntelligencePage() {
           </div>
 
           {/* Metric Layer Controls */}
-          <div className="flex flex-wrap items-center gap-1 p-1 bg-[#141412] border border-[#2A2926] rounded-sm text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-1 p-1 bg-slate-100 border border-slate-200 rounded-md text-xs font-mono">
             {(['Coverage', 'Utilization', 'Beneficiaries', 'Outcomes', 'Gaps', 'Signals'] as MetricFilter[]).map(
               (filter) => (
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`px-3 py-1.5 rounded-sm transition-all ${
+                  className={`px-2.5 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                     activeFilter === filter
-                      ? 'bg-[#B78A5A] text-[#0D0D0C] font-bold shadow'
-                      : 'text-[#8E887E] hover:text-[#F3F0E8]'
+                      ? 'bg-white text-slate-900 border border-slate-200 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {filter}
@@ -152,34 +156,34 @@ export default function GeographicIntelligencePage() {
       </div>
 
       {/* Main Map & Intelligence Contextual Split */}
-      <div className="grid lg:grid-cols-12 gap-8 items-start">
+      <div className="grid lg:grid-cols-12 gap-6 items-start my-6">
         {/* Left 8 Cols: Custom Cartographic Visualizer */}
-        <div className="lg:col-span-8 bg-[#141412] border border-[#2A2926] rounded-sm p-6 space-y-4 relative">
+        <div className="lg:col-span-8 bg-white border border-slate-200 rounded-lg p-5 space-y-4 relative shadow-sm">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 text-xs font-mono text-[#8E887E]">
-              <MapPin className="w-3.5 h-3.5 text-[#B78A5A]" />
+            <div className="flex items-center space-x-2 text-xs font-mono text-slate-600 font-semibold">
+              <MapPin className="w-3.5 h-3.5 text-blue-600" />
               <span>
                 {viewLevel === 'INDIA'
                   ? 'NATIONAL ATLAS VIEW • CLICK MAHARASHTRA TO DRILL DOWN'
                   : 'REGION: MAHARASHTRA STATE (36 DISTRICT BOUNDARIES ACTIVE)'}
               </span>
             </div>
-            <div className="text-[10px] font-mono text-[#8E887E] flex items-center gap-3">
+            <div className="text-[10px] font-mono text-slate-500 flex items-center gap-3">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#A66A62]" /> Severe Gap (&gt;30 pp)
+                <span className="w-2 h-2 rounded-full bg-rose-500" /> Severe Gap (&gt;30 pp)
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#B59A63]" /> Moderate Gap
+                <span className="w-2 h-2 rounded-full bg-amber-500" /> Moderate Gap
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#5E8B72]" /> Benchmark Met
+                <span className="w-2 h-2 rounded-full bg-emerald-500" /> Benchmark Met
               </span>
             </div>
           </div>
 
           {/* Interactive SVG Cartographic Grid */}
           <div
-            className="relative w-full h-[520px] bg-[#0D0D0C] border border-[#2A2926] rounded-sm overflow-hidden flex items-center justify-center p-4"
+            className="relative w-full h-[520px] bg-slate-50 border border-slate-200 rounded-md overflow-hidden flex items-center justify-center p-4"
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               setMapTooltipPos({
@@ -199,8 +203,8 @@ export default function GeographicIntelligencePage() {
                 {/* Simplified India silhouette outline */}
                 <path
                   d="M 230 60 L 290 80 L 330 130 L 400 170 L 480 200 L 520 220 L 460 270 L 410 260 L 370 330 L 320 440 L 280 470 L 260 410 L 210 330 L 160 260 L 190 190 L 180 130 Z"
-                  fill="#161614"
-                  stroke="#2A2926"
+                  fill="#F8FAFC"
+                  stroke="#CBD5E1"
                   strokeWidth="1.5"
                 />
 
@@ -222,17 +226,17 @@ export default function GeographicIntelligencePage() {
                       y={state.y - 20}
                       width="70"
                       height="40"
-                      rx="3"
-                      fill={state.focus ? '#B78A5A' : '#191917'}
-                      fillOpacity={state.focus ? 0.9 : 0.6}
-                      stroke={state.focus ? '#F3F0E8' : '#2A2926'}
+                      rx="4"
+                      fill={state.focus ? '#2563EB' : '#FFFFFF'}
+                      fillOpacity={state.focus ? 0.95 : 0.85}
+                      stroke={state.focus ? '#1D4ED8' : '#CBD5E1'}
                       strokeWidth={state.focus ? 2 : 1}
                     />
                     <text
                       x={state.x}
                       y={state.y - 4}
                       textAnchor="middle"
-                      fill="#FFFFFF"
+                      fill={state.focus ? '#FFFFFF' : '#0F172A'}
                       fontSize="9"
                       fontWeight="bold"
                       fontFamily="monospace"
@@ -243,7 +247,7 @@ export default function GeographicIntelligencePage() {
                       x={state.x}
                       y={state.y + 10}
                       textAnchor="middle"
-                      fill={state.focus ? '#0D0D0C' : '#8E887E'}
+                      fill={state.focus ? '#DBEAFE' : '#64748B'}
                       fontSize="8"
                       fontFamily="monospace"
                       fontWeight="bold"
@@ -255,7 +259,7 @@ export default function GeographicIntelligencePage() {
                         cx={state.x + 30}
                         cy={state.y - 15}
                         r="4"
-                        fill="#5E8B72"
+                        fill="#10B981"
                         className="animate-ping"
                       />
                     )}
@@ -270,18 +274,18 @@ export default function GeographicIntelligencePage() {
                 preserveAspectRatio="xMidYMid meet"
               >
                 <defs>
-                  <pattern id="gridPattern2" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1F1E1B" strokeWidth="0.5" />
+                  <pattern id="gridPatternLight" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E2E8F0" strokeWidth="0.5" />
                   </pattern>
                 </defs>
 
-                <rect width="800" height="500" fill="url(#gridPattern2)" />
+                <rect width="800" height="500" fill="url(#gridPatternLight)" />
 
                 {/* State boundary background outline */}
                 <path
                   d="M 160 80 L 320 60 L 520 70 L 680 120 L 760 210 L 740 330 L 610 420 L 440 440 L 320 460 L 220 420 L 140 280 L 130 180 Z"
-                  fill="#161614"
-                  stroke="#2A2926"
+                  fill="#F1F5F9"
+                  stroke="#CBD5E1"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -313,10 +317,10 @@ export default function GeographicIntelligencePage() {
                         <circle
                           cx={x}
                           cy={y}
-                          r="32"
+                          r="30"
                           fill="none"
-                          stroke="#B78A5A"
-                          strokeWidth="1.5"
+                          stroke="#2563EB"
+                          strokeWidth="2"
                           strokeDasharray="3 3"
                           className="animate-spin"
                           style={{ transformOrigin: `${x}px ${y}px`, animationDuration: '8s' }}
@@ -328,10 +332,10 @@ export default function GeographicIntelligencePage() {
                         <circle
                           cx={x}
                           cy={y}
-                          r="22"
+                          r="20"
                           fill="none"
-                          stroke="#A66A62"
-                          className="animate-sonar-ring pointer-events-none"
+                          stroke="#F43F5E"
+                          className="animate-ping opacity-30 pointer-events-none"
                         />
                       )}
 
@@ -341,10 +345,10 @@ export default function GeographicIntelligencePage() {
                         y={y - 18}
                         width="44"
                         height="36"
-                        rx="3"
-                        fill={fillColor}
-                        fillOpacity={isSelected ? 0.9 : isHovered ? 0.85 : 0.6}
-                        stroke={isSelected ? '#F3F0E8' : isHovered ? '#B78A5A' : '#2A2926'}
+                        rx="4"
+                        fill={isSelected ? '#1D4ED8' : fillColor}
+                        fillOpacity={isSelected ? 1 : isHovered ? 0.95 : 0.8}
+                        stroke={isSelected ? '#1E40AF' : isHovered ? '#2563EB' : '#94A3B8'}
                         strokeWidth={isSelected || isHovered ? 2 : 1}
                       />
 
@@ -353,7 +357,7 @@ export default function GeographicIntelligencePage() {
                         x={x}
                         y={y - 2}
                         textAnchor="middle"
-                        fill="#FFFFFF"
+                        fill={isSelected ? '#FFFFFF' : '#0F172A'}
                         fontSize="9"
                         fontWeight="bold"
                         fontFamily="monospace"
@@ -367,9 +371,10 @@ export default function GeographicIntelligencePage() {
                         x={x}
                         y={y + 10}
                         textAnchor="middle"
-                        fill="#C9C2B7"
+                        fill={isSelected ? '#DBEAFE' : '#334155'}
                         fontSize="8"
                         fontFamily="monospace"
+                        fontWeight="600"
                       >
                         {activeFilter === 'Coverage'
                           ? `${district.coverageRate}%`
@@ -380,7 +385,7 @@ export default function GeographicIntelligencePage() {
 
                       {/* Priority Warning Dot on flagged districts */}
                       {district.isGapFlagged && (
-                        <circle cx={x + 18} cy={y - 14} r="3.5" fill="#A66A62" stroke="#0D0D0C" strokeWidth="1" />
+                        <circle cx={x + 18} cy={y - 14} r="3.5" fill="#EF4444" stroke="#FFFFFF" strokeWidth="1" />
                       )}
                     </g>
                   );
@@ -391,17 +396,17 @@ export default function GeographicIntelligencePage() {
             {/* Floating Tooltip for India State Hover */}
             {hoveredState && mapTooltipPos && viewLevel === 'INDIA' && (
               <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded bg-[#141412]/95 border border-[#B78A5A] text-[#F3F0E8] font-mono text-xs shadow-2xl backdrop-blur-md transition-opacity duration-150"
+                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3 py-2 rounded-md bg-white border border-slate-300 text-slate-900 font-mono text-xs shadow-lg transition-opacity duration-150"
                 style={{
                   left: Math.min(Math.max(mapTooltipPos.x, 90), 510),
                   top: Math.max(mapTooltipPos.y - 10, 10),
                 }}
               >
-                <div className="font-bold text-sm text-[#F3F0E8]">{hoveredState.name}</div>
-                <div className="text-[10px] text-[#8E887E] mt-0.5">Allocation: {hoveredState.alloc}</div>
-                <div className="flex gap-3 text-[10px] mt-1 pt-1 border-t border-[#2A2926]">
-                  <span>Coverage: <strong className="text-[#5E8B72]">{hoveredState.coverage}%</strong></span>
-                  <span>Utilization: <strong className="text-[#B78A5A]">{hoveredState.util}%</strong></span>
+                <div className="font-bold text-sm text-slate-900">{hoveredState.name}</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Allocation: {hoveredState.alloc}</div>
+                <div className="flex gap-3 text-[10px] mt-1 pt-1 border-t border-slate-200">
+                  <span>Coverage: <strong className="text-emerald-700">{hoveredState.coverage}%</strong></span>
+                  <span>Utilization: <strong className="text-blue-700">{hoveredState.util}%</strong></span>
                 </div>
               </div>
             )}
@@ -409,243 +414,132 @@ export default function GeographicIntelligencePage() {
             {/* Floating Tooltip for Maharashtra District Hover */}
             {hoveredDistrict && mapTooltipPos && viewLevel === 'MAHARASHTRA' && (
               <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded bg-[#141412]/95 border border-[#B78A5A] text-[#F3F0E8] font-mono text-xs shadow-2xl backdrop-blur-md min-w-[210px] transition-opacity duration-150"
+                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded-md bg-white border border-slate-300 text-slate-900 font-mono text-xs shadow-xl min-w-[210px] transition-opacity duration-150"
                 style={{
                   left: Math.min(Math.max(mapTooltipPos.x, 110), 690),
                   top: Math.max(mapTooltipPos.y - 10, 10),
                 }}
               >
-                <div className="flex items-center justify-between gap-3 border-b border-[#2A2926] pb-1.5 mb-1.5">
-                  <span className="font-bold text-sm text-[#F3F0E8]">{hoveredDistrict.name}</span>
+                <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-1 mb-1">
+                  <span className="font-bold text-sm text-slate-900">{hoveredDistrict.name}</span>
                   <span
                     className={`text-[9px] uppercase px-1.5 py-0.5 rounded font-bold ${
-                      hoveredDistrict.isGapFlagged ? 'bg-[#A66A62]/20 text-[#A66A62] border border-[#A66A62]/40' : 'bg-[#5E8B72]/20 text-[#5E8B72] border border-[#5E8B72]/40'
+                      hoveredDistrict.isGapFlagged ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                     }`}
                   >
                     {hoveredDistrict.isGapFlagged ? `GAP ${hoveredDistrict.gapPercentagePoints} pp` : 'BENCHMARK MET'}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
-                  <div>Coverage: <strong className="text-[#F3F0E8]">{hoveredDistrict.coverageRate}%</strong></div>
-                  <div>Utilization: <strong className="text-[#F3F0E8]">{hoveredDistrict.fundUtilizationRate}%</strong></div>
-                  <div>Projects: <strong className="text-[#F3F0E8]">{hoveredDistrict.projectsCount}</strong></div>
-                  <div>Allocation: <strong className="text-[#B78A5A]">₹{hoveredDistrict.budgetAllocatedCr} Cr</strong></div>
+                  <div>Coverage: <strong className="text-slate-900">{hoveredDistrict.coverageRate}%</strong></div>
+                  <div>Utilization: <strong className="text-slate-900">{hoveredDistrict.fundUtilizationRate}%</strong></div>
+                  <div>Projects: <strong className="text-slate-900">{hoveredDistrict.projectsCount}</strong></div>
+                  <div>Allocation: <strong className="text-blue-700">₹{hoveredDistrict.budgetAllocatedCr} Cr</strong></div>
                 </div>
-                <div className="mt-1.5 pt-1 border-t border-[#2A2926] text-[9px] text-[#8E887E]">
+                <div className="mt-1.5 pt-1 border-t border-slate-100 text-[9px] text-slate-500">
                   Click district to inspect cross-ministry telemetry
                 </div>
               </div>
             )}
 
             {/* Floating Map Watermark */}
-            <div className="absolute bottom-4 left-4 text-[10px] font-mono text-[#7E7A72]">
+            <div className="absolute bottom-3 left-3 text-[10px] font-mono text-slate-400">
               LGD CODE MAPPED • EPSG:4326 PROJECTION
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-[#8E887E] font-mono">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-mono pt-1">
             <span>
               {viewLevel === 'INDIA'
                 ? 'Click Maharashtra card to zoom into district choropleth'
                 : 'Click any district marker to inspect cross-ministry telemetry'}
             </span>
             <span>
-              Target Selected: <strong className="text-[#F3F0E8]">{selectedDistrict.name}</strong>
+              Target Selected: <strong className="text-slate-900">{selectedDistrict.name}</strong>
             </span>
           </div>
         </div>
 
-        {/* Right 4 Cols: Contextual Intelligence Panel (Nandurbar focus) */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="p-6 bg-[#141412] border border-[#2A2926] rounded-sm space-y-5">
+        {/* Right 4 Cols: Contextual Intelligence Panel */}
+        <div className="lg:col-span-4 space-y-5">
+          <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#B78A5A] flex items-center gap-1.5">
-                  <Activity className="w-3 h-3 text-emerald-400" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-blue-700 font-bold flex items-center gap-1.5">
+                  <Activity className="w-3.5 h-3.5 text-blue-600" />
                   DISTRICT LIVE INTELLIGENCE
                 </span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+                <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
                   LGD {selectedDistrict.name === 'Nandurbar' ? '512' : selectedDistrict.code}
                 </span>
               </div>
-              <h2 className="text-2xl font-bold text-[#F3F0E8] font-editorial mt-1">
+              <h2 className="text-2xl font-bold text-slate-900 font-editorial mt-1">
                 {selectedDistrict.name.toUpperCase()}
               </h2>
-              <p className="text-xs text-[#8E887E]">{selectedDistrict.zone}, Maharashtra</p>
+              <p className="text-xs text-slate-500">{selectedDistrict.zone}, Maharashtra</p>
             </div>
 
-            {/* Real-time Event Telemetry Banner if active */}
-            {activeDistrictLiveState[selectedDistrict.name] || (latestEvent && latestEvent.districtId === selectedDistrict.name) ? (
-              <div className="p-3.5 rounded bg-emerald-500/10 border border-emerald-500/30 font-mono text-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
-                    <Radio className="w-3 h-3 animate-pulse" />
-                    LIVE TELEMETRY STREAM
-                  </span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    MODE B • SIMULATED LIVE
-                  </span>
-                </div>
-                <div className="text-zinc-200 text-xs">
-                  {latestEvent?.districtId === selectedDistrict.name ? (
-                    <>
-                      <div className="font-semibold text-emerald-300">{latestEvent.schemeId}: {latestEvent.eventType.replace(/_/g, ' ')}</div>
-                      <div className="text-[11px] text-zinc-400 mt-0.5">
-                        ₹{latestEvent.previousValue} Cr → ₹{latestEvent.currentValue} Cr ({latestEvent.deltaPercent > 0 ? '+' : ''}{latestEvent.deltaPercent.toFixed(1)}%)
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="font-semibold text-emerald-300">JJM DRAWDOWN TELEMETRY</div>
-                      <div className="text-[11px] text-zinc-400 mt-0.5">
-                        ₹22.10 Cr → ₹24.70 Cr (+11.8%)
-                      </div>
-                    </>
-                  )}
-                </div>
+            {/* Key Metrics */}
+            <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
+              <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
+                <span className="text-[10px] text-slate-500 uppercase block font-semibold">PROGRAMME COVERAGE</span>
+                <div className="text-xl font-bold text-slate-900 mt-0.5">{selectedDistrict.coverageRate}%</div>
+                <span className="text-[10px] text-slate-500">Benchmark: {selectedDistrict.regionalBenchmarkRate}%</span>
               </div>
-            ) : null}
 
-            {/* Cross-Programme Triangulation Status */}
-            <div className="space-y-2 font-mono text-xs">
-              <span className="text-[10px] uppercase tracking-wider text-zinc-400 block font-semibold">
-                CROSS-PROGRAMME TRIANGULATION
-              </span>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-                  <span className="text-[9px] text-zinc-400 block">JJM FHTC</span>
-                  <span className="text-xs font-bold text-zinc-100">28.4%</span>
-                  <span className="text-[8px] text-zinc-400 block">Verified</span>
+              <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
+                <span className="text-[10px] text-slate-500 uppercase block font-semibold">FUND UTILIZATION</span>
+                <div className="text-xl font-bold text-slate-900 mt-0.5">{selectedDistrict.fundUtilizationRate}%</div>
+                <span className="text-[10px] text-slate-500">Pace Target: 80%</span>
+              </div>
+
+              <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
+                <span className="text-[10px] text-slate-500 uppercase block font-semibold">BUDGET ALLOCATED</span>
+                <div className="text-base font-bold text-blue-700 mt-0.5">₹{selectedDistrict.budgetAllocatedCr} Cr</div>
+                <span className="text-[10px] text-slate-500">Across 4 schemes</span>
+              </div>
+
+              <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
+                <span className="text-[10px] text-slate-500 uppercase block font-semibold">DRAWDOWN DEFICIT</span>
+                <div className={`text-base font-bold mt-0.5 ${selectedDistrict.isGapFlagged ? 'text-rose-700' : 'text-emerald-700'}`}>
+                  {selectedDistrict.gapPercentagePoints} pp
                 </div>
-                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-                  <span className="text-[9px] text-zinc-400 block">PMAY-G</span>
-                  <span className="text-xs font-bold text-emerald-400">46.8%</span>
-                  <span className="text-[8px] text-zinc-400 block">Physical</span>
-                </div>
-                <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-                  <span className="text-[9px] text-zinc-400 block">PKVY</span>
-                  <span className="text-xs font-bold text-amber-400">12 Clust</span>
-                  <span className="text-[8px] text-zinc-400 block">Organic</span>
-                </div>
+                <span className="text-[10px] text-slate-500">Variance Index</span>
               </div>
             </div>
 
-            {/* Metrics List */}
-            <div className="space-y-2.5 font-mono text-xs border-y border-[#2A2926] py-3.5">
-              <div className="flex justify-between items-center">
-                <span className="text-[#8E887E]">Population</span>
-                <span className="font-bold text-[#F3F0E8]">
-                  {(selectedDistrict.population / 1000000).toFixed(1)}M
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#8E887E]">Active Schemes</span>
-                <span className="font-bold text-[#F3F0E8]">
-                  {selectedDistrict.activeSchemesCount}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#8E887E]">Projects</span>
-                <span className="font-bold text-[#F3F0E8]">
-                  {selectedDistrict.projectsCount}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#8E887E]">Fund Utilization</span>
-                <span
-                  className={`font-bold ${
-                    selectedDistrict.fundUtilizationRate < 60
-                      ? 'text-[#A66A62]'
-                      : 'text-[#5E8B72]'
-                  }`}
-                >
-                  {selectedDistrict.fundUtilizationRate}%
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#8E887E]">Programme Coverage</span>
-                <span
-                  className={`font-bold ${
-                    selectedDistrict.coverageRate < selectedDistrict.regionalBenchmarkRate
-                      ? 'text-[#A66A62]'
-                      : 'text-[#5E8B72]'
-                  }`}
-                >
-                  {selectedDistrict.coverageRate}%
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-[#7E7A72]">Regional Benchmark</span>
-                <span className="text-[#C9C2B7]">{selectedDistrict.regionalBenchmarkRate}%</span>
-              </div>
-            </div>
-
-            {/* Gap Banner if Flagged */}
-            {selectedDistrict.isGapFlagged ? (
-              <div className="p-4 rounded bg-[#A66A62]/10 border border-[#A66A62]/40 space-y-3">
-                <div className="flex items-center space-x-2 text-[#A66A62] font-semibold text-xs font-mono">
-                  <ShieldAlert className="w-4 h-4" />
-                  <span>CROSS-PROGRAMME CONVERGENCE GAP</span>
-                </div>
-                <p className="text-xs text-[#F3F0E8]">
-                  Infrastructure divergence of{' '}
-                  <strong className="text-[#A66A62] font-mono">
-                    {selectedDistrict.gapPercentagePoints} percentage points
-                  </strong>{' '}
-                  between PMAY-G dwelling completion (46.8%) and JJM functional tap connection (28.4%).
-                </p>
-
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  <button
-                    onClick={() => openWhyFlagged('SUTRA-FND-0001')}
-                    className="py-2 px-3 rounded-sm bg-zinc-800 text-zinc-100 font-semibold text-[11px] font-mono flex items-center justify-center space-x-1.5 hover:bg-zinc-700 border border-zinc-700 transition-colors"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                    <span>WHY FLAGGED?</span>
-                  </button>
-                  <button
-                    onClick={() => openWorkspace('SUTRA-INV-2026-0001')}
-                    className="py-2 px-3 rounded-sm bg-[#A66A62] text-white font-semibold text-[11px] font-mono flex items-center justify-center space-x-1.5 hover:bg-[#8F554E] transition-colors"
-                  >
-                    <span>INVESTIGATE</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="p-3.5 rounded bg-[#5E8B72]/10 border border-[#5E8B72]/30 text-xs text-[#5E8B72] flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                <span>
-                  Delivery metrics align with or exceed the 64% regional administrative benchmark.
-                </span>
-              </div>
-            )}
-
-            {/* Direct Multi-Action Navigators */}
-            <div className="space-y-2 pt-1">
-              <Link
-                href="/relationships"
-                className="w-full py-2.5 px-4 rounded-sm bg-[#191917] border border-[#2A2926] text-xs font-mono text-[#F3F0E8] hover:border-[#B78A5A] transition-colors flex items-center justify-between"
+            {/* Action Buttons */}
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <button
+                onClick={() => openWhyFlagged('SUTRA-FND-0001')}
+                className="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-md text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
               >
-                <span className="flex items-center gap-2">
-                  <Network className="w-3.5 h-3.5 text-[#B78A5A]" />
-                  <span>TRACE IN GOVERNANCE GRAPH</span>
-                </span>
-                <ChevronRight className="w-3.5 h-3.5 text-[#B78A5A]" />
-              </Link>
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>WHY FLAGGED? EXPLAIN INSIGHT</span>
+              </button>
 
               <button
-                onClick={() => openExecutiveBrief(selectedDistrict)}
-                className="w-full py-2.5 px-4 rounded-sm bg-[#191917] border border-[#B78A5A]/50 text-xs font-mono text-[#B78A5A] hover:bg-[#B78A5A] hover:text-[#0D0D0C] font-semibold transition-all flex items-center justify-center space-x-2"
+                onClick={() => router.push('/investigation/SUTRA-INV-2026-0001')}
+                className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer shadow-2xs"
               >
-                <span>GENERATE APEX POLICY BRIEF</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <Layers className="w-3.5 h-3.5" />
+                <span>OPEN INVESTIGATION WORKSPACE</span>
               </button>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  onClick={() => openEvidence(selectedDistrict.evidenceRecordId || '#7201')}
+                  className="py-1.5 px-2.5 bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 rounded-md text-xs font-medium transition-colors cursor-pointer text-center truncate"
+                >
+                  View Evidence
+                </button>
+                <button
+                  onClick={() => openExecutiveBrief(selectedDistrict)}
+                  className="py-1.5 px-2.5 bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 rounded-md text-xs font-medium transition-colors cursor-pointer text-center truncate"
+                >
+                  Executive Brief
+                </button>
+              </div>
             </div>
           </div>
         </div>

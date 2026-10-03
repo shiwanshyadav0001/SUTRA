@@ -1,23 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SutraOfficialAnimatedLogo } from '@/components/brand/SutraOfficialAnimatedLogo';
 import {
   LayoutDashboard,
-  Layers,
+  Compass,
   MapPin,
   FolderKanban,
   Network,
   AlertTriangle,
+  Layers,
+  ShieldAlert,
   Search,
   Database,
   ArrowRightLeft,
-  Settings,
-  ChevronRight,
-  ShieldAlert,
-  Compass,
+  Menu,
+  X,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface NavItem {
@@ -25,136 +26,211 @@ interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
-  symbol: string;
+  description: string;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { name: 'Command', href: '/command', icon: LayoutDashboard, symbol: '⌂' },
-  { name: 'Investigate', href: '/investigate', icon: Compass, badge: 'V2', symbol: '✦' },
-  { name: 'Intelligence', href: '/overlaps', icon: Layers, symbol: '◎' },
-  { name: 'Geography', href: '/map', icon: MapPin, symbol: '⌖' },
-  { name: 'Schemes', href: '/schemes', icon: FolderKanban, symbol: '◇' },
-  { name: 'Relationships', href: '/relationships', icon: Network, symbol: '⌁' },
-  { name: 'Signals', href: '/signals', icon: AlertTriangle, badge: '3', symbol: '△' },
-  { name: 'Ask SUTRA', href: '/query', icon: Search, symbol: '⌕' },
-  { name: 'Evidence', href: '/evidence', icon: Database, symbol: '▣' },
-  { name: 'Data', href: '/data', icon: ArrowRightLeft, symbol: '⇄' },
+const PRIMARY_OPS: NavItem[] = [
+  {
+    name: 'Command Center',
+    href: '/command',
+    icon: LayoutDashboard,
+    description: 'Executive drawdown telemetry & national oversight',
+  },
+  {
+    name: 'Investigate',
+    href: '/investigate',
+    icon: Compass,
+    badge: 'V2',
+    description: 'Deep cross-programme convergence workspace',
+  },
+  {
+    name: 'Geographic Intel',
+    href: '/map',
+    icon: MapPin,
+    description: '36 Maharashtra district GIS spatial radar',
+  },
+  {
+    name: 'Scheme Explorer',
+    href: '/schemes',
+    icon: FolderKanban,
+    description: 'Central ministry programme dossiers & outlays',
+  },
+  {
+    name: 'Governance Graph',
+    href: '/relationships',
+    icon: Network,
+    description: 'Inter-entity relationship & policy network',
+  },
+  {
+    name: 'Early Signals',
+    href: '/signals',
+    icon: AlertTriangle,
+    badge: '3',
+    description: 'Proactive anomaly radar & variance signals',
+  },
+];
+
+const INTEL_AUDIT: NavItem[] = [
+  {
+    name: 'Programme Overlaps',
+    href: '/overlaps',
+    icon: Layers,
+    description: 'Redundancy & concurrent subsidy detection',
+  },
+  {
+    name: 'Geographic Gaps',
+    href: '/intelligence/gaps',
+    icon: ShieldAlert,
+    description: 'High beneficiary demand vs capital lag',
+  },
+  {
+    name: 'Ask SUTRA',
+    href: '/query',
+    icon: Search,
+    description: 'Natural governance intelligence processor',
+  },
+  {
+    name: 'Evidence Hub',
+    href: '/evidence',
+    icon: Database,
+    description: 'Cryptographic SHA-256 audit lineage',
+  },
+  {
+    name: 'Data & Sources',
+    href: '/data',
+    icon: ArrowRightLeft,
+    description: 'LGD entity resolution & statutory ingestion',
+  },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  return (
-    <aside className="w-64 flex-shrink-0 bg-[#0D0D0C] border-r border-[#2A2926] flex flex-col justify-between h-screen sticky top-0 z-30 select-none">
-      {/* Brand Header */}
-      <div>
-        <div className="p-6 border-b border-[#2A2926]/70 flex items-center justify-between">
-          <Link href="/command" className="group flex items-center space-x-2">
-            <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center">
-              <SutraOfficialAnimatedLogo size="sm" emblemOnly={true} interactiveMagnet={true} className="w-9 h-9" />
-            </div>
-            <div>
-              <div className="font-semibold text-sm tracking-wider text-[#F3F0E8] font-editorial flex items-center gap-1.5">
-                SUTRA
-                <span className="w-1.5 h-1.5 rounded-full bg-[#B78A5A]" />
+  const renderNavGroup = (title: string, items: NavItem[]) => (
+    <div className="space-y-1">
+      <div className="px-3 pb-1.5 text-[10px] uppercase font-mono font-bold tracking-wider text-slate-600">
+        {title}
+      </div>
+      <nav className="space-y-0.5">
+        {items.map((item) => {
+          const isActive =
+            pathname === item.href ||
+            (item.href !== '/command' && pathname?.startsWith(item.href));
+          const Icon = item.icon;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setIsMobileOpen(false)}
+              className={`group flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                isActive
+                  ? 'bg-blue-50 text-blue-700 font-semibold border-l-2 border-blue-600 pl-2.5 shadow-xs'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+              title={item.description}
+            >
+              <div className="flex items-center space-x-2.5 truncate">
+                <Icon
+                  className={`w-4 h-4 flex-shrink-0 ${
+                    isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'
+                  }`}
+                />
+                <span className="truncate">{item.name}</span>
               </div>
-              <p className="text-[9px] tracking-widest uppercase text-[#8E887E]">
-                Unified Governance
-              </p>
-            </div>
-          </Link>
-          <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#191917] text-[#B78A5A] border border-[#2A2926]">
-            v2.6
-          </span>
-        </div>
-
-        {/* Navigation Section */}
-        <div className="px-3 py-4">
-          <div className="px-3 pb-2 text-[10px] uppercase font-mono tracking-widest text-[#7E7A72]">
-            Operations
-          </div>
-          <nav className="space-y-0.5">
-            {NAV_ITEMS.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== '/command' && pathname?.startsWith(item.href));
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`group flex items-center justify-between px-3 py-2 rounded-sm text-xs font-medium transition-all ${
-                    isActive
-                      ? 'bg-[#191917] text-[#F3F0E8] border-l-2 border-[#B78A5A] pl-2.5 font-semibold'
-                      : 'text-[#C9C2B7] hover:bg-[#141412] hover:text-[#F3F0E8]'
+              {item.badge && (
+                <span
+                  className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                    item.badge === 'V2'
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  <div className="flex items-center space-x-3">
-                    <span
-                      className={`text-xs w-4 text-center font-mono ${
-                        isActive ? 'text-[#B78A5A]' : 'text-[#8E887E] group-hover:text-[#C9C2B7]'
-                      }`}
-                    >
-                      {item.symbol}
-                    </span>
-                    <span className="tracking-wide">{item.name}</span>
-                  </div>
-                  {item.badge && (
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#A66A62]/20 text-[#A66A62] border border-[#A66A62]/30">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Sub Intelligence Direct Link */}
-          <div className="mt-6 pt-4 border-t border-[#2A2926]/50">
-            <div className="px-3 pb-2 text-[10px] uppercase font-mono tracking-widest text-[#7E7A72]">
-              Specialist Insights
-            </div>
-            <Link
-              href="/intelligence/gaps"
-              className={`flex items-center justify-between px-3 py-2 rounded-sm text-xs transition-colors ${
-                pathname === '/intelligence/gaps'
-                  ? 'bg-[#191917] text-[#B78A5A] font-semibold'
-                  : 'text-[#8E887E] hover:text-[#C9C2B7]'
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#B59A63]" />
-                Geographic Gaps
-              </span>
-              <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                  {item.badge}
+                </span>
+              )}
             </Link>
-          </div>
-        </div>
+          );
+        })}
+      </nav>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <div className="md:hidden fixed top-3 left-3 z-40">
+        <button
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          className="p-2 rounded-md bg-white border border-slate-200 text-slate-700 shadow-sm"
+          aria-label="Toggle navigation menu"
+        >
+          {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
-      {/* Footer Info */}
-      <div className="p-4 border-t border-[#2A2926]/70 bg-[#0D0D0C]">
-        <div className="p-2.5 rounded bg-[#141412] border border-[#2A2926]">
-          <div className="flex items-center justify-between text-[11px] mb-1">
-            <span className="text-[#8E887E] uppercase tracking-wider text-[9px]">Data Provenance</span>
-            <span className="text-[#5E8B72] font-mono text-[9px] flex items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-[#5E8B72] animate-pulse" />
-              VERIFIED
+      {/* Backdrop for mobile */}
+      {isMobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-xs"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* Main Sidebar Container */}
+      <aside
+        className={`w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col justify-between h-screen sticky top-0 z-30 select-none transition-transform duration-200 ${
+          isMobileOpen ? 'translate-x-0 fixed left-0 top-0 bottom-0 shadow-xl' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        {/* Top Brand Header */}
+        <div className="overflow-y-auto">
+          <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+            <Link href="/command" className="group flex items-center space-x-2.5">
+              <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center">
+                <SutraOfficialAnimatedLogo size="sm" emblemOnly={true} interactiveMagnet={true} className="w-8 h-8" />
+              </div>
+              <div>
+                <div className="font-bold text-sm tracking-wide text-slate-900 font-editorial flex items-center gap-1.5">
+                  SUTRA
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                </div>
+                <p className="text-[10px] tracking-wider uppercase text-slate-500 font-mono">
+                  Unified Governance
+                </p>
+              </div>
+            </Link>
+            <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+              v2.6
             </span>
           </div>
-          <p className="text-[10px] text-[#C9C2B7] leading-relaxed font-mono">
-            data.gov.in + PFMS Ledger + LGD Spatial Core
-          </p>
+
+          {/* Navigation Items */}
+          <div className="px-3 py-4 space-y-5">
+            {renderNavGroup('Operations', PRIMARY_OPS)}
+            {renderNavGroup('Intelligence & Audit', INTEL_AUDIT)}
+          </div>
         </div>
 
-        <div className="mt-3 flex items-center justify-between text-[11px] text-[#8E887E] px-1">
-          <Link href="/" className="hover:text-[#F3F0E8] transition-colors">
-            National Portal
-          </Link>
-          <span className="font-mono text-[10px]">IN-NIC-2026</span>
+        {/* Footer Provenance Info */}
+        <div className="p-3.5 border-t border-slate-200 bg-slate-50">
+          <div className="p-2.5 rounded-md bg-white border border-slate-200 shadow-xs">
+            <div className="flex items-center justify-between text-[11px] mb-1">
+              <span className="text-slate-500 uppercase font-mono tracking-wider text-[9px] font-bold">
+                PROVENANCE
+              </span>
+              <span className="text-emerald-700 font-mono text-[9px] font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                VERIFIED
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-600 leading-relaxed font-mono">
+              PFMS Ledger • data.gov.in • MoPR LGD Core
+            </p>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

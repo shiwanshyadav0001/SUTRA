@@ -102,45 +102,42 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
   ];
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-950 via-zinc-900/90 to-zinc-950 p-5 md:p-6 backdrop-blur-md shadow-2xl relative overflow-hidden">
-      {/* Subtle Ambient Pulse Light */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
-
+    <div className="rounded-lg border border-slate-200 bg-white p-5 md:p-6 shadow-sm relative overflow-hidden">
       {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-zinc-800/80">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700">
             <Radio className={`h-5 w-5 ${playbackMode === 'LIVE' ? 'animate-pulse' : ''}`} />
             {playbackMode === 'LIVE' && (
               <span className="absolute -top-1 -right-1 flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-600" />
               </span>
             )}
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 flex items-center gap-1.5">
-                <span className={`h-1.5 w-1.5 rounded-full bg-emerald-400 ${playbackMode === 'LIVE' ? 'animate-pulse' : ''}`} />
+              <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1.5">
+                <span className={`h-1.5 w-1.5 rounded-full bg-emerald-600 ${playbackMode === 'LIVE' ? 'animate-pulse' : ''}`} />
                 LIVE GOVERNANCE PULSE
               </span>
               <span
                 className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
                   liveMode === 'VERIFIED_SOURCE'
-                    ? 'bg-zinc-800 text-zinc-300 border-zinc-700'
-                    : 'bg-amber-500/10 text-amber-300 border-amber-500/30 font-semibold'
+                    ? 'bg-slate-100 text-slate-700 border-slate-300 font-medium'
+                    : 'bg-amber-50 text-amber-800 border-amber-300 font-semibold'
                 }`}
               >
                 {liveMode === 'VERIFIED_SOURCE' ? 'MODE A: STATUTORY VERIFIED' : 'MODE B: LIVE DEMO STREAM'}
               </span>
               {playbackMode === 'REPLAY' && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/30 font-semibold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
                   REPLAY MODE ({replayIndex + 1}/{events.length})
                 </span>
               )}
             </div>
-            <h3 className="text-base font-bold text-zinc-100 tracking-tight mt-0.5">
+            <h3 className="text-base font-bold text-slate-900 tracking-tight mt-0.5 font-editorial">
               Continuous Governance Event Stream & Ingestion Telemetry
             </h3>
           </div>
@@ -149,61 +146,61 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
         {/* Time Machine & Live Stream Controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Mode Switcher Buttons */}
-          <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl p-0.5">
+          <div className="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-0.5">
             <button
               onClick={() => handleTogglePlayback('LIVE')}
-              className={`px-2.5 py-1 text-[11px] font-mono rounded-lg transition-all flex items-center gap-1 ${
+              className={`px-2.5 py-1 text-[11px] font-mono rounded-md transition-all flex items-center gap-1 cursor-pointer ${
                 playbackMode === 'LIVE'
-                  ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  ? 'bg-white text-emerald-700 font-bold border border-slate-200 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Zap className="h-3 w-3" />
+              <Zap className="h-3 w-3 text-emerald-600" />
               LIVE
             </button>
             <button
               onClick={() => handleTogglePlayback('PAUSED')}
-              className={`px-2.5 py-1 text-[11px] font-mono rounded-lg transition-all flex items-center gap-1 ${
+              className={`px-2.5 py-1 text-[11px] font-mono rounded-md transition-all flex items-center gap-1 cursor-pointer ${
                 playbackMode === 'PAUSED'
-                  ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  ? 'bg-white text-amber-700 font-bold border border-slate-200 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Pause className="h-3 w-3" />
+              <Pause className="h-3 w-3 text-amber-600" />
               PAUSE
             </button>
             <button
               onClick={() => handleTogglePlayback('REPLAY')}
-              className={`px-2.5 py-1 text-[11px] font-mono rounded-lg transition-all flex items-center gap-1 ${
+              className={`px-2.5 py-1 text-[11px] font-mono rounded-md transition-all flex items-center gap-1 cursor-pointer ${
                 playbackMode === 'REPLAY'
-                  ? 'bg-blue-500/20 text-blue-300 font-bold border border-blue-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  ? 'bg-white text-blue-700 font-bold border border-slate-200 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Clock className="h-3 w-3" />
+              <Clock className="h-3 w-3 text-blue-600" />
               REPLAY
             </button>
           </div>
 
           {/* Replay Step Controls (visible when in replay mode) */}
           {playbackMode === 'REPLAY' && (
-            <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-xl p-0.5">
+            <div className="flex items-center gap-1 bg-slate-100 border border-slate-200 rounded-lg p-0.5">
               <button
                 onClick={() => handleStepReplay(1)}
                 disabled={replayIndex >= events.length - 1}
                 title="Previous event in history"
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 disabled:opacity-30"
+                className="p-1 rounded text-slate-600 hover:text-slate-900 disabled:opacity-30 cursor-pointer"
               >
                 <SkipBack className="h-3.5 w-3.5" />
               </button>
-              <span className="text-[10px] font-mono text-zinc-300 px-1">
+              <span className="text-[10px] font-mono text-slate-700 px-1 font-semibold">
                 {replayIndex + 1}/{events.length}
               </span>
               <button
                 onClick={() => handleStepReplay(-1)}
                 disabled={replayIndex <= 0}
                 title="Next event in history"
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 disabled:opacity-30"
+                className="p-1 rounded text-slate-600 hover:text-slate-900 disabled:opacity-30 cursor-pointer"
               >
                 <SkipForward className="h-3.5 w-3.5" />
               </button>
@@ -213,17 +210,17 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
           <button
             onClick={() => handleTriggerDemo('nandurbar_drawdown')}
             disabled={isProcessingDemo}
-            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600/90 to-teal-600/90 hover:from-emerald-500 hover:to-teal-500 text-zinc-950 font-bold text-xs flex items-center gap-1.5 shadow-md shadow-emerald-950/40 transition-all disabled:opacity-50"
+            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-2xs transition-all disabled:opacity-50 cursor-pointer"
           >
             {isProcessingDemo ? (
               <>
-                <div className="h-3 w-3 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />
+                <div className="h-3 w-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 Running Pipeline...
               </>
             ) : (
               <>
                 <Play className="h-3.5 w-3.5 fill-current" />
-                Trigger Nandurbar JJM Event (+11.8%)
+                Trigger Nandurbar Event (+11.8%)
               </>
             )}
           </button>
@@ -231,7 +228,7 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
           <button
             onClick={resetLiveEvents}
             title="Reset to statutory baseline"
-            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800 transition-all"
+            className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 border border-slate-200 transition-all cursor-pointer"
           >
             <RotateCcw className="h-3.5 w-3.5" />
           </button>
@@ -240,87 +237,87 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
 
       {/* Telemetry Stats Row with Latency Observability */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-4">
-        <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80">
-          <div className="text-[10px] font-mono uppercase text-zinc-400">Stream Status</div>
+        <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Stream Status</div>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className={`h-2 w-2 rounded-full ${playbackMode === 'LIVE' ? 'bg-emerald-400 animate-pulse' : playbackMode === 'REPLAY' ? 'bg-blue-400' : 'bg-amber-400'}`} />
-            <span className="font-mono text-xs font-bold text-emerald-400">
+            <span className={`h-2 w-2 rounded-full ${playbackMode === 'LIVE' ? 'bg-emerald-600 animate-pulse' : playbackMode === 'REPLAY' ? 'bg-blue-600' : 'bg-amber-600'}`} />
+            <span className="font-mono text-xs font-bold text-slate-900">
               {playbackMode}
             </span>
           </div>
-          <div className="text-[10px] text-zinc-400 font-mono mt-0.5">
+          <div className="text-[10px] text-slate-500 font-mono mt-0.5">
             {telemetrySummary.eventsPerMinute} events/min telemetry
           </div>
         </div>
 
-        <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80">
-          <div className="text-[10px] font-mono uppercase text-zinc-400">Pipeline Latency</div>
-          <div className="font-mono text-sm font-bold text-emerald-400 mt-0.5 flex items-center gap-1.5">
+        <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Pipeline Latency</div>
+          <div className="font-mono text-sm font-bold text-emerald-700 mt-0.5 flex items-center gap-1.5">
             <span>32.7 ms</span>
-            <span className="text-[10px] text-zinc-400 font-normal">total</span>
+            <span className="text-[10px] text-slate-400 font-normal">total</span>
           </div>
-          <div className="text-[10px] text-zinc-400 font-mono mt-0.5">
+          <div className="text-[10px] text-slate-500 font-mono mt-0.5">
             Source → Event: 11.5ms
           </div>
         </div>
 
-        <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80">
-          <div className="text-[10px] font-mono uppercase text-zinc-400">Monitored Districts</div>
-          <div className="font-mono text-base font-bold text-zinc-200 mt-0.5">
+        <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Monitored Districts</div>
+          <div className="font-mono text-base font-bold text-slate-900 mt-0.5">
             36 Districts
           </div>
-          <div className="text-[10px] text-zinc-400 font-mono mt-0.5">100% LGD Match Quality</div>
+          <div className="text-[10px] text-slate-500 font-mono mt-0.5">100% LGD Match Quality</div>
         </div>
 
-        <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80">
-          <div className="text-[10px] font-mono uppercase text-zinc-400">Active Investigation</div>
+        <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Active Investigation</div>
           <Link
             href="/investigation/INV-NDB-CONV-001"
-            className="font-mono text-xs font-bold text-blue-400 hover:text-blue-300 mt-0.5 truncate flex items-center gap-1"
+            className="font-mono text-xs font-bold text-blue-700 hover:underline mt-0.5 truncate flex items-center gap-1"
           >
             <span>{telemetrySummary.latestInvestigationId}</span>
             <ExternalLink className="h-3 w-3 inline" />
           </Link>
-          <div className="text-[10px] text-emerald-400 font-mono mt-0.5">93.5% Confidence Score</div>
+          <div className="text-[10px] text-emerald-700 font-mono mt-0.5 font-medium">93.5% Confidence Score</div>
         </div>
       </div>
 
       {/* Active Event Banner & Pipeline Stage Progression */}
       {activeEvent && (
-        <div className="p-4 md:p-5 rounded-xl border border-zinc-700/80 bg-zinc-900/90 shadow-xl space-y-4">
+        <div className="p-4 md:p-5 rounded-lg border border-slate-200 bg-slate-50 shadow-2xs space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <span
                 className={`font-mono text-xs font-bold px-2 py-0.5 rounded border ${
                   activeEvent.severity === 'CRITICAL' || activeEvent.severity === 'HIGH'
-                    ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
-                    : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : 'bg-amber-50 text-amber-800 border-amber-200'
                 }`}
               >
                 {activeEvent.severity} EVENT: {activeEvent.eventType.replace(/_/g, ' ')}
               </span>
-              <span className="font-mono text-xs text-zinc-300 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700">
+              <span className="font-mono text-xs text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200 font-medium">
                 {activeEvent.districtName} (LGD: {activeEvent.lgdCode})
               </span>
-              <span className="font-mono text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+              <span className="font-mono text-xs text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">
                 {activeEvent.schemeId}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-600">
               <span>Shift:</span>
-              <span className="line-through text-zinc-400">
+              <span className="line-through text-slate-400">
                 {activeEvent.previousValue} {activeEvent.unit}
               </span>
-              <ArrowRight className="h-3 w-3 text-zinc-400" />
-              <span className="font-bold text-emerald-400">
+              <ArrowRight className="h-3 w-3 text-slate-400" />
+              <span className="font-bold text-slate-900">
                 {activeEvent.currentValue} {activeEvent.unit}
               </span>
               <span
                 className={`px-1.5 py-0.5 rounded font-bold text-[11px] ${
                   activeEvent.delta > 0
-                    ? 'bg-emerald-500/10 text-emerald-400'
-                    : 'bg-rose-500/10 text-rose-400'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-rose-50 text-rose-700 border border-rose-200'
                 }`}
               >
                 {activeEvent.delta > 0 ? '+' : ''}
@@ -329,15 +326,15 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
             </div>
           </div>
 
-          <p className="text-xs text-zinc-200 leading-relaxed font-medium">
+          <p className="text-xs text-slate-700 leading-relaxed font-medium">
             {activeEvent.explanation}
           </p>
 
           {/* Step-by-Step Pipeline Progress Visualizer */}
-          <div className="pt-2 border-t border-zinc-800">
-            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-400 mb-2">
-              <span>Event Processing Pipeline</span>
-              <span className="text-emerald-400">Latencies: 4.2ms → 1.8ms → 2.1ms → 3.4ms → 6.9ms → 14.3ms</span>
+          <div className="pt-2 border-t border-slate-200">
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-2">
+              <span className="font-semibold">Event Processing Pipeline</span>
+              <span className="text-emerald-700 font-medium">Latencies: 4.2ms → 1.8ms → 2.1ms → 3.4ms → 6.9ms → 14.3ms</span>
             </div>
             <div className="grid grid-cols-6 gap-1.5">
               {pipelineSteps.map((s, idx) => {
@@ -346,17 +343,17 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
                 return (
                   <div
                     key={s.label}
-                    className={`p-2 rounded-lg border text-center transition-all ${
+                    className={`p-2 rounded-md border text-center transition-all ${
                       isCurrent
-                        ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold shadow-sm'
+                        ? 'bg-blue-50 border-blue-400 text-blue-900 font-bold shadow-2xs'
                         : isPassed
-                        ? 'bg-zinc-800/80 border-zinc-700 text-zinc-200'
-                        : 'bg-zinc-950/40 border-zinc-800 text-zinc-400'
+                        ? 'bg-white border-slate-200 text-slate-800'
+                        : 'bg-slate-100/60 border-slate-200 text-slate-400'
                     }`}
                   >
                     <div className="text-[10px] font-mono">{s.label}</div>
-                    <div className="text-[8px] font-mono text-zinc-400 truncate">{s.desc}</div>
-                    <div className="text-[7px] font-mono text-emerald-400/80">{s.latency}</div>
+                    <div className="text-[8px] font-mono text-slate-500 truncate">{s.desc}</div>
+                    <div className="text-[7px] font-mono text-emerald-700">{s.latency}</div>
                   </div>
                 );
               })}
@@ -364,7 +361,7 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
           </div>
 
           {/* Quick Action Triggers */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-zinc-800">
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200">
             {/* Why Flagged */}
             <button
               onClick={() => {
@@ -384,45 +381,45 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
                   });
                 }
               }}
-              className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold flex items-center gap-1.5 transition-all"
+              className="px-3 py-1.5 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <Sparkles className="h-3.5 w-3.5" />
+              <Sparkles className="h-3.5 w-3.5 text-amber-600" />
               Why Flagged?
             </button>
 
             {/* Show on Map */}
             <button
-              onClick={() => router.push('/map')}
-              className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all"
+              onClick={() => router.push(`/map?district=${activeEvent.districtId || 'nandurbar'}`)}
+              className="px-3 py-1.5 rounded-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <MapPin className="h-3.5 w-3.5 text-amber-400" />
+              <MapPin className="h-3.5 w-3.5 text-blue-600" />
               Show on Map
             </button>
 
             {/* Trace Relationship */}
             <button
               onClick={() => router.push('/relationships')}
-              className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all"
+              className="px-3 py-1.5 rounded-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <Network className="h-3.5 w-3.5 text-blue-400" />
+              <Network className="h-3.5 w-3.5 text-indigo-600" />
               Trace Graph
             </button>
 
             {/* Inspect Investigation */}
             <Link
               href={`/investigation/${activeEvent.investigationId || 'INV-NDB-CONV-001'}`}
-              className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center gap-1.5 transition-all"
+              className="px-3 py-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <Layers className="h-3.5 w-3.5" />
+              <Layers className="h-3.5 w-3.5 text-blue-600" />
               Open Investigation Workspace
             </Link>
 
             {/* Executive Brief */}
             <button
               onClick={() => openExecutiveBrief(nandurbarDistrict)}
-              className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 ml-auto transition-all"
+              className="px-3 py-1.5 rounded-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 ml-auto transition-all cursor-pointer"
             >
-              <FileText className="h-3.5 w-3.5 text-emerald-400" />
+              <FileText className="h-3.5 w-3.5 text-emerald-600" />
               Executive Brief
             </button>
           </div>
@@ -431,4 +428,3 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
     </div>
   );
 }
-
