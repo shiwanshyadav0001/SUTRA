@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useIntelligence } from '@/context/IntelligenceContext';
+import { MAHARASHTRA_DISTRICTS } from '@/lib/data/governance-data';
 import {
   Radio,
   Sparkles,
@@ -210,31 +211,57 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
             </div>
           )}
 
-          <button
-            onClick={() => handleTriggerDemo('nandurbar_drawdown')}
-            disabled={isProcessingDemo}
-            className="px-4 py-2 rounded-sm bg-gradient-to-r from-[#DFB88B] via-[#C89B65] to-[#B78A5A] hover:brightness-110 text-[#0E0E0D] font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#C89B65]/20 transition-all disabled:opacity-50 cursor-pointer"
-          >
-            {isProcessingDemo ? (
-              <>
-                <div className="h-3.5 w-3.5 border-2 border-[#0E0E0D] border-t-transparent rounded-full animate-spin" />
-                Running Pipeline...
-              </>
-            ) : (
-              <>
-                <Play className="h-3.5 w-3.5 fill-current" />
-                Trigger Nandurbar JJM Event (+11.8%)
-              </>
-            )}
-          </button>
+          {/* Multi-Scenario Live Simulators */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[10px] font-mono text-[#A39D92] uppercase hidden xl:inline">Simulate:</span>
+            <button
+              onClick={() => handleTriggerDemo('nandurbar_drawdown')}
+              disabled={isProcessingDemo}
+              className={`px-3 py-1.5 rounded-sm font-mono text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeEvent?.districtName === 'Nandurbar' && liveMode === 'DEMO_STREAM'
+                  ? 'bg-[#C89B65] text-[#0E0E0D] font-bold shadow-md shadow-[#C89B65]/30'
+                  : 'bg-[#22211D] hover:bg-[#2C2A25] text-[#DFB88B] border border-[#C89B65]/30'
+              }`}
+            >
+              <Zap className="h-3 w-3" />
+              Nandurbar (JJM +11.8%)
+            </button>
 
-          <button
-            onClick={resetLiveEvents}
-            title="Reset to statutory baseline"
-            className="p-2 rounded-sm bg-[#1E1E1B] hover:bg-[#2A2925] text-[#DDD7CD] hover:text-white border border-[#33312D] transition-all"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-          </button>
+            <button
+              onClick={() => handleTriggerDemo('gadchiroli_pmayg')}
+              disabled={isProcessingDemo}
+              className={`px-3 py-1.5 rounded-sm font-mono text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeEvent?.districtName === 'Gadchiroli' && liveMode === 'DEMO_STREAM'
+                  ? 'bg-[#7DC09C] text-[#0E0E0D] font-bold shadow-md shadow-[#6DAA8A]/30'
+                  : 'bg-[#22211D] hover:bg-[#2C2A25] text-[#7DC09C] border border-[#6DAA8A]/30'
+              }`}
+            >
+              <Zap className="h-3 w-3" />
+              Gadchiroli (PMAY-G +17.4%)
+            </button>
+
+            <button
+              onClick={() => handleTriggerDemo('washim_pace')}
+              disabled={isProcessingDemo}
+              className={`px-3 py-1.5 rounded-sm font-mono text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeEvent?.districtName === 'Washim' && liveMode === 'DEMO_STREAM'
+                  ? 'bg-[#7EB0C7] text-[#0E0E0D] font-bold shadow-md shadow-[#7EB0C7]/30'
+                  : 'bg-[#22211D] hover:bg-[#2C2A25] text-[#7EB0C7] border border-[#7EB0C7]/30'
+              }`}
+            >
+              <Zap className="h-3 w-3" />
+              Washim (Lag 15.2 pp)
+            </button>
+
+            <button
+              onClick={resetLiveEvents}
+              title="Reset to statutory baseline"
+              className="p-1.5 rounded-sm bg-[#1E1E1B] hover:bg-[#2A2925] text-[#DDD7CD] hover:text-white border border-[#33312D] transition-all flex items-center gap-1 text-xs font-mono"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Baseline</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -275,10 +302,10 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
         <div className="p-3.5 rounded-sm bg-[#1A1A18] border border-[#302E2A] hover:border-[#42403A] transition-colors">
           <div className="text-[10px] font-mono uppercase text-[#A39D92] font-semibold tracking-wider">Active Investigation</div>
           <Link
-            href="/investigation/INV-NDB-CONV-001"
+            href={`/investigation/${activeEvent?.investigationId || telemetrySummary.latestInvestigationId || 'INV-NDB-CONV-001'}`}
             className="font-mono text-xs font-bold text-[#DFB88B] hover:text-[#FAF8F5] hover:underline mt-1 truncate flex items-center gap-1"
           >
-            <span>{telemetrySummary.latestInvestigationId}</span>
+            <span>{activeEvent?.investigationId || telemetrySummary.latestInvestigationId}</span>
             <ExternalLink className="h-3 w-3 inline" />
           </Link>
           <div className="text-[10px] text-[#7DC09C] font-mono mt-0.5 font-semibold">93.5% Confidence Score</div>
@@ -373,18 +400,18 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
                 } else {
                   openExplain({
                     title: `Why was ${activeEvent.districtName} flagged for ${activeEvent.schemeId}?`,
-                    subtitle: `Deterministic LGD join against verified datasets detected ${activeEvent.deltaPercent}% shift`,
+                    subtitle: `Deterministic LGD join against verified datasets detected ${activeEvent.deltaPercent}% shift in ${activeEvent.districtName} (LGD: ${activeEvent.lgdCode})`,
                     confidence: 0.94,
                     factors: [
-                      { title: 'JJM IMIS Telemetry Drawdown Rate', weight: 0.35 },
-                      { title: 'PMAY-G Housing Completion Physical Progress', weight: 0.35 },
-                      { title: 'Cross-Programme Pace Divergence (18.4 pp)', weight: 0.30 },
+                      { title: `${activeEvent.schemeId} Disbursed Rate Shift (${activeEvent.delta > 0 ? '+' : ''}${activeEvent.deltaPercent}%)`, weight: 0.40 },
+                      { title: `${activeEvent.districtName} LGD:${activeEvent.lgdCode} Cluster Delivery Velocity`, weight: 0.35 },
+                      { title: 'Cross-Programme Convergence Gap vs State Median', weight: 0.25 },
                     ],
                     evidenceRecordNumber: activeEvent.evidenceIds[0] || '#7201',
                   });
                 }
               }}
-              className="px-3.5 py-1.5 rounded-sm bg-[#C89B65]/15 hover:bg-[#C89B65]/25 text-[#DFB88B] border border-[#C89B65]/40 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
+              className="px-3.5 py-1.5 rounded-sm bg-[#C89B65]/15 hover:bg-[#C89B65]/25 text-[#DFB88B] border border-[#C89B65]/40 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
             >
               <Sparkles className="h-3.5 w-3.5 text-[#DFB88B]" />
               Why Flagged?
@@ -419,8 +446,11 @@ export function LiveGovernancePulse({ compact = false, onOpenWhyFlagged }: LiveG
 
             {/* Executive Brief */}
             <button
-              onClick={() => openExecutiveBrief(nandurbarDistrict)}
-              className="px-3.5 py-1.5 rounded-sm bg-[#22211D] hover:bg-[#2C2A25] text-[#FAF8F5] border border-[#38352F] text-xs font-semibold flex items-center gap-1.5 ml-auto transition-all"
+              onClick={() => {
+                const targetDist = MAHARASHTRA_DISTRICTS.find(d => d.name.toLowerCase() === activeEvent.districtName?.toLowerCase()) || nandurbarDistrict;
+                openExecutiveBrief(targetDist);
+              }}
+              className="px-3.5 py-1.5 rounded-sm bg-[#22211D] hover:bg-[#2C2A25] text-[#FAF8F5] border border-[#38352F] text-xs font-semibold flex items-center gap-1.5 ml-auto transition-all cursor-pointer"
             >
               <FileText className="h-3.5 w-3.5 text-[#DFB88B]" />
               Executive Brief

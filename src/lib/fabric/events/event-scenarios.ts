@@ -154,6 +154,8 @@ export const DEMO_SCENARIO_GADCHIROLI_PMAYG_ACCELERATION = ChangeDetector.detect
   schemeId: 'PMAY-G',
   datasetId: 'DS-PMAYG-MH',
   evidenceIds: ['#4402', '#7202'],
+  findingId: 'SUTRA-FND-0002',
+  investigationId: 'INV-GDC-CONV-002',
   mode: 'LIVE_SIMULATION',
   customTimestamp: '2026-10-03T06:16:00.000Z',
 });
@@ -170,6 +172,8 @@ export const DEMO_SCENARIO_WASHIM_TAP_WATER_LAG = ChangeDetector.detectMetricCha
   schemeId: 'JJM',
   datasetId: 'DS-JJM-MH',
   evidenceIds: ['#7203'],
+  findingId: 'SUTRA-FND-0003',
+  investigationId: 'INV-WSM-CONV-003',
   mode: 'LIVE_SIMULATION',
   customTimestamp: '2026-10-03T06:17:00.000Z',
 });

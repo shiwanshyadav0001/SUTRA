@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { InvestigationEngine } from '@/lib/fabric/investigation/investigation-engine';
 import { LgdRegistry } from '@/lib/fabric/registry/lgd-registry';
+import { DistrictNormalizer } from '@/lib/fabric/normalization/district-normalizer';
 import { InvestigationPipelineResult, InvestigationFinding, WhyFlaggedChain } from '@/lib/types/data-fabric';
 import { InvestigationPipelineInspector } from '@/components/investigation/InvestigationPipelineInspector';
 import { InvestigationGraphExplorer } from '@/components/investigation/InvestigationGraphExplorer';
@@ -39,21 +40,35 @@ const SUGGESTED_INVESTIGATIONS = [
     query: 'Find convergence opportunities in Nandurbar.',
     districtLgd: '512',
     districtName: 'Nandurbar',
-    description: 'Triangulate JJM water, PMAY-G housing, and PKVY organic agriculture across 284k rural households.',
+    description: 'Triangulate JJM water, PMAY-G housing, and PKVY organic agriculture across rural households.',
   },
   {
     title: 'Gadchiroli Capital Outlay Deficit',
     query: 'Analyze capital drawdown lag in Gadchiroli.',
-    districtLgd: '507',
+    districtLgd: '501',
     districtName: 'Gadchiroli',
     description: 'Investigate tribal block capital absorption delays and unreleased DBT allocations.',
   },
   {
     title: 'Washim Physical Delivery Pace',
     query: 'Assess housing vs tap water delivery pace in Washim.',
-    districtLgd: '501',
+    districtLgd: '525',
     districtName: 'Washim',
     description: 'Detect physical completion spreads between central rural infrastructure schemes.',
+  },
+  {
+    title: 'Pune Urban-Rural Water Flow',
+    query: 'Analyze infrastructure capital absorption and water coverage in Pune.',
+    districtLgd: '521',
+    districtName: 'Pune',
+    description: 'Assess semi-urban infrastructure capital allocations vs rural fringe tap connections.',
+  },
+  {
+    title: 'Dhule Jal Jeevan Mission Expansion',
+    query: 'Evaluate tap water coverage and housing delivery in Dhule.',
+    districtLgd: '500',
+    districtName: 'Dhule',
+    description: 'Investigate Khandesh dry-belt tap water connectivity pace vs PMAY-G pucca housing.',
   },
 ];
 
@@ -123,8 +138,22 @@ export default function InvestigateWorkspacePage() {
 
   const handleStartInvestigation = (targetQuery?: string, targetLgdCode?: string) => {
     setIsExecuting(true);
-    if (targetQuery) setQuery(targetQuery);
-    if (targetLgdCode) setSelectedLgd(targetLgdCode);
+    const effectiveQuery = targetQuery !== undefined ? targetQuery : query;
+    let resolvedLgd = targetLgdCode || selectedLgd;
+
+    if (targetQuery !== undefined) {
+      setQuery(targetQuery);
+    }
+
+    // Auto-detect district from query if no targetLgdCode explicitly passed or if query was typed
+    if (effectiveQuery && !targetLgdCode) {
+      const resolved = DistrictNormalizer.resolve(effectiveQuery);
+      if (resolved && resolved.lgdCode) {
+        resolvedLgd = resolved.lgdCode;
+      }
+    }
+
+    setSelectedLgd(resolvedLgd);
 
     setTimeout(() => {
       setIsExecuting(false);
@@ -224,7 +253,12 @@ export default function InvestigateWorkspacePage() {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Enter governance investigation question (e.g. Find convergence opportunities in Nandurbar)..."
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleStartInvestigation(query);
+                      }
+                    }}
+                    placeholder="Enter governance investigation question (e.g. Find convergence opportunities in Nandurbar, Gadchiroli, Washim, Pune)..."
                     className="w-full pl-4 pr-4 py-3.5 rounded-sm bg-[#111110] border border-[#33312D] text-white placeholder-[#A39D92] text-sm focus:outline-none focus:border-[#DFB88B] transition-all font-mono shadow-inner"
                   />
                 </div>
@@ -233,7 +267,14 @@ export default function InvestigateWorkspacePage() {
                 <div className="w-full md:w-64">
                   <select
                     value={selectedLgd}
-                    onChange={(e) => setSelectedLgd(e.target.value)}
+                    onChange={(e) => {
+                      const newLgd = e.target.value;
+                      setSelectedLgd(newLgd);
+                      const matched = maharashtraDistricts.find((d) => d.lgdCode === newLgd);
+                      if (matched) {
+                        setQuery(`Find convergence opportunities in ${matched.name}.`);
+                      }
+                    }}
                     className="w-full py-3.5 px-3 rounded-sm bg-[#111110] border border-[#33312D] text-white text-sm focus:outline-none focus:border-[#DFB88B] transition-all font-mono"
                   >
                     {maharashtraDistricts.map((d) => (
