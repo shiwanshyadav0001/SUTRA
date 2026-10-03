@@ -334,23 +334,49 @@ export function InvestigationPipelineInspector({ data }: Props) {
         {activeStage === 'FINDING' && (
           <div className="space-y-6 font-mono text-xs animate-in fade-in">
             {/* Top Stat Highlights with Audited Terminology */}
-            <div className="grid sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-[#191917] border border-[#A66A62] rounded">
-                <span className="text-[10px] text-[#A66A62] uppercase block">DRAWDOWN DEFICIT VS BENCHMARK</span>
-                <div className="text-2xl font-bold text-[#A66A62] mt-1">-27.7 pp</div>
-                <span className="text-[10px] text-[#8E887E]">46.3% vs 74.0% State Benchmark</span>
-              </div>
-              <div className="p-4 bg-[#191917] border border-[#B78A5A] rounded">
-                <span className="text-[10px] text-[#B78A5A] uppercase block">UNRELEASED APPROVED ALLOCATION</span>
-                <div className="text-2xl font-bold text-[#F3F0E8] mt-1">₹68.10 Cr</div>
-                <span className="text-[10px] text-[#8E887E]">Undrawn across JJM, PMAY-G, PKVY</span>
-              </div>
-              <div className="p-4 bg-[#191917] border border-[#5E8B72] rounded">
-                <span className="text-[10px] text-[#5E8B72] uppercase block">PHYSICAL DELIVERY PACE DIVERGENCE</span>
-                <div className="text-2xl font-bold text-[#5E8B72] mt-1">18.4 pp</div>
-                <span className="text-[10px] text-[#8E887E]">Housing (46.8%) vs Water (28.4%)</span>
-              </div>
-            </div>
+            {(() => {
+              const deficitMetric = finding.metricLineage?.find((m) => m.metricId === 'M-DERIVED-DRAW-DEFICIT')?.displayValue
+                || (finding.calculation?.inputs?.['State_Benchmark_Drawdown_%'] && finding.calculation?.inputs?.['Composite_Drawdown_%']
+                    ? `-${(Number(finding.calculation.inputs['State_Benchmark_Drawdown_%']) - Number(finding.calculation.inputs['Composite_Drawdown_%'])).toFixed(1)} pp`
+                    : '-27.7 pp');
+
+              const compositeDrawdownMetric = finding.metricLineage?.find((m) => m.metricId === 'M-DERIVED-COMPOSITE-DRAW')?.displayValue
+                || (finding.calculation?.inputs?.['Composite_Drawdown_%'] ? `${finding.calculation.inputs['Composite_Drawdown_%']}%` : '46.3%');
+
+              const unreleasedMetric = finding.metricLineage?.find((m) => m.metricId === 'M-DERIVED-UNRELEASED')?.displayValue
+                || (finding.calculation?.inputs?.['Unreleased_Approved_Outlay_Cr'] ? `₹${finding.calculation.inputs['Unreleased_Approved_Outlay_Cr']} Cr` : '₹68.10 Cr');
+
+              const paceMetric = finding.metricLineage?.find((m) => m.metricId === 'M-DERIVED-PACE-DIV')?.displayValue
+                || (finding.calculation?.inputs?.['PMAYG_Completion_%'] && finding.calculation?.inputs?.['JJM_Coverage_%']
+                    ? `${Math.abs(Number(finding.calculation.inputs['PMAYG_Completion_%']) - Number(finding.calculation.inputs['JJM_Coverage_%'])).toFixed(1)} pp`
+                    : '18.4 pp');
+
+              const pmaygCompMetric = finding.metricLineage?.find((m) => m.metricId === 'M-PMAYG-COMP')?.displayValue
+                || (finding.calculation?.inputs?.['PMAYG_Completion_%'] ? `${finding.calculation.inputs['PMAYG_Completion_%']}%` : '46.8%');
+
+              const jjmCompMetric = finding.metricLineage?.find((m) => m.metricId === 'M-JJM-COV')?.displayValue
+                || (finding.calculation?.inputs?.['JJM_Coverage_%'] ? `${finding.calculation.inputs['JJM_Coverage_%']}%` : '28.4%');
+
+              return (
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <div className="p-4 bg-[#191917] border border-[#A66A62] rounded">
+                    <span className="text-[10px] text-[#A66A62] uppercase block">DRAWDOWN DEFICIT VS BENCHMARK</span>
+                    <div className="text-2xl font-bold text-[#A66A62] mt-1">{deficitMetric}</div>
+                    <span className="text-[10px] text-[#8E887E]">{compositeDrawdownMetric} vs 74.0% State Benchmark</span>
+                  </div>
+                  <div className="p-4 bg-[#191917] border border-[#B78A5A] rounded">
+                    <span className="text-[10px] text-[#B78A5A] uppercase block">UNRELEASED APPROVED ALLOCATION</span>
+                    <div className="text-2xl font-bold text-[#F3F0E8] mt-1">{unreleasedMetric}</div>
+                    <span className="text-[10px] text-[#8E887E]">Undrawn across JJM, PMAY-G, PKVY in {finding.districtName}</span>
+                  </div>
+                  <div className="p-4 bg-[#191917] border border-[#5E8B72] rounded">
+                    <span className="text-[10px] text-[#5E8B72] uppercase block">PHYSICAL DELIVERY PACE DIVERGENCE</span>
+                    <div className="text-2xl font-bold text-[#5E8B72] mt-1">{paceMetric}</div>
+                    <span className="text-[10px] text-[#8E887E]">Housing ({pmaygCompMetric}) vs Water ({jjmCompMetric})</span>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Structured Facts vs Derived Claims Separation */}
             <div className="grid md:grid-cols-3 gap-4">
