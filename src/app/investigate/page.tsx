@@ -193,21 +193,21 @@ export default function InvestigateWorkspacePage() {
           </div>
         </div>
 
-        {/* LAUNCH WORKSPACE (QUERY, DISTRICT & DATASETS) */}
-        <div className="rounded-lg border border-slate-200 bg-white p-5 md:p-6 shadow-sm space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-slate-100">
+        {/* LAUNCH WORKSPACE (QUERY, DISTRICT & DATASETS) - Deep Midnight Console */}
+        <div className="rounded-lg border border-[#1E293B] bg-[#0B132B] p-5 md:p-6 shadow-xl space-y-5 text-white">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#1E293B]">
             <div>
-              <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2 font-editorial">
-                <Search className="h-4 w-4 text-blue-600" />
-                Initiate Governance Investigation
+              <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2 font-editorial">
+                <Search className="h-4 w-4 text-cyan-400" />
+                Initiate Sovereign Governance Investigation
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 Query the deterministic multi-dataset pipeline across 36 Maharashtra LGD districts and central schemes.
               </p>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+            <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-800">
+              <ShieldCheck className="h-4 w-4 text-emerald-400" />
               <span>Zero-PII • LGD-Deterministic • Cryptographically Sealed</span>
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function InvestigateWorkspacePage() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Enter governance investigation question (e.g. Find convergence opportunities in Nandurbar)..."
-                  className="w-full pl-3.5 pr-4 py-2.5 rounded-md bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full pl-3.5 pr-4 py-2.5 rounded-md bg-[#080E21] border border-[#233560] text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 transition-all shadow-inner"
                 />
               </div>
 
@@ -230,10 +230,10 @@ export default function InvestigateWorkspacePage() {
                 <select
                   value={selectedLgd}
                   onChange={(e) => setSelectedLgd(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-md bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  className="w-full py-2.5 px-3 rounded-md bg-[#080E21] border border-[#233560] text-white text-xs focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono cursor-pointer"
                 >
                   {maharashtraDistricts.map((d) => (
-                    <option key={d.lgdCode} value={d.lgdCode}>
+                    <option key={d.lgdCode} value={d.lgdCode} className="bg-[#0B132B] text-white">
                       {d.name} (LGD: {d.lgdCode})
                     </option>
                   ))}
@@ -244,7 +244,7 @@ export default function InvestigateWorkspacePage() {
               <button
                 onClick={() => handleStartInvestigation(query, selectedLgd)}
                 disabled={isExecuting}
-                className="px-5 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all disabled:opacity-50 cursor-pointer"
+                className="px-5 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/40 transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isExecuting ? (
                   <>
@@ -253,7 +253,7 @@ export default function InvestigateWorkspacePage() {
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4" />
+                    <Sparkles className="h-4 w-4 text-cyan-300" />
                     Start Investigation
                   </>
                 )}
@@ -262,7 +262,7 @@ export default function InvestigateWorkspacePage() {
 
             {/* Dataset Selectors */}
             <div className="pt-2">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 font-mono">
                 Active Central Dataset Connectors (Data Fabric v1.6)
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -272,29 +272,29 @@ export default function InvestigateWorkspacePage() {
                     <div
                       key={ds.id}
                       onClick={() => toggleDataset(ds.id)}
-                      className={`cursor-pointer p-3 rounded-md border transition-all flex items-start justify-between shadow-2xs ${
+                      className={`cursor-pointer p-3 rounded-md border transition-all flex items-start justify-between shadow-sm ${
                         isSelected
-                          ? 'bg-blue-50/50 border-blue-400'
-                          : 'bg-slate-50 border-slate-200 opacity-60'
+                          ? 'bg-[#101F42] border-cyan-400 text-white'
+                          : 'bg-[#080E21] border-[#1E293B] text-slate-400 opacity-60 hover:opacity-90'
                       }`}
                     >
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono text-xs font-bold text-slate-900">
+                          <span className="font-mono text-xs font-bold text-cyan-300">
                             {ds.id}
                           </span>
-                          <span className="text-[10px] font-mono text-blue-800 bg-blue-100 px-1.5 rounded font-semibold">
+                          <span className="text-[10px] font-mono text-blue-200 bg-blue-950 px-1.5 rounded font-semibold border border-blue-800">
                             {ds.frequency}
                           </span>
                         </div>
-                        <div className="text-xs text-slate-800 font-semibold">{ds.name}</div>
-                        <div className="text-[10px] text-slate-500">{ds.ministry}</div>
+                        <div className="text-xs text-white font-semibold">{ds.name}</div>
+                        <div className="text-[10px] text-slate-400">{ds.ministry}</div>
                       </div>
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => {}}
-                        className="mt-1 accent-blue-600"
+                        className="mt-1 accent-cyan-400 cursor-pointer"
                       />
                     </div>
                   );
@@ -303,8 +303,8 @@ export default function InvestigateWorkspacePage() {
             </div>
 
             {/* Suggested Investigations */}
-            <div className="pt-2 border-t border-slate-100">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
+            <div className="pt-2 border-t border-[#1E293B]">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 font-mono">
                 Preset Governance Investigations
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
@@ -312,22 +312,22 @@ export default function InvestigateWorkspacePage() {
                   <button
                     key={preset.title}
                     onClick={() => handleStartInvestigation(preset.query, preset.districtLgd)}
-                    className="text-left p-3 rounded-md bg-slate-50 border border-slate-200 hover:border-blue-400 hover:bg-white transition-all flex flex-col justify-between group shadow-2xs cursor-pointer"
+                    className="text-left p-3 rounded-md bg-[#080E21] border border-[#1E293B] hover:border-cyan-400 hover:bg-[#101F42] transition-all flex flex-col justify-between group shadow-sm cursor-pointer"
                   >
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="font-semibold text-slate-900 group-hover:text-blue-700 transition-colors">
+                        <span className="font-semibold text-white group-hover:text-cyan-200 transition-colors">
                           {preset.title}
                         </span>
-                        <span className="font-mono text-[10px] text-slate-500">
+                        <span className="font-mono text-[10px] text-slate-400">
                           LGD: {preset.districtLgd}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                      <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
                         {preset.description}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 text-[11px] font-semibold text-blue-700 mt-2 pt-1.5 border-t border-slate-200">
+                    <div className="flex items-center gap-1 text-[11px] font-semibold text-cyan-400 mt-2 pt-1.5 border-t border-[#1E293B]">
                       Launch <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </button>
@@ -340,44 +340,44 @@ export default function InvestigateWorkspacePage() {
         {/* INVESTIGATION WORKSPACE CONTENT */}
         {hasStarted && (
           <div className="space-y-8">
-            {/* INVESTIGATION HEADER */}
-            <div className="rounded-lg border border-slate-200 bg-white p-5 md:p-6 shadow-sm relative overflow-hidden">
+            {/* INVESTIGATION HEADER - Deep Midnight Banner */}
+            <div className="rounded-lg border border-[#1E293B] bg-[#0B132B] p-5 md:p-6 shadow-xl relative overflow-hidden text-white">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="space-y-1.5 max-w-3xl">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-cyan-300 bg-cyan-950/80 px-2.5 py-0.5 rounded border border-cyan-800">
                       {investigationResult.investigation.id}
                     </span>
-                    <span className="font-mono text-xs text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                    <span className="font-mono text-xs text-slate-300 bg-[#080E21] px-2 py-0.5 rounded border border-[#1E293B]">
                       LGD: {investigationResult.interpretation.targetDistrictLgd}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono flex items-center gap-1">
-                      <Calendar className="h-3 w-3" /> FY 2025-26 Q2
+                    <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
+                      <Calendar className="h-3 w-3 text-cyan-400" /> FY 2025-26 Q2
                     </span>
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-editorial">
+                  <h2 className="text-2xl font-bold text-white tracking-tight font-editorial">
                     {investigationResult.investigation.title}
                   </h2>
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                  <p className="text-xs text-slate-300 leading-relaxed font-sans">
                     {investigationResult.investigation.question}
                   </p>
                 </div>
 
                 {/* Multi-Component Confidence Widget */}
-                <div className="p-3.5 rounded-md bg-slate-50 border border-slate-200 flex flex-col items-end gap-0.5 shadow-2xs font-mono">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                    Multi-Component Audit Confidence
+                <div className="p-3.5 rounded-md bg-[#080E21] border border-[#233560] flex flex-col items-end gap-0.5 shadow-inner font-mono">
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                    Evidence-Backed Audit Confidence
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-emerald-700">
+                    <span className="text-2xl font-bold text-cyan-300">
                       {investigationResult.finding.confidenceAssessment?.overallScore || 93.5}%
                     </span>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
                       {investigationResult.finding.confidenceAssessment?.rating || 'HIGH'}
                     </span>
                   </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    5-Component Weighted Assessment
+                  <div className="text-[10px] text-slate-400 mt-0.5">
+                    Triangulated across 3 Ministerial Registers
                   </div>
                 </div>
               </div>

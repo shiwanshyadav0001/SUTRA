@@ -33,22 +33,22 @@ export default function GeographicGapsPage() {
         </p>
       </div>
 
-      {/* Featured Primary Gap Spotlight: NANDURBAR */}
-      <div className="p-6 sm:p-8 rounded-lg bg-white border border-rose-200 shadow-sm relative overflow-hidden space-y-6 my-6">
+      {/* Featured Primary Gap Spotlight: NANDURBAR on Amber Alert Surface */}
+      <div className="p-6 sm:p-8 rounded-lg surface-amber-alert border border-amber-300 shadow-sm relative overflow-hidden space-y-6 my-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-rose-50 text-rose-700 border border-rose-200 font-bold">
+            <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-amber-100 text-amber-900 border border-amber-300 font-bold">
               PRIORITY #01 TERRITORIAL GAP
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 font-editorial mt-2">
               {nandurbar.name.toUpperCase()}
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-600">
               {nandurbar.zone}, Maharashtra • LGD Code: {nandurbar.code}
             </p>
           </div>
 
-          <div className="text-left sm:text-right font-mono">
+          <div className="text-left sm:text-right font-mono bg-white p-3 rounded-lg border border-amber-200 shadow-2xs">
             <span className="text-[10px] text-slate-500 uppercase block font-semibold">CRITICAL GAP MARGIN</span>
             <div className="text-3xl sm:text-4xl font-bold text-rose-700">
               {nandurbar.gapPercentagePoints} pp
@@ -57,9 +57,9 @@ export default function GeographicGapsPage() {
           </div>
         </div>
 
-        {/* Comparison Bars */}
-        <div className="grid md:grid-cols-3 gap-4 font-mono text-xs border-y border-slate-100 py-5">
-          <div className="p-3.5 rounded-md bg-rose-50/50 border border-rose-200">
+        {/* Comparison Bars on White Cards with crisp borders */}
+        <div className="grid md:grid-cols-3 gap-4 font-mono text-xs border-y border-amber-200/60 py-5">
+          <div className="p-3.5 rounded-md bg-white border border-rose-200 shadow-2xs">
             <span className="text-slate-500 text-[10px] block uppercase font-semibold">PROGRAMME COVERAGE</span>
             <span className="text-2xl font-bold text-rose-700 mt-0.5 block">
               {nandurbar.coverageRate}%
@@ -72,7 +72,7 @@ export default function GeographicGapsPage() {
             </div>
           </div>
 
-          <div className="p-3.5 rounded-md bg-slate-50 border border-slate-200">
+          <div className="p-3.5 rounded-md bg-white border border-slate-200 shadow-2xs">
             <span className="text-slate-500 text-[10px] block uppercase font-semibold">REGIONAL BENCHMARK</span>
             <span className="text-2xl font-bold text-slate-800 mt-0.5 block">
               {nandurbar.regionalBenchmarkRate}%
@@ -85,7 +85,7 @@ export default function GeographicGapsPage() {
             </div>
           </div>
 
-          <div className="p-3.5 rounded-md bg-amber-50/50 border border-amber-200">
+          <div className="p-3.5 rounded-md bg-white border border-amber-200 shadow-2xs">
             <span className="text-slate-500 text-[10px] block uppercase font-semibold">FUND UTILIZATION RATE</span>
             <span className="text-2xl font-bold text-amber-800 mt-0.5 block">
               {nandurbar.fundUtilizationRate}%
@@ -102,24 +102,24 @@ export default function GeographicGapsPage() {
         {/* Why Flagged & CTAs */}
         <div className="grid md:grid-cols-2 gap-6 items-center pt-1">
           <div className="space-y-2.5">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-600 block font-semibold">
               WHY FLAGGED? ATTRIBUTION BREAKDOWN
             </span>
             <div className="space-y-1.5 text-xs text-slate-700">
               <div className="flex items-center space-x-2">
-                <span className="text-emerald-600 font-bold">✓</span>
+                <span className="text-emerald-700 font-bold">✓</span>
                 <span>High eligible population (1.6M total pop, high smallholder ratio)</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-emerald-600 font-bold">✓</span>
+                <span className="text-emerald-700 font-bold">✓</span>
                 <span>Low programme coverage (28% vs 64% regional average)</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-emerald-600 font-bold">✓</span>
+                <span className="text-emerald-700 font-bold">✓</span>
                 <span>Low intervention density (only 14 active work projects)</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-emerald-600 font-bold">✓</span>
+                <span className="text-emerald-700 font-bold">✓</span>
                 <span>Low fund drawdown pace (42% drawn vs 73% national pace)</span>
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function GeographicGapsPage() {
           <div className="flex flex-wrap gap-2.5 justify-end">
             <button
               onClick={() => openWhyFlagged('SUTRA-FND-0001')}
-              className="px-4 py-2 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-md bg-white hover:bg-slate-50 text-amber-900 border border-amber-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               <span>WHY THIS INSIGHT?</span>
@@ -136,7 +136,7 @@ export default function GeographicGapsPage() {
 
             <button
               onClick={() => router.push('/investigation/SUTRA-INV-2026-0001')}
-              className="px-4 py-2 rounded-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-md bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
             >
               <Layers className="w-3.5 h-3.5 text-blue-600" />
               <span>INVESTIGATE WORKSPACE</span>
@@ -162,7 +162,7 @@ export default function GeographicGapsPage() {
           {gapDistricts.slice(1).map((dist) => (
             <div
               key={dist.id}
-              className="p-5 rounded-lg bg-white border border-slate-200 hover:border-blue-400 transition-all space-y-3.5 shadow-2xs"
+              className="p-5 rounded-lg surface-neutral-analytical border border-slate-200 hover:border-blue-400 transition-all space-y-3.5 shadow-2xs"
             >
               <div className="flex justify-between items-start">
                 <div>

@@ -60,44 +60,44 @@ export function InvestigationPipelineInspector({ data }: Props) {
 
   return (
     <div className="rounded-lg bg-white border border-slate-200 shadow-sm overflow-hidden space-y-0">
-      {/* Header Banner */}
-      <div className="bg-slate-50 p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header Banner - Sovereign Intelligence Workspace */}
+      <div className="bg-[#0B132B] p-5 border-b border-[#1E293B] flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 uppercase tracking-wider font-semibold">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-900/80 text-blue-200 border border-blue-700/60 uppercase tracking-wider font-semibold">
               Investigation Engine v1.6 Audited
             </span>
-            <span className="text-[10px] font-mono text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded bg-emerald-50 font-medium">
+            <span className="text-[10px] font-mono text-emerald-300 border border-emerald-700/60 px-2 py-0.5 rounded bg-emerald-950/80 font-medium">
               {finding.dataClassification}
             </span>
-            <span className="text-[10px] font-mono text-slate-600 border border-slate-200 px-2 py-0.5 rounded bg-white flex items-center space-x-1">
-              <Clock className="w-3 h-3 text-blue-600" />
+            <span className="text-[10px] font-mono text-slate-300 border border-[#1E293B] px-2 py-0.5 rounded bg-[#080E21] flex items-center space-x-1">
+              <Clock className="w-3 h-3 text-cyan-400" />
               <span>{finding.temporalAlignment}</span>
             </span>
           </div>
-          <h2 className="text-lg font-bold text-slate-900 mt-2">
+          <h2 className="text-lg font-bold text-white mt-2 font-editorial">
             {finding.title}
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Target: <span className="text-slate-800 font-semibold">{finding.districtName}</span> &bull; LGD Key: <span className="font-mono text-blue-700 font-semibold">{finding.districtLgdCode}</span> &bull; State: {finding.state}
+          <p className="text-xs text-slate-400 mt-0.5">
+            Target: <span className="text-slate-200 font-semibold">{finding.districtName}</span> &bull; LGD Key: <span className="font-mono text-cyan-300 font-semibold">{finding.districtLgdCode}</span> &bull; State: {finding.state}
           </p>
         </div>
 
         <div className="flex items-center space-x-3 font-mono text-xs">
           <div className="text-right">
-            <span className="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Composite Confidence</span>
-            <span className="text-lg font-bold text-emerald-700">{finding.confidence}% ({finding.confidenceAssessment.rating})</span>
+            <span className="text-[10px] text-slate-400 block uppercase font-sans font-semibold">Composite Confidence</span>
+            <span className="text-lg font-bold text-cyan-300">{finding.confidence}% ({finding.confidenceAssessment.rating})</span>
           </div>
-          <div className="h-8 w-[1px] bg-slate-200 mx-1" />
+          <div className="h-8 w-[1px] bg-slate-700 mx-1" />
           <div className="text-right">
-            <span className="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Finding ID</span>
-            <span className="font-bold text-blue-700">{finding.id}</span>
+            <span className="text-[10px] text-slate-400 block uppercase font-sans font-semibold">Finding ID</span>
+            <span className="font-bold text-amber-300">{finding.id}</span>
           </div>
         </div>
       </div>
 
       {/* Visual Pipeline Navigator */}
-      <div className="bg-slate-50/50 p-2.5 border-b border-slate-200 overflow-x-auto">
+      <div className="bg-[#080E21] p-2.5 border-b border-[#1E293B] overflow-x-auto">
         <div className="flex items-center justify-between min-w-[780px] gap-1.5 font-mono text-xs">
           {stages.map((st, idx) => {
             const isActive = activeStage === st.key;
@@ -105,17 +105,17 @@ export function InvestigationPipelineInspector({ data }: Props) {
               <React.Fragment key={st.key}>
                 <button
                   onClick={() => setActiveStage(st.key)}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md transition-all ${
+                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-blue-600 text-white font-semibold shadow-xs'
-                      : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50'
+                      ? 'bg-blue-600 text-white font-semibold shadow-xs border-b-2 border-cyan-400'
+                      : 'bg-[#0B132B] text-slate-300 hover:text-white border border-[#1E293B] hover:bg-[#132247]'
                   }`}
                 >
-                  <span>{st.icon}</span>
+                  <span className={isActive ? 'text-cyan-200' : 'text-slate-400'}>{st.icon}</span>
                   <span className="font-sans font-medium text-xs">{st.label}</span>
                 </button>
                 {idx < stages.length - 1 && (
-                  <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+                  <ArrowRight className="w-3 h-3 text-slate-600 shrink-0" />
                 )}
               </React.Fragment>
             );

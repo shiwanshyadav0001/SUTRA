@@ -50,39 +50,39 @@ export default function EvidenceHubPage() {
         </p>
       </div>
 
-      {/* Featured Canonical Investigation Card */}
-      <div className="p-6 rounded-lg bg-white border border-blue-200 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+      {/* Featured Canonical Investigation Card on Deep Midnight Intelligence Surface */}
+      <div className="p-6 rounded-lg surface-dark-intel border border-[#1E293B] shadow-xl space-y-4 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1E293B] pb-3">
           <div className="flex items-center space-x-2">
-            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 font-bold">
+            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-blue-950 text-cyan-300 border border-blue-800 font-bold">
               FEATURED INVESTIGATION: SUTRA-FND-0001
             </span>
-            <span className="text-[10px] font-mono text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded bg-emerald-50 font-semibold">
+            <span className="text-[10px] font-mono text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded bg-emerald-950 font-semibold">
               VERIFIED SOURCE DATA
             </span>
           </div>
-          <div className="text-xs font-mono text-slate-500">
-            LGD Identity Anchor: <span className="text-blue-700 font-bold">512 (NANDURBAR)</span>
+          <div className="text-xs font-mono text-slate-300">
+            LGD Identity Anchor: <span className="text-cyan-300 font-bold">512 (NANDURBAR)</span>
           </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 font-mono text-xs">
           <div className="md:col-span-2 space-y-2">
-            <h3 className="text-lg font-bold text-slate-900 font-editorial">
+            <h3 className="text-lg font-bold text-white font-editorial">
               Nandurbar Tribal Habitation Cross-Programme Capital Delivery Lag & Convergence Gap
             </h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-sans">
+            <p className="text-xs text-slate-300 leading-relaxed font-sans">
               Deterministic LGD join across Jal Jeevan Mission, PMAY-G Housing, and PKVY Agriculture proves a severe -27.2 pp capital drawdown deficit with ₹68.10 Cr in unabsorbed outlays and an 18.4 pp synchronization lag between completed houses and active tap connections.
             </p>
           </div>
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-md space-y-2 text-right">
-            <span className="text-[10px] text-slate-500 uppercase block font-semibold">PROVENANCE SHA-256</span>
-            <code className="text-[10px] text-emerald-700 block truncate font-mono">
+          <div className="p-4 bg-[#080E21] border border-[#233560] rounded-md space-y-2 text-right">
+            <span className="text-[10px] text-slate-400 uppercase block font-semibold">PROVENANCE SHA-256</span>
+            <code className="text-[10px] text-cyan-300 block truncate font-mono">
               b5e394f71a0e8c61a9d82f3c4e...
             </code>
             <Link
               href="/investigation/SUTRA-INV-2026-0001"
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 text-white font-semibold rounded-md text-xs hover:bg-blue-700 transition-colors mt-2 cursor-pointer shadow-2xs"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 text-white font-semibold rounded-md text-xs hover:bg-blue-500 transition-colors mt-2 cursor-pointer shadow-md"
             >
               <Layers className="w-3.5 h-3.5" />
               <span>INSPECT WORKSPACE</span>
@@ -92,7 +92,7 @@ export default function EvidenceHubPage() {
         </div>
       </div>
 
-      {/* Dataset Overview Grid */}
+      {/* Dataset Overview Grid on Light Evidence Surfaces */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {DATASETS_META.map((dataset) => {
           const isSelected = dataset.id === selectedDatasetId;
@@ -100,10 +100,10 @@ export default function EvidenceHubPage() {
             <div
               key={dataset.id}
               onClick={() => setSelectedDatasetId(dataset.id)}
-              className={`p-4 rounded-lg bg-white border transition-all cursor-pointer space-y-2.5 shadow-2xs ${
+              className={`p-4 rounded-lg surface-evidence border transition-all cursor-pointer space-y-2.5 shadow-2xs ${
                 isSelected
-                  ? 'border-blue-600 ring-2 ring-blue-500/20 shadow-sm'
-                  : 'border-slate-200 hover:border-slate-300'
+                  ? 'border-blue-600 ring-2 ring-blue-500/20 shadow-md'
+                  : 'border-slate-300 hover:border-blue-400'
               }`}
             >
               <div className="flex items-center justify-between text-xs font-mono">
@@ -136,9 +136,9 @@ export default function EvidenceHubPage() {
         })}
       </div>
 
-      {/* Active Dataset Inspection & Schema Details */}
-      <div className="p-5 rounded-lg bg-white border border-slate-200 shadow-sm space-y-3.5">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+      {/* Active Dataset Inspection & Schema Details on Analytical Surface */}
+      <div className="p-5 rounded-lg surface-neutral-analytical border border-slate-200 shadow-sm space-y-3.5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 pb-3">
           <div>
             <span className="text-[10px] font-mono uppercase text-blue-700 font-semibold">
               ACTIVE REPOSITORY INSPECTOR: {selectedDataset.id}
@@ -165,7 +165,7 @@ export default function EvidenceHubPage() {
             {selectedDataset.fields.map((f) => (
               <span
                 key={f}
-                className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700"
+                className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 shadow-2xs"
               >
                 {f}
               </span>

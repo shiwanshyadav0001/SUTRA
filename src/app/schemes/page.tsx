@@ -43,8 +43,8 @@ export default function SchemeExplorerPage() {
         </p>
       </div>
 
-      {/* Filter and Search Controls */}
-      <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-white p-4 border border-slate-200 rounded-lg shadow-sm my-6">
+      {/* Filter and Search Controls on Institutional Analytical Surface */}
+      <div className="flex flex-col md:flex-row gap-3 justify-between items-center surface-neutral-analytical p-4 border border-slate-200 rounded-lg shadow-sm my-6">
         {/* Search */}
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -53,18 +53,18 @@ export default function SchemeExplorerPage() {
             placeholder="Search schemes, sectors, IDs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-md text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white"
+            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
           />
         </div>
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto text-xs font-mono">
           <div className="flex items-center space-x-2">
-            <span className="text-slate-500 font-semibold">Ministry:</span>
+            <span className="text-slate-600 font-semibold">Ministry:</span>
             <select
               value={selectedMinistry}
               onChange={(e) => setSelectedMinistry(e.target.value)}
-              className="bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-2xs font-sans cursor-pointer"
             >
               <option value="all">All Ministries</option>
               {MINISTRIES_DATA.map((m) => (
@@ -76,11 +76,11 @@ export default function SchemeExplorerPage() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className="text-slate-500 font-semibold">Status:</span>
+            <span className="text-slate-600 font-semibold">Status:</span>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-2xs font-sans cursor-pointer"
             >
               <option value="all">All Statuses</option>
               <option value="Active">Active</option>
@@ -91,19 +91,19 @@ export default function SchemeExplorerPage() {
         </div>
       </div>
 
-      {/* Table Interface */}
+      {/* Table Interface with Department Identity & Coverage Visualizers */}
       <div className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-slate-50 border-b border-slate-200 text-[10px] text-slate-600 uppercase tracking-wider font-semibold">
+            <thead className="bg-[#0B132B] text-slate-200 text-[10px] uppercase tracking-wider font-semibold border-b border-[#1E293B]">
               <tr>
                 <th className="p-3.5">SCHEME & SECTOR</th>
-                <th className="p-3.5">MINISTRY</th>
-                <th className="p-3.5 text-right">BUDGET</th>
-                <th className="p-3.5 text-right">UTILIZED</th>
+                <th className="p-3.5">GOVERNMENT DEPARTMENT IDENTITY</th>
+                <th className="p-3.5 text-right">BUDGET ALLOC</th>
+                <th className="p-3.5 text-right">PFMS DRAWDOWN</th>
                 <th className="p-3.5 text-right">BENEFICIARIES</th>
                 <th className="p-3.5 text-right">PROJECTS</th>
-                <th className="p-3.5 text-right">COVERAGE</th>
+                <th className="p-3.5 text-right">COVERAGE GAUGE</th>
                 <th className="p-3.5 text-right">OUTCOME</th>
                 <th className="p-3.5 text-center">ACTION</th>
               </tr>
@@ -112,7 +112,7 @@ export default function SchemeExplorerPage() {
               {filteredSchemes.map((scheme) => (
                 <tr
                   key={scheme.id}
-                  className="hover:bg-blue-50/40 transition-colors group"
+                  className="hover:bg-blue-50/50 transition-colors group"
                 >
                   {/* Scheme Name & Sector */}
                   <td className="p-3.5">
@@ -122,19 +122,26 @@ export default function SchemeExplorerPage() {
                     >
                       {scheme.name}
                     </Link>
-                    <span className="text-[10px] text-slate-500 block mt-0.5">
-                      {scheme.code} • {scheme.sector}
-                    </span>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                        {scheme.code}
+                      </span>
+                      <span className="text-[10px] text-slate-500 font-sans">
+                        • {scheme.sector}
+                      </span>
+                    </div>
                   </td>
 
-                  {/* Ministry */}
-                  <td className="p-3.5 text-slate-600 text-[11px]">
-                    <span className="px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200 text-blue-800 text-[10px] font-bold mr-1.5">
-                      {scheme.ministryId}
-                    </span>
-                    <span className="truncate max-w-[140px] inline-block align-middle font-sans">
-                      {scheme.ministryName.replace('Ministry of ', '')}
-                    </span>
+                  {/* Ministry & Department Identity Badge */}
+                  <td className="p-3.5 text-slate-700 text-[11px]">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded bg-slate-900 text-cyan-300 font-mono text-[10px] font-bold border border-slate-700">
+                        {scheme.ministryId}
+                      </span>
+                      <span className="truncate max-w-[150px] inline-block font-sans font-medium text-slate-800">
+                        {scheme.ministryName.replace('Ministry of ', '')}
+                      </span>
+                    </div>
                   </td>
 
                   {/* Budget */}
@@ -152,7 +159,7 @@ export default function SchemeExplorerPage() {
                         scheme.utilizationRate < 70 ? 'text-rose-700' : 'text-emerald-700'
                       }`}
                     >
-                      {scheme.utilizationRate}%
+                      {scheme.utilizationRate}% utilized
                     </span>
                   </td>
 
@@ -166,9 +173,23 @@ export default function SchemeExplorerPage() {
                     {scheme.projectsCount.toLocaleString()}
                   </td>
 
-                  {/* Coverage */}
-                  <td className="p-3.5 text-right font-semibold text-slate-800">
-                    {scheme.coverageRate}%
+                  {/* Coverage Gauge with visual progress indicator */}
+                  <td className="p-3.5 text-right">
+                    <span className="font-semibold text-slate-800 block">
+                      {scheme.coverageRate}%
+                    </span>
+                    <div className="w-20 ml-auto bg-slate-200 h-1.5 rounded overflow-hidden mt-1">
+                      <div
+                        className={`h-full rounded ${
+                          scheme.coverageRate >= 70
+                            ? 'bg-emerald-600'
+                            : scheme.coverageRate >= 50
+                            ? 'bg-blue-600'
+                            : 'bg-rose-600'
+                        }`}
+                        style={{ width: `${Math.min(scheme.coverageRate, 100)}%` }}
+                      />
+                    </div>
                   </td>
 
                   {/* Outcome Score */}
@@ -180,7 +201,7 @@ export default function SchemeExplorerPage() {
                   <td className="p-3.5 text-center">
                     <Link
                       href={`/scheme/${scheme.id}`}
-                      className="px-2.5 py-1 bg-white border border-slate-300 rounded text-[10px] text-blue-700 hover:bg-blue-50 hover:border-blue-400 font-semibold inline-flex items-center gap-1 shadow-2xs"
+                      className="px-2.5 py-1 bg-white border border-slate-300 rounded text-[10px] text-blue-700 hover:bg-blue-50 hover:border-blue-400 font-semibold inline-flex items-center gap-1 shadow-2xs transition-colors"
                     >
                       <span>Dossier</span>
                       <ChevronRight className="w-3 h-3" />

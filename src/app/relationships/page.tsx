@@ -230,30 +230,30 @@ export default function GovernanceGraphPage() {
 
       {/* Main Graph & Context Split */}
       <div className="grid lg:grid-cols-12 gap-6 items-start my-6">
-        {/* Left 8 Cols: Interactive Graph SVG Visualizer */}
-        <div className="lg:col-span-8 bg-white border border-slate-200 rounded-lg p-5 space-y-4 relative shadow-sm">
-          <div className="flex items-center justify-between text-xs font-mono text-slate-500">
-            <div className="flex items-center space-x-2 font-semibold text-slate-700">
-              <Network className="w-4 h-4 text-blue-600" />
-              <span>INTERACTIVE TOPOLOGY CANVAS ({nodes.length} NODES, {links.length} EDGES)</span>
+        {/* Left 8 Cols: Interactive Graph SVG Visualizer on Deep Midnight Intelligence Surface */}
+        <div className="lg:col-span-8 surface-dark-intel rounded-lg p-5 space-y-4 relative shadow-xl">
+          <div className="flex flex-wrap items-center justify-between text-xs font-mono text-slate-300 border-b border-[#1E293B] pb-3">
+            <div className="flex items-center space-x-2 font-semibold text-cyan-400">
+              <Network className="w-4 h-4 text-cyan-400" />
+              <span>INTERACTIVE TOPOLOGY CANVAS ({nodes.length} NODES, {links.length} CONDUITS)</span>
             </div>
-            <div className="flex items-center gap-3 text-[10px]">
+            <div className="flex flex-wrap items-center gap-3 text-[10px]">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-blue-600" /> Ministry
+                <span className="w-2 h-2 rounded-full bg-blue-500" /> Ministry
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-indigo-600" /> Scheme
+                <span className="w-2 h-2 rounded-full bg-indigo-400" /> Scheme
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-rose-600" /> Finding
+                <span className="w-2 h-2 rounded-full bg-rose-500" /> Finding
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-teal-600" /> Evidence
+                <span className="w-2 h-2 rounded-full bg-teal-400" /> Evidence
               </span>
             </div>
           </div>
 
-          <div className="relative w-full h-[520px] bg-slate-50 border border-slate-200 rounded-md overflow-hidden flex items-center justify-center">
+          <div className="relative w-full h-[520px] bg-[#080E21] border border-[#1E293B] rounded-md overflow-hidden flex items-center justify-center shadow-inner">
             <svg
               className="w-full h-full"
               viewBox="0 0 820 520"
@@ -267,32 +267,32 @@ export default function GovernanceGraphPage() {
               }}
             >
               <defs>
-                <pattern id="graphGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E2E8F0" strokeWidth="0.5" />
+                <pattern id="graphGridDark" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" strokeWidth="0.5" />
                 </pattern>
                 <marker
-                  id="arrowhead"
+                  id="arrowheadDark"
                   markerWidth="8"
                   markerHeight="6"
                   refX="14"
                   refY="3"
                   orient="auto"
                 >
-                  <polygon points="0 0, 8 3, 0 6" fill="#94A3B8" />
+                  <polygon points="0 0, 8 3, 0 6" fill="#475569" />
                 </marker>
                 <marker
-                  id="arrowheadActive"
+                  id="arrowheadActiveDark"
                   markerWidth="8"
                   markerHeight="6"
                   refX="14"
                   refY="3"
                   orient="auto"
                 >
-                  <polygon points="0 0, 8 3, 0 6" fill="#2563EB" />
+                  <polygon points="0 0, 8 3, 0 6" fill="#38BDF8" />
                 </marker>
               </defs>
 
-              <rect width="820" height="520" fill="url(#graphGrid)" />
+              <rect width="820" height="520" fill="url(#graphGridDark)" />
 
               {/* Render Graph Links */}
               {links.map((link, i) => {
@@ -313,15 +313,15 @@ export default function GovernanceGraphPage() {
                     y2={tPos.y}
                     stroke={
                       isOverlap
-                        ? '#D97706'
+                        ? '#F59E0B'
                         : isConnectedToFocus
-                        ? '#2563EB'
-                        : '#CBD5E1'
+                        ? '#38BDF8'
+                        : '#334155'
                     }
                     strokeWidth={isConnectedToFocus ? 2.5 : isOverlap ? 2 : 1}
                     strokeDasharray={isOverlap ? '4 4' : undefined}
-                    opacity={isConnectedToFocus ? 1 : 0.6}
-                    markerEnd={isConnectedToFocus ? 'url(#arrowheadActive)' : 'url(#arrowhead)'}
+                    opacity={isConnectedToFocus ? 1 : 0.65}
+                    markerEnd={isConnectedToFocus ? 'url(#arrowheadActiveDark)' : 'url(#arrowheadDark)'}
                     className="transition-all duration-200"
                   />
                 );
@@ -347,7 +347,7 @@ export default function GovernanceGraphPage() {
                       setTooltipPos(pos);
                     }}
                     onMouseLeave={() => setHoveredNodeId(null)}
-                    opacity={isSelected || isHovered ? 1 : isConnected ? 0.95 : 0.35}
+                    opacity={isSelected || isHovered ? 1 : isConnected ? 0.95 : 0.4}
                   >
                     {/* Glowing halo ring on hover or selection */}
                     {(isSelected || isHovered) && (
@@ -356,9 +356,9 @@ export default function GovernanceGraphPage() {
                         cy={pos.y}
                         r={node.val + 8}
                         fill="none"
-                        stroke="#2563EB"
+                        stroke="#38BDF8"
                         strokeWidth="2"
-                        strokeDasharray="3 3"
+                        strokeDasharray="4 4"
                         className="animate-spin pointer-events-none"
                         style={{ transformOrigin: `${pos.x}px ${pos.y}px`, animationDuration: '8s' }}
                       />
@@ -369,8 +369,8 @@ export default function GovernanceGraphPage() {
                       cx={pos.x}
                       cy={pos.y}
                       r={node.val}
-                      fill="#FFFFFF"
-                      stroke={isSelected ? '#1D4ED8' : isHovered ? '#2563EB' : color}
+                      fill="#0B132B"
+                      stroke={isSelected ? '#38BDF8' : isHovered ? '#60A5FA' : color}
                       strokeWidth={isSelected || isHovered ? 3 : 2}
                       className="transition-colors duration-200 shadow-sm"
                     />
@@ -383,7 +383,7 @@ export default function GovernanceGraphPage() {
                       x={pos.x}
                       y={pos.y + node.val + 13}
                       textAnchor="middle"
-                      fill={isSelected ? '#1E40AF' : '#0F172A'}
+                      fill={isSelected ? '#38BDF8' : '#CBD5E1'}
                       fontSize="9"
                       fontFamily="monospace"
                       fontWeight={isSelected || isHovered ? 'bold' : '600'}
@@ -399,32 +399,32 @@ export default function GovernanceGraphPage() {
             {/* Rich Floating Tooltip on Node Hover */}
             {hoveredNode && tooltipPos && (
               <div
-                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded-md bg-white border border-slate-300 text-slate-900 font-mono text-xs shadow-xl max-w-xs transition-all duration-150"
+                className="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 px-3.5 py-2.5 rounded-md bg-[#0B132B] border border-cyan-500/50 text-white font-mono text-xs shadow-2xl max-w-xs transition-all duration-150"
                 style={{
                   left: `${(tooltipPos.x / 820) * 100}%`,
                   top: `${Math.max((tooltipPos.y / 520) * 100 - 4, 6)}%`,
                 }}
               >
-                <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-1 mb-1">
+                <div className="flex items-center justify-between gap-3 border-b border-[#1E293B] pb-1 mb-1">
                   <span
                     className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold"
                     style={{
-                      backgroundColor: `${getNodeColor(hoveredNode.type)}15`,
-                      color: getNodeColor(hoveredNode.type),
-                      border: `1px solid ${getNodeColor(hoveredNode.type)}40`,
+                      backgroundColor: `${getNodeColor(hoveredNode.type)}25`,
+                      color: '#FFFFFF',
+                      border: `1px solid ${getNodeColor(hoveredNode.type)}80`,
                     }}
                   >
                     {hoveredNode.type}
                   </span>
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-[10px] text-slate-300">
                     {activeConnectedNodeIds.size - 1} Links Connected
                   </span>
                 </div>
-                <div className="font-bold text-sm text-slate-900">{hoveredNode.label}</div>
+                <div className="font-bold text-sm text-cyan-300">{hoveredNode.label}</div>
                 {hoveredNode.subtext && (
-                  <div className="text-[11px] text-slate-600 mt-0.5">{hoveredNode.subtext}</div>
+                  <div className="text-[11px] text-slate-300 mt-0.5">{hoveredNode.subtext}</div>
                 )}
-                <div className="mt-2 pt-1 border-t border-slate-100 flex items-center justify-between text-[9px] text-blue-700">
+                <div className="mt-2 pt-1 border-t border-[#1E293B] flex items-center justify-between text-[9px] text-cyan-400">
                   <span>Click to lock & view dossier</span>
                   <span>ID: {hoveredNode.id}</span>
                 </div>
@@ -433,14 +433,21 @@ export default function GovernanceGraphPage() {
           </div>
         </div>
 
-        {/* Right 4 Cols: Selected Node Contextual Panel */}
-        <div className="lg:col-span-4 p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
-          <div>
+        {/* Right 4 Cols: Selected Node Contextual Panel with Deliberate Surfaces */}
+        <div className="lg:col-span-4 surface-neutral-analytical rounded-lg p-5 border border-slate-200 shadow-sm space-y-5">
+          <div className="border-b border-slate-200 pb-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono uppercase tracking-wider text-blue-700 font-bold">
-                NODE METADATA
+                RELATIONAL NODE METADATA
               </span>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-semibold">
+              <span
+                className="text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold"
+                style={{
+                  backgroundColor: `${getNodeColor(selectedNode.type)}15`,
+                  color: getNodeColor(selectedNode.type),
+                  border: `1px solid ${getNodeColor(selectedNode.type)}40`,
+                }}
+              >
                 {selectedNode.type}
               </span>
             </div>
@@ -455,7 +462,7 @@ export default function GovernanceGraphPage() {
           {/* Connected Edges */}
           <div className="space-y-2.5 font-mono text-xs border-t border-slate-100 pt-3">
             <span className="text-[10px] text-slate-500 uppercase block font-semibold">
-              Direct Relationships ({connectedNodeIds.size - 1})
+              Direct Governance Conduits ({connectedNodeIds.size - 1})
             </span>
 
             <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
@@ -473,7 +480,7 @@ export default function GovernanceGraphPage() {
                     <div
                       key={i}
                       onClick={() => setSelectedNodeId(otherNodeId)}
-                      className="p-2 rounded-md bg-slate-50 border border-slate-200 hover:border-blue-400 transition-colors cursor-pointer flex items-center justify-between"
+                      className="p-2.5 rounded-md bg-white border border-slate-200 hover:border-blue-400 transition-colors cursor-pointer flex items-center justify-between shadow-2xs"
                     >
                       <div>
                         <span className="text-[9px] text-blue-700 block font-bold">

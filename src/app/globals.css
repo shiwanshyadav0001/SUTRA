@@ -2,24 +2,51 @@
 
 @layer base {
   :root {
-    --bg-primary: #F8FAFC;
+    /* Base Workspace Surface */
+    --bg-primary: #F1F5F9;
     --bg-surface: #FFFFFF;
-    --bg-surface-elevated: #F1F5F9;
-    --bg-surface-subtle: #F8FAFC;
-    --border-primary: #E2E8F0;
-    --border-subtle: #CBD5E1;
-    --copper: #1D4ED8;
-    --copper-light: #3B82F6;
-    --copper-dark: #1E40AF;
-    --stone: #334155;
-    --stone-dim: #64748B;
-    --stone-faint: #94A3B8;
+    --bg-surface-elevated: #F8FAFC;
+    --bg-surface-subtle: #E2E8F0;
+    
+    /* Institutional Navy & Midnight Tokens */
+    --navy-midnight: #0B132B;
+    --navy-deep: #0F172A;
+    --navy-slate: #1E293B;
+    --navy-light: #2D3E64;
+
+    /* Governance Royal Blue */
+    --gov-blue: #1D4ED8;
+    --gov-blue-light: #2563EB;
+    --gov-blue-muted: #3B82F6;
+    --gov-blue-surface: #EFF6FF;
+
+    /* Geographic Sky / Cyan Tokens */
+    --geo-sky: #0284C7;
+    --geo-sky-light: #38BDF8;
+    --geo-cyan: #06B6D4;
+    --geo-cyan-soft: #ECFEFF;
+
+    /* Alert / Signal Amber */
+    --signal-amber: #D97706;
+    --signal-amber-soft: #FFFBEB;
+    --signal-amber-border: #FCD34D;
+
+    /* Verified / Success Emerald */
+    --signal-green: #15803D;
+    --signal-green-soft: #F0FDF4;
+    --signal-green-border: #86EFAC;
+
+    /* Strict Warning / Deficit Red */
+    --signal-red: #DC2626;
+    --signal-red-soft: #FEF2F2;
+    --signal-red-border: #FCA5A5;
+
+    /* Typographic Hierarchy */
     --text-primary: #0F172A;
     --text-secondary: #334155;
     --text-muted: #64748B;
-    --signal-red: #DC2626;
-    --signal-amber: #D97706;
-    --signal-green: #15803D;
+    --border-primary: #CBD5E1;
+    --border-subtle: #E2E8F0;
   }
 
   body {
@@ -37,27 +64,84 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: #0B132B;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #25335A;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #3B82F6;
 }
 
 /* Grid & dot matrix backgrounds */
 .bg-grid-pattern {
-  background-image: radial-gradient(rgba(183, 138, 90, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .bg-dot-subtle {
-  background-image: radial-gradient(rgba(201, 194, 183, 0.06) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px);
   background-size: 16px 16px;
+}
+
+/* Geographic coordinate lattice overlay */
+.bg-geo-lattice {
+  background-image: 
+    linear-gradient(to right, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* 6 Deliberate Surface Types for Clear Visual Hierarchy */
+.surface-dark-intel {
+  background-color: #0F172A;
+  color: #F8FAFC;
+  border: 1px solid #1E293B;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.surface-dark-navy {
+  background-color: #0B132B;
+  color: #F8FAFC;
+  border: 1px solid #1E293B;
+}
+
+.surface-evidence {
+  background-color: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.surface-geo-blue {
+  background-color: #0B1E3B;
+  color: #FFFFFF;
+  border: 1px solid #1D4ED8;
+  box-shadow: 0 2px 8px -2px rgba(29, 78, 216, 0.15);
+}
+
+.surface-amber-alert {
+  background-color: #FFFBEB;
+  color: #78350F;
+  border: 1px solid #FCD34D;
+  box-shadow: 0 1px 3px 0 rgba(217, 119, 6, 0.05);
+}
+
+.surface-green-verified {
+  background-color: #F0FDF4;
+  color: #14532D;
+  border: 1px solid #86EFAC;
+  box-shadow: 0 1px 3px 0 rgba(21, 128, 61, 0.05);
+}
+
+.surface-neutral-analytical {
+  background-color: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
 /* Editorial typography utility */
@@ -69,16 +153,6 @@
 .font-mono-tabular {
   font-family: var(--font-geist-mono), monospace;
   font-variant-numeric: tabular-nums;
-}
-
-/* Restrained copper glow effect */
-.copper-glow {
-  box-shadow: 0 0 24px -6px rgba(183, 138, 90, 0.18);
-}
-
-.copper-border-glow {
-  border-color: rgba(183, 138, 90, 0.4);
-  box-shadow: 0 0 16px -4px rgba(183, 138, 90, 0.15);
 }
 
 /* 60fps GPU Hardware-Accelerated Chart Draw Keyframes */
@@ -163,5 +237,3 @@
 .animate-subtle-drift {
   animation: subtleDrift 5s ease-in-out infinite;
 }
-
-

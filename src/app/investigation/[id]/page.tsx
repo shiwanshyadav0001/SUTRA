@@ -59,27 +59,27 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
 
   return (
     <AppShell>
-      {/* Investigation Apex Header */}
-      <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4 relative overflow-hidden my-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+      {/* Investigation Apex Header on Deep Midnight Intelligence Surface */}
+      <div className="p-5 sm:p-6 surface-dark-intel border border-[#1E293B] rounded-lg shadow-xl space-y-4 relative overflow-hidden my-4 text-white">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#1E293B] pb-4">
           <div>
             <div className="flex flex-wrap items-center gap-2 font-mono text-xs mb-1.5">
-              <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 font-bold uppercase">
+              <span className="px-2 py-0.5 rounded bg-blue-950 text-cyan-300 border border-blue-800 font-bold uppercase">
                 CANONICAL INVESTIGATION WORKSPACE
               </span>
-              <span className="text-slate-500 font-semibold">ID: {investigationId}</span>
-              <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+              <span className="text-slate-400 font-semibold">ID: {investigationId}</span>
+              <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
                 STATUS: {investigation.status}
               </span>
-              <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+              <span className="px-2 py-0.5 rounded bg-[#080E21] text-slate-300 border border-[#233560]">
                 LGD: {investigation.targetDistrictLgd} ({investigation.targetDistrict})
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-editorial">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white font-editorial">
               {investigation.title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-3xl mt-1">
+            <p className="text-xs sm:text-sm text-slate-300 max-w-3xl mt-1">
               {investigation.question}
             </p>
           </div>
@@ -87,15 +87,15 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
             <button
               onClick={() => openWhyFlagged(currentFinding.id)}
-              className="px-3.5 py-2 rounded-md bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-md bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-200 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>WHY FLAGGED?</span>
             </button>
 
             <button
               onClick={() => openExecutiveBrief()}
-              className="px-3.5 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+              className="px-3.5 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-md"
             >
               <Download className="w-3.5 h-3.5" />
               <span>APEX BRIEF</span>
@@ -103,38 +103,38 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
           </div>
         </div>
 
-        {/* Top-level Key Stat Grid */}
+        {/* Top-level Key Stat Grid on Deliberate Surfaces */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
-          <div className="p-3 bg-rose-50/50 rounded-md border border-rose-200">
-            <span className="text-[10px] text-slate-500 block uppercase font-semibold">PRIMARY DEFICIT</span>
-            <span className="text-xl font-bold text-rose-700 mt-0.5 block">18.4 pp Gap</span>
-            <span className="text-[10px] text-slate-500">PMAY-G (46.8%) ⇄ JJM (28.4%)</span>
+          <div className="p-3 bg-rose-950/80 rounded-md border border-rose-800">
+            <span className="text-[10px] text-slate-400 block uppercase font-semibold">PRIMARY DEFICIT</span>
+            <span className="text-xl font-bold text-rose-300 mt-0.5 block">18.4 pp Gap</span>
+            <span className="text-[10px] text-slate-400">PMAY-G (46.8%) ⇄ JJM (28.4%)</span>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-md border border-slate-200">
-            <span className="text-[10px] text-slate-500 block uppercase font-semibold">ANALYTICAL CONFIDENCE</span>
-            <span className="text-xl font-bold text-emerald-700 mt-0.5 block">{investigation.confidence}%</span>
-            <span className="text-[10px] text-slate-500">Deterministic Model</span>
+          <div className="p-3 bg-emerald-950/80 rounded-md border border-emerald-800">
+            <span className="text-[10px] text-slate-400 block uppercase font-semibold">ANALYTICAL CONFIDENCE</span>
+            <span className="text-xl font-bold text-emerald-300 mt-0.5 block">{investigation.confidence}%</span>
+            <span className="text-[10px] text-slate-400">Deterministic Model</span>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-md border border-slate-200">
-            <span className="text-[10px] text-slate-500 block uppercase font-semibold">CORRELATED DATASETS</span>
-            <span className="text-xl font-bold text-slate-900 mt-0.5 block">3 Official Sources</span>
-            <span className="text-[10px] text-slate-500">JJM IMIS, AwaasSoft, PKVY</span>
+          <div className="p-3 bg-[#080E21] rounded-md border border-[#233560]">
+            <span className="text-[10px] text-slate-400 block uppercase font-semibold">CORRELATED DATASETS</span>
+            <span className="text-xl font-bold text-cyan-300 mt-0.5 block">3 Official Sources</span>
+            <span className="text-[10px] text-slate-400">JJM IMIS, AwaasSoft, PKVY</span>
           </div>
 
-          <div className="p-3 bg-emerald-50/50 rounded-md border border-emerald-200">
-            <span className="text-[10px] text-slate-500 block uppercase font-semibold">TRUTH CLASSIFICATION</span>
-            <span className="text-xs font-bold text-emerald-800 mt-1 block flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+          <div className="p-3 bg-[#080E21] rounded-md border border-cyan-800">
+            <span className="text-[10px] text-slate-400 block uppercase font-semibold">TRUTH CLASSIFICATION</span>
+            <span className="text-xs font-bold text-cyan-300 mt-1 block flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
               STATUTORY VERIFIED
             </span>
-            <span className="text-[10px] text-slate-500">SHA-256 Provenance Sealed</span>
+            <span className="text-[10px] text-slate-400">SHA-256 Provenance Sealed</span>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#1E293B] text-xs font-mono">
           {[
             { id: 'OVERVIEW', label: '1. FINDINGS & CORRELATION' },
             { id: 'CALCULATIONS', label: '2. MATHEMATICAL PROOF' },
@@ -147,8 +147,8 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 bg-slate-100 border border-slate-200'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-slate-300 hover:text-white bg-[#080E21] border border-[#233560]'
               }`}
             >
               {tab.label}
@@ -163,7 +163,7 @@ export default function InvestigationWorkspaceDetailPage({ params }: PageProps) 
           {/* Left 8 Cols: Detailed Findings Breakdown */}
           <div className="lg:col-span-8 space-y-5">
             {/* Finding Selector Deck */}
-            <div className="p-5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-3.5">
+            <div className="p-5 surface-neutral-analytical border border-slate-200 rounded-lg shadow-sm space-y-3.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono tracking-wider text-blue-700 font-bold uppercase">
                   INVESTIGATION FINDINGS REGISTRY ({findings.length})

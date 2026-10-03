@@ -202,29 +202,38 @@ export default function SignalsPage() {
 
           {filteredSignals.map((signal) => {
             const currentStatus = signalStatuses[signal.id] || 'DETECTED';
+            const isHighDeviation = signal.deviation > 10;
 
             return (
               <div
                 key={signal.id}
-                className="p-6 rounded-lg bg-white border border-slate-200 hover:border-blue-400 transition-all space-y-5 shadow-sm"
+                className={`p-6 rounded-lg transition-all space-y-5 shadow-sm border ${
+                  isHighDeviation
+                    ? 'surface-amber-alert border-amber-300 ring-1 ring-amber-400/20'
+                    : 'surface-neutral-analytical border-slate-200'
+                }`}
               >
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                   <div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-blue-50 border border-blue-200 text-blue-800 font-bold">
-                        IMPLEMENTATION SIGNAL
+                      <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold border ${
+                        isHighDeviation
+                          ? 'bg-amber-100 text-amber-900 border-amber-300'
+                          : 'bg-blue-50 border-blue-200 text-blue-800'
+                      }`}>
+                        {isHighDeviation ? 'CRITICAL SEVERITY ANOMALY' : 'IMPLEMENTATION SIGNAL'}
                       </span>
                       <span className="text-xs font-mono text-slate-500 font-semibold">{signal.id}</span>
                       <span
                         className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold ${
                           currentStatus === 'ESCALATED_PMO'
-                            ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                            ? 'bg-rose-100 text-rose-800 border border-rose-300'
                             : currentStatus === 'ACKNOWLEDGED'
-                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                            ? 'bg-amber-100 text-amber-900 border border-amber-300'
                             : currentStatus === 'RESOLVED'
-                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                            : 'bg-slate-100 text-slate-700 border border-slate-200'
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                            : 'bg-slate-200 text-slate-800 border border-slate-300'
                         }`}
                       >
                         STATUS: {currentStatus}
@@ -241,16 +250,16 @@ export default function SignalsPage() {
 
                   <div className="text-left sm:text-right font-mono">
                     <span className="text-[10px] text-slate-500 uppercase block font-semibold">
-                      STATISTICAL CONFIDENCE
+                      EVIDENCE CONFIDENCE
                     </span>
                     <div className="text-3xl font-bold text-blue-700">{signal.confidence}%</div>
-                    <span className="text-[10px] text-emerald-700 block font-semibold">Verified against PFMS</span>
+                    <span className="text-[10px] text-emerald-700 block font-semibold">Triangulated against PFMS</span>
                   </div>
                 </div>
 
-                {/* Deviation Metrics Bar */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 font-mono text-xs">
-                  <div className="p-3.5 rounded-md bg-slate-50 border border-slate-200">
+                {/* Deviation Metrics Bar with Temporal Trend Trajectory */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
+                  <div className="p-3.5 rounded-md bg-white border border-slate-200 shadow-2xs">
                     <span className="text-slate-500 text-[10px] block font-semibold uppercase">EXPECTED UTILIZATION</span>
                     <span className="text-2xl font-bold text-slate-800 mt-1 block">
                       {signal.expectedUtilization}%
@@ -258,20 +267,43 @@ export default function SignalsPage() {
                     <span className="text-[10px] text-slate-500">Benchmark trajectory</span>
                   </div>
 
-                  <div className="p-3.5 rounded-md bg-rose-50/50 border border-rose-200">
+                  <div className="p-3.5 rounded-md bg-rose-50/80 border border-rose-200 shadow-2xs">
                     <span className="text-slate-500 text-[10px] block font-semibold uppercase">CURRENT UTILIZATION</span>
                     <span className="text-2xl font-bold text-rose-700 mt-1 block">
                       {signal.currentUtilization}%
                     </span>
-                    <span className="text-[10px] text-rose-700 font-medium">Actual recorded drawdown</span>
+                    <span className="text-[10px] text-rose-700 font-medium">Recorded drawdown</span>
                   </div>
 
-                  <div className="p-3.5 rounded-md bg-slate-50 border border-slate-200 col-span-2 md:col-span-1">
-                    <span className="text-slate-500 text-[10px] block font-semibold uppercase">DEVIATION</span>
+                  <div className="p-3.5 rounded-md bg-white border border-slate-200 shadow-2xs">
+                    <span className="text-slate-500 text-[10px] block font-semibold uppercase">DEFICIT SPREAD</span>
                     <span className="text-2xl font-bold text-rose-700 mt-1 block">
                       {signal.deviation} pp
                     </span>
                     <span className="text-[10px] text-slate-500 font-medium">Pacing shortfall</span>
+                  </div>
+
+                  {/* Temporal Trendline Mini Visualizer */}
+                  <div className="p-3.5 rounded-md bg-slate-900 text-white border border-slate-800 shadow-2xs flex flex-col justify-between">
+                    <div className="flex items-center justify-between text-[10px] text-slate-400">
+                      <span>QUARTERLY PACING</span>
+                      <span className="text-amber-400 font-bold">LAGGING</span>
+                    </div>
+                    {/* SVG Trendline Sparkline */}
+                    <div className="h-6 w-full my-1">
+                      <svg className="w-full h-full" viewBox="0 0 100 24" preserveAspectRatio="none">
+                        {/* Target line */}
+                        <line x1="0" y1="6" x2="100" y2="6" stroke="#475569" strokeWidth="1" strokeDasharray="2 2" />
+                        {/* Actual trendline downward divergence */}
+                        <path d="M 0 10 Q 30 12 60 16 T 100 22" fill="none" stroke="#F43F5E" strokeWidth="2" />
+                        <circle cx="100" cy="22" r="2.5" fill="#F43F5E" />
+                      </svg>
+                    </div>
+                    <div className="flex justify-between text-[9px] text-slate-400">
+                      <span>Q1: 18%</span>
+                      <span>Q2: 24%</span>
+                      <span className="text-rose-400 font-bold">Q3: {signal.currentUtilization}%</span>
+                    </div>
                   </div>
                 </div>
 
@@ -285,7 +317,7 @@ export default function SignalsPage() {
                     {signal.factors.map((factor, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded-md bg-slate-50 border border-slate-200 flex items-center justify-between"
+                        className="p-3 rounded-md bg-white border border-slate-200 flex items-center justify-between shadow-2xs"
                       >
                         <div>
                           <span className="text-[10px] text-blue-700 block font-bold">
@@ -302,12 +334,12 @@ export default function SignalsPage() {
                 </div>
 
                 {/* Explanation Note */}
-                <p className="text-xs text-slate-700 leading-relaxed p-3.5 rounded-md bg-slate-50 border border-slate-200">
+                <p className="text-xs text-slate-700 leading-relaxed p-3.5 rounded-md bg-white border border-slate-200 shadow-2xs">
                   {signal.explanation}
                 </p>
 
                 {/* Operational Actions */}
-                <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-200">
                   {/* Status Management */}
                   <div className="flex items-center gap-1.5 font-mono text-xs">
                     <span className="text-slate-500 text-[11px] font-medium mr-1">ACTION:</span>
@@ -316,7 +348,7 @@ export default function SignalsPage() {
                       className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer flex items-center gap-1 ${
                         currentStatus === 'ACKNOWLEDGED'
                           ? 'bg-amber-100 text-amber-900 border border-amber-300 font-bold'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                          : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                       }`}
                     >
                       <Check className="w-3 h-3 text-amber-600" />
@@ -328,7 +360,7 @@ export default function SignalsPage() {
                       className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer flex items-center gap-1 ${
                         currentStatus === 'ESCALATED_PMO'
                           ? 'bg-rose-100 text-rose-900 border border-rose-300 font-bold'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                          : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                       }`}
                     >
                       <Send className="w-3 h-3 text-rose-600" />
@@ -340,7 +372,7 @@ export default function SignalsPage() {
                       className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer flex items-center gap-1 ${
                         currentStatus === 'RESOLVED'
                           ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                          : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                       }`}
                     >
                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
@@ -352,7 +384,7 @@ export default function SignalsPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => openWhyFlagged(signal.id)}
-                      className="px-3.5 py-1.5 rounded-md bg-white border border-slate-300 text-xs text-slate-800 hover:bg-slate-100 transition-colors flex items-center gap-1 font-medium cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-md bg-white border border-slate-300 text-xs text-slate-800 hover:bg-slate-100 transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                       <span>WHY FLAGGED?</span>
@@ -360,7 +392,7 @@ export default function SignalsPage() {
 
                     <Link
                       href="/investigation/SUTRA-INV-2026-0001"
-                      className="px-3.5 py-1.5 rounded-md bg-white border border-slate-300 text-xs text-slate-800 hover:bg-slate-100 transition-colors flex items-center gap-1 font-medium cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-md bg-white border border-slate-300 text-xs text-slate-800 hover:bg-slate-100 transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
                     >
                       <Layers className="w-3.5 h-3.5 text-blue-600" />
                       <span>INVESTIGATE</span>
